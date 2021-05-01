@@ -7,6 +7,7 @@
 
 #include <queue>
 #include <limits>
+#include <unordered_map>
 
 #include "Vertex.h"
 
@@ -16,6 +17,7 @@ constexpr auto INF = std::numeric_limits<double>::max();
 
 template <class T>
 class Graph {
+    unordered_map<int, Vertex<T>*> vertexMap;
     vector<Vertex<T> *> vertexSet;
 
     bool relax(Vertex<T>* v, Edge<T> e);
