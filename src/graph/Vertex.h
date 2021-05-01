@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "Edge.h"
-#include "MutablePriorityQueue.h"
+#include "../utils/MutablePriorityQueue.h"
 
 using namespace std;
 
