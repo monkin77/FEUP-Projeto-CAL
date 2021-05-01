@@ -20,7 +20,7 @@ class Graph {
 
     bool relax(Vertex<T>* v, Edge<T> e);
     void dijkstraShortestPath(Vertex<T> *s);
-
+    void dijkstraShortestPath(Vertex<T> *s, Vertex<T>* d);
 public:
     Vertex<T>* findVertex(const T &inf) const;
 

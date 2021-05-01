@@ -96,3 +96,28 @@ void Graph<T>::dijkstraShortestPath(Vertex<T> *s) {
         }
     }
 }
+
+template<class T>
+void Graph<T>::dijkstraShortestPath(Vertex<T> *s, Vertex<T> *d) {
+    for (Vertex<T>* v : vertexSet) {
+        v->dist = INF;
+        v->path = nullptr;
+    }
+    s->dist = 0;
+    MutablePriorityQueue<Vertex<T>> q;
+    q.insert(s);
+
+    while (!q.empty()) {
+        Vertex<T>* v = q.extractMin();
+
+        if (v == d) return;
+
+        for (Edge<T> e : v->adj) {
+            double oldDist = e.dest->dist;
+            if (relax(v, e)) {
+                if (oldDist == INF) q.insert(e.dest);
+                else q.decreaseKey(e.dest);
+            }
+        }
+    }
+}
