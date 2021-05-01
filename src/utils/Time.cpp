@@ -4,9 +4,12 @@
 
 #include "Time.h"
 
-Time::Time(int hour, int minute) : hour(hour), minute(minute) {
-    // TODO EXCEPTIONS IF TIME IS NOT VALID
+Time::Time(int minutes) {
+    hour = minutes / 60;
+    minute = minutes % 60;
 }
+
+Time::Time(int hour, int minute) : hour(hour), minute(minute) {}
 
 int Time::getHour() const {
     return hour;
@@ -32,4 +35,14 @@ bool Time::operator<(const Time &t2) const {
     if (this->hour == t2.getHour())
         return this->minute < t2.getMinute();
     return this->hour < t2.getHour();
+}
+
+void Time::addMinutes(int mins) {
+    minute += mins;
+    hour += minute / 60;
+    minute %= 60;
+}
+
+Time Time::operator+(const Time &t2) const {
+    return Time(this->toMinutes() + t2.toMinutes());
 }
