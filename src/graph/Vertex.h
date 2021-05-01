@@ -14,23 +14,28 @@ using namespace std;
 
 template <class T>
 class Vertex {
-    T info;
-    vector<Edge<T> *> outgoing;
-    vector<Edge<T> *> incoming;
+    int id;
+    T info;						// content of the vertex
+    std::vector<Edge<T> > adj;		// outgoing edges
 
-    bool visited;  // for path finding
-    Edge<T> *path; // for path finding
-    double dist;   // for path finding
-    int queueIndex = 0; // required by MutablePriorityQueue
+    double dist = 0;
+    Vertex<T> *path = nullptr;
+    int queueIndex = 0; 		// required by MutablePriorityQueue
 
-    Vertex(T in);
-    void addEdge(Edge<T> *e);
-    bool operator<(Vertex<T> & vertex) const; // required by MutablePriorityQueue
+    bool visited = false;		// auxiliary field
+
+    void addEdge(Vertex<T> *dest, double w);
 
 public:
+    Vertex(T in);
+
+    int getId() const;
+    const vector<Edge<T>> &getAdj() const;
     T getInfo() const;
-    vector<Edge<T> *> getIncoming() const;
-    vector<Edge<T> *> getOutgoing() const;
+    double getDist() const;
+    Vertex *getPath() const;
+
+    bool operator<(Vertex<T> & vertex) const; // required by MutablePriorityQueue
     friend class Graph<T>;
     friend class MutablePriorityQueue<Vertex<T>>;
 };

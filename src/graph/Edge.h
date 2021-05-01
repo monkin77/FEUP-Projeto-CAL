@@ -8,24 +8,25 @@
 
 using namespace std;
 
-
 template <class T> class Graph;     // Forward declaration
 template <class T> class Vertex;    // Forward declaration
 
 template <class T>
 class Edge {
+    int id;
     Vertex<T> * orig;
     Vertex<T> * dest;
-    double capacity;
-    double cost;
-    double flow;
-
-    Edge(Vertex<T> *o, Vertex<T> *d, double capacity, double cost=0, double flow=0);
-
+    double weight;
 public:
+    Edge(int id, Vertex<T> *orig, Vertex<T> *dest, double weight);
+
+    int getId() const;
+    Vertex<T> *getOrig() const;
+    Vertex<T> *getDest() const;
+    double getWeight() const;
+
     friend class Graph<T>;
     friend class Vertex<T>;
-    double getFlow() const;
 };
 
 
