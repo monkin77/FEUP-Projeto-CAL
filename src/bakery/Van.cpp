@@ -12,7 +12,7 @@ Van<T>::Van(int totalBread, const Time &deliveryTime) : totalBread(totalBread), 
 }
 
 template<class T>
-void Van<T>::addClient(Client& c) {
+void Van<T>::addClient(Client<T>& c) {
     clients.push_back(c);
 }
 
@@ -54,7 +54,7 @@ const Time &Van<T>::getTotalDelay() const {
 }
 
 template<class T>
-const vector <Client> &Van<T>::getClients() const {
+const vector <Client<T>> &Van<T>::getClients() const {
     return clients;
 }
 

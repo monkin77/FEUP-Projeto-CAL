@@ -5,9 +5,31 @@
 #ifndef FEUP_PROJETO_CAL_CLIENT_H
 #define FEUP_PROJETO_CAL_CLIENT_H
 
+#include <string>
+#include "../graph/Vertex.h"
+#include "../utils/Time.h"
 
+using namespace std;
+
+template<class T>
 class Client {
+private:
+    int id;
+    string name;
+    Vertex<T> address;
+    Time scheduledTime;
+    Time realTime;
+    int breadQuantity;
+public:
+    Client(int id, const string &name, const Vertex<T> &address, const Time &scheduledTime, int breadQuantity);
 
+    int getId() const;
+    const string &getName() const;
+    const Vertex<T> &getAddress() const;
+    const Time &getDeliveryTime() const;
+    int getBreadQuantity() const;
+
+    void setRealTime(const Time &realTime);
 };
 
 
