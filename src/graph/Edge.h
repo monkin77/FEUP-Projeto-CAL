@@ -14,7 +14,7 @@ template <class T> class Vertex;    // Forward declaration
 template <class T>
 class Edge {
     int id;
-    Vertex<T> * orig;
+    Vertex<T> * orig;  // this might be useful
     Vertex<T> * dest;
     double weight;
 public:

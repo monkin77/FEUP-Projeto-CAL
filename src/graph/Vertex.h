@@ -15,13 +15,13 @@ using namespace std;
 template <class T>
 class Vertex {
     int id;
-    T info;						// content of the vertex
+    T info;						// content of the vertex (position)
+
     std::vector<Edge<T> > adj;		// outgoing edges
 
     double dist = 0;
     Vertex<T> *path = nullptr;
     int queueIndex = 0; 		// required by MutablePriorityQueue
-
     bool visited = false;		// auxiliary field
 
     void addEdge(Vertex<T> *dest, double w);

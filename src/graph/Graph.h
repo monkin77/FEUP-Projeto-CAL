@@ -21,6 +21,9 @@ class Graph {
     bool relax(Vertex<T>* v, Edge<T> e);
     void dijkstraShortestPath(Vertex<T> *s);
     void dijkstraShortestPath(Vertex<T> *s, Vertex<T>* d);
+
+    void filterBySCC();
+    void filterByRadius(Vertex<T>* start, int radius);
 public:
     Vertex<T>* findVertex(const T &inf) const;
 
@@ -29,6 +32,9 @@ public:
 
     bool addVertex(const T &in);
     bool addEdge(const T &sourc, const T &dest, double weight);
+
+    void analyzeConnectivity(Vertex<T>* start);
+    void removeUnreachableVertexes(Vertex<T>* start, int radius);
 };
 
 

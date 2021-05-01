@@ -121,3 +121,36 @@ void Graph<T>::dijkstraShortestPath(Vertex<T> *s, Vertex<T> *d) {
         }
     }
 }
+
+template<class T>
+void Graph<T>::analyzeConnectivity(Vertex<T> *start) {
+    /* TODO
+     * THIS DEPENDS IF THE GRAPH IS DIRECTED OR NOT
+     * IT'S MUCH EASIER TO HAVE IT UNDIRECTED. ASK THE TEACHER
+     */
+}
+
+template<class T>
+void Graph<T>::removeUnreachableVertexes(Vertex<T>* start, int radius) {
+    filterByRadius(start, radius);
+    analyzeConnectivity(start);
+    filterBySCC();
+}
+
+/**
+ * Removes vertexes not in the start's strongly connected component
+ * Should be called after analyzeConnectivity()
+ */
+template<class T>
+void Graph<T>::filterBySCC() {
+    // TODO
+}
+
+/**
+ * Removes vertexes not in the range of a given radius, when comparing to start
+ */
+template<class T>
+void Graph<T>::filterByRadius(Vertex<T>* start, int radius) {
+    // TODO
+    // Maybe, we should only erase clients not in the radius instead of all the vertexes?
+}
