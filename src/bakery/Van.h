@@ -11,7 +11,6 @@
 #include "Client.h"
 #include <vector>
 
-template<class T>
 class Van {
 private:
     int totalBread;
@@ -21,8 +20,8 @@ private:
     Time totalDelay;
 
     // these containers might become HashMaps
-    vector<Client<T>> clients;
-    vector<Edge<T>> edges;
+    vector<Client> clients;
+    vector<Edge> edges;
 public:
     Van(int totalBread, const Time &deliveryTime);
 
@@ -32,11 +31,11 @@ public:
     const Time &getDeliveryTime() const;
     const Time &getTotalTime() const;
     const Time &getTotalDelay() const;
-    const vector<Client<T>> &getClients() const;
-    const vector<T> &getEdges() const;
+    const vector<Client> &getClients() const;
+    const vector<Edge> &getEdges() const;
 
-    void addClient(Client<T>& c);
-    void addEdge(Edge<T>& e);
+    void addClient(Client& c);
+    void addEdge(Edge& e);
     void makeDelivery(Time travelTime, Time delay, int breadNum);
 };
 

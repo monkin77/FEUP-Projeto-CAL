@@ -2,31 +2,33 @@
 // Created by joaog on 4/28/2021.
 //
 
+#include <iostream>
 #include "Graph.h"
+#include "../utils/Position.h"
 
 using namespace std;
 
 /**
  * Gets the vector of vertices
  */
-template <class T>
-std::vector<Vertex<T> *> Graph<T>::getVertexSet() const {
+
+std::vector<Vertex *> Graph::getVertexSet() const {
     return vertexSet;
 }
 
 /**
  * Gets the number of vertices in the graph
  */
-template<class T>
-int Graph<T>::getNumVertex() const {
+
+int Graph::getNumVertex() const {
     return vertexSet.size();
 }
 
 /**
  * Auxiliary function to find a vertex with a given content.
  */
-template <class T>
-Vertex<T> * Graph<T>::findVertex(const T &in) const {
+
+Vertex* Graph::findVertex(const Position &in) const {
     for (auto v : vertexSet)
         if (v->info == in)
             return v;
@@ -37,11 +39,11 @@ Vertex<T> * Graph<T>::findVertex(const T &in) const {
  *  Adds a vertex with a given content or info (in) to a graph (this).
  *  Returns true if successful, and false if a vertex with that content already exists.
  */
-template <class T>
-bool Graph<T>::addVertex(const T &in) {
+
+bool Graph::addVertex(const Position &in) {
     if ( findVertex(in) != NULL)
         return false;
-    vertexSet.push_back(new Vertex<T>(in));
+    vertexSet.push_back(new Vertex(in));
     return true;
 }
 
@@ -50,8 +52,8 @@ bool Graph<T>::addVertex(const T &in) {
  * destination vertices and the edge weight (w).
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
-template <class T>
-bool Graph<T>::addEdge(const T &sourc, const T &dest, double weight) {
+
+bool Graph::addEdge(const Position &sourc, const Position &dest, double weight) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
     if (v1 == NULL || v2 == NULL)
@@ -64,9 +66,9 @@ bool Graph<T>::addEdge(const T &sourc, const T &dest, double weight) {
  * Auxiliary function used by Dijkstra
  * Analyzes the path from v to e.dest
  */
-template <class T>
-bool Graph<T>::relax(Vertex<T> *v, Edge<T> e) {
-    Vertex<T>* w = e.dest;
+
+bool Graph::relax(Vertex *v, Edge e) {
+    Vertex* w = e.dest;
     if (v->dist + e.weight < w->dist) {
         w->dist = v->dist + e.weight;
         w->path = v;
@@ -75,19 +77,19 @@ bool Graph<T>::relax(Vertex<T> *v, Edge<T> e) {
     return false;
 }
 
-template<class T>
-void Graph<T>::dijkstraShortestPath(Vertex<T> *s) {
-    for (Vertex<T>* v : vertexSet) {
+
+void Graph::dijkstraShortestPath(Vertex *s) {
+    for (Vertex* v : vertexSet) {
         v->dist = INF;
         v->path = nullptr;
     }
     s->dist = 0;
-    MutablePriorityQueue<Vertex<T>> q;
+    MutablePriorityQueue<Vertex> q;
     q.insert(s);
 
     while (!q.empty()) {
-        Vertex<T>* v = q.extractMin();
-        for (Edge<T> e : v->adj) {
+        Vertex* v = q.extractMin();
+        for (Edge e : v->adj) {
             double oldDist = e.dest->dist;
             if (relax(v, e)) {
                 if (oldDist == INF) q.insert(e.dest);
@@ -97,22 +99,22 @@ void Graph<T>::dijkstraShortestPath(Vertex<T> *s) {
     }
 }
 
-template<class T>
-void Graph<T>::dijkstraShortestPath(Vertex<T> *s, Vertex<T> *d) {
-    for (Vertex<T>* v : vertexSet) {
+
+void Graph::dijkstraShortestPath(Vertex *s, Vertex *d) {
+    for (Vertex* v : vertexSet) {
         v->dist = INF;
         v->path = nullptr;
     }
     s->dist = 0;
-    MutablePriorityQueue<Vertex<T>> q;
+    MutablePriorityQueue<Vertex> q;
     q.insert(s);
 
     while (!q.empty()) {
-        Vertex<T>* v = q.extractMin();
+        Vertex* v = q.extractMin();
 
         if (v == d) return;
 
-        for (Edge<T> e : v->adj) {
+        for (Edge e : v->adj) {
             double oldDist = e.dest->dist;
             if (relax(v, e)) {
                 if (oldDist == INF) q.insert(e.dest);
@@ -122,16 +124,16 @@ void Graph<T>::dijkstraShortestPath(Vertex<T> *s, Vertex<T> *d) {
     }
 }
 
-template<class T>
-void Graph<T>::analyzeConnectivity(Vertex<T> *start) {
+
+void Graph::analyzeConnectivity(Vertex *start) {
     /* TODO
      * THIS DEPENDS IF THE GRAPH IS DIRECTED OR NOT
      * IT'S MUCH EASIER TO HAVE IT UNDIRECTED. ASK THE TEACHER
      */
 }
 
-template<class T>
-void Graph<T>::removeUnreachableVertexes(Vertex<T>* start, int radius) {
+
+void Graph::removeUnreachableVertexes(Vertex* start, int radius) {
     filterByRadius(start, radius);
     analyzeConnectivity(start);
     filterBySCC();
@@ -141,16 +143,22 @@ void Graph<T>::removeUnreachableVertexes(Vertex<T>* start, int radius) {
  * Removes vertexes not in the start's strongly connected component
  * Should be called after analyzeConnectivity()
  */
-template<class T>
-void Graph<T>::filterBySCC() {
+
+void Graph::filterBySCC() {
     // TODO
 }
 
 /**
  * Removes vertexes not in the range of a given radius, when comparing to start
  */
-template<class T>
-void Graph<T>::filterByRadius(Vertex<T>* start, int radius) {
+
+void Graph::filterByRadius(Vertex* start, int radius) {
     // TODO
     // Maybe, we should only erase clients not in the radius instead of all the vertexes?
+}
+
+void Graph::printGraph() {
+    for(Vertex *v : this->vertexSet){
+        cout << v->id << " " << v->info << endl;
+    }
 }

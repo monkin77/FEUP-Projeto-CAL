@@ -19,3 +19,18 @@ double Position::getLongitude() const {
 double Position::distance(const Position &p2) {
     return sqrt(pow(this->latitude - p2.getLatitude(), 2) + pow(this->longitude - p2.getLongitude(), 2));
 }
+
+bool Position::operator==(const Position &rhs) const {
+    return latitude == rhs.latitude &&
+           longitude == rhs.longitude;
+}
+
+bool Position::operator!=(const Position &rhs) const {
+    return !(rhs == *this);
+}
+
+ostream &operator<<(ostream &os, const Position &position) {
+    os << "latitude: " << position.latitude << " longitude: " << position.longitude;
+    return os;
+}
+
