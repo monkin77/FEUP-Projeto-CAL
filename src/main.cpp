@@ -2,10 +2,16 @@
 
 #include "graph/Graph.h"
 #include "bakery/Client.h"
-#include "bakery//Van.h"
+#include "bakery/Van.h"
+#include "utils/Position.h"
+#include "utils/GraphBuilder.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    Graph G;
+
+    defaultGraphBuilder(G);
+
+    G.printGraph();
 
     return 0;
 }

@@ -9,35 +9,38 @@
 
 #include "Edge.h"
 #include "../utils/MutablePriorityQueue.h"
+#include "../utils/Position.h"
 
 using namespace std;
 
-template <class T>
+
 class Vertex {
     int id;
-    T info;						// content of the vertex (position)
+    Position info;						// content of the vertex (position)
 
-    std::vector<Edge<T> > adj;		// outgoing edges
+    std::vector<Edge > adj;		// outgoing edges
 
     double dist = 0;
-    Vertex<T> *path = nullptr;
+    Vertex *path = nullptr;
     int queueIndex = 0; 		// required by MutablePriorityQueue
     bool visited = false;		// auxiliary field
 
-    void addEdge(Vertex<T> *dest, double w);
+    void addEdge(Vertex *dest, double w);
 
 public:
-    Vertex(T in);
+    static int nextID;
+    Vertex(Position in);
+    Vertex() {this->info = Position();};
 
     int getId() const;
-    const vector<Edge<T>> &getAdj() const;
-    T getInfo() const;
+    const vector<Edge> &getAdj() const;
+    Position getInfo() const;
     double getDist() const;
     Vertex *getPath() const;
 
-    bool operator<(Vertex<T> & vertex) const; // required by MutablePriorityQueue
-    friend class Graph<T>;
-    friend class MutablePriorityQueue<Vertex<T>>;
+    bool operator<(Vertex & vertex) const; // required by MutablePriorityQueue
+    friend class Graph;
+    friend class MutablePriorityQueue<Vertex>;
 };
 
 

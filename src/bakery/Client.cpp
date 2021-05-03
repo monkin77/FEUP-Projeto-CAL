@@ -4,8 +4,7 @@
 
 #include "Client.h"
 
-template<class T>
-Client<T>::Client(int id, const string &name, const Vertex<T> &address, const Time &scheduledTime, int breadQuantity) {
+Client::Client(int id, const string &name, const Vertex &address, const Time &scheduledTime, int breadQuantity) {
     this->id = id;
     this->name = name;
     this->address = address;
@@ -14,32 +13,26 @@ Client<T>::Client(int id, const string &name, const Vertex<T> &address, const Ti
     this->realTime = Time(0);
 }
 
-template<class T>
-int Client<T>::getId() const {
+int Client::getId() const {
     return id;
 }
 
-template<class T>
-const string &Client<T>::getName() const {
+const string &Client::getName() const {
     return name;
 }
 
-template<class T>
-const Vertex<T> &Client<T>::getAddress() const {
+const Vertex &Client::getAddress() const {
     return address;
 }
 
-template<class T>
-const Time &Client<T>::getDeliveryTime() const {
+const Time &Client::getDeliveryTime() const {
     return scheduledTime;
 }
 
-template<class T>
-int Client<T>::getBreadQuantity() const {
+int Client::getBreadQuantity() const {
     return breadQuantity;
 }
 
-template<class T>
-void Client<T>::setRealTime(const Time &realTime) {
+void Client::setRealTime(const Time &realTime) {
     Client::realTime = realTime;
 }

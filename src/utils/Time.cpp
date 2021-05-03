@@ -4,12 +4,22 @@
 
 #include "Time.h"
 
+Time::Time() {
+    hour = 0;
+    minute = 0;
+}
+
 Time::Time(int minutes) {
     hour = minutes / 60;
     minute = minutes % 60;
 }
 
 Time::Time(int hour, int minute) : hour(hour), minute(minute) {}
+
+Time::Time(const Time &time) {
+    this->hour = time.getHour();
+    this->minute = time.getMinute();
+}
 
 int Time::getHour() const {
     return hour;

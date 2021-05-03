@@ -8,25 +8,26 @@
 
 using namespace std;
 
-template <class T> class Graph;     // Forward declaration
-template <class T> class Vertex;    // Forward declaration
+class Graph;     // Forward declaration
+class Vertex;    // Forward declaration
 
-template <class T>
+
 class Edge {
     int id;
-    Vertex<T> * orig;  // this might be useful
-    Vertex<T> * dest;
+    Vertex * orig;  // this might be useful
+    Vertex * dest;
     double weight;
 public:
-    Edge(int id, Vertex<T> *orig, Vertex<T> *dest, double weight);
+    static int nextId;
+    Edge(Vertex *orig, Vertex *dest, double weight);    // increments the nextID variable
 
     int getId() const;
-    Vertex<T> *getOrig() const;
-    Vertex<T> *getDest() const;
+    Vertex *getOrig() const;
+    Vertex *getDest() const;
     double getWeight() const;
 
-    friend class Graph<T>;
-    friend class Vertex<T>;
+    friend class Graph;
+    friend class Vertex;
 };
 
 

@@ -11,21 +11,20 @@
 
 using namespace std;
 
-template<class T>
 class Client {
 private:
     int id;
     string name;
-    Vertex<T> address;
+    Vertex address;
     Time scheduledTime;
     Time realTime;
     int breadQuantity;
 public:
-    Client(int id, const string &name, const Vertex<T> &address, const Time &scheduledTime, int breadQuantity);
+    Client(int id, const string &name, const Vertex &address, const Time &scheduledTime, int breadQuantity);
 
     int getId() const;
     const string &getName() const;
-    const Vertex<T> &getAddress() const;
+    const Vertex &getAddress() const;
     const Time &getDeliveryTime() const;
     int getBreadQuantity() const;
 

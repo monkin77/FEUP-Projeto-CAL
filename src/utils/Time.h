@@ -10,8 +10,10 @@ class Time {
 private:
     int hour, minute;
 public:
+    Time();
     Time(int minutes);
     Time(int hour, int minute);
+    Time(const Time &time);
 
     int getHour() const;
     int getMinute() const;

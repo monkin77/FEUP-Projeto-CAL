@@ -10,33 +10,35 @@
 #include <unordered_map>
 
 #include "Vertex.h"
+#include "../utils/Position.h"
 
 using namespace std;
 
 constexpr auto INF = std::numeric_limits<double>::max();
 
-template <class T>
 class Graph {
-    unordered_map<int, Vertex<T>*> vertexMap;
-    vector<Vertex<T> *> vertexSet;
+    unordered_map<int, Vertex*> vertexMap;
+    vector<Vertex*> vertexSet;
 
-    bool relax(Vertex<T>* v, Edge<T> e);
-    void dijkstraShortestPath(Vertex<T> *s);
-    void dijkstraShortestPath(Vertex<T> *s, Vertex<T>* d);
+    bool relax(Vertex* v, Edge e);
+    void dijkstraShortestPath(Vertex *s);
+    void dijkstraShortestPath(Vertex *s, Vertex* d);
 
     void filterBySCC();
-    void filterByRadius(Vertex<T>* start, int radius);
+    void filterByRadius(Vertex* start, int radius);
 public:
-    Vertex<T>* findVertex(const T &inf) const;
+    Vertex* findVertex(const Position &inf) const;
 
-    vector<Vertex<T> *> getVertexSet() const;
+    vector<Vertex *> getVertexSet() const;
     int getNumVertex() const;
 
-    bool addVertex(const T &in);
-    bool addEdge(const T &sourc, const T &dest, double weight);
+    bool addVertex(const Position &in);
+    bool addEdge(const Position &sourc, const Position &dest, double weight);
 
-    void analyzeConnectivity(Vertex<T>* start);
-    void removeUnreachableVertexes(Vertex<T>* start, int radius);
+    void printGraph();
+
+    void analyzeConnectivity(Vertex* start);
+    void removeUnreachableVertexes(Vertex* start, int radius);
 };
 
 
