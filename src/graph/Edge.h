@@ -6,6 +6,8 @@
 #define FEUP_PROJETO_CAL_EDGE_H
 
 
+#include <ostream>
+
 using namespace std;
 
 class Graph;     // Forward declaration
@@ -25,6 +27,8 @@ public:
     Vertex *getOrig() const;
     Vertex *getDest() const;
     double getWeight() const;
+
+    friend std::ostream &operator<<(std::ostream &os, const Edge &edge);
 
     friend class Graph;
     friend class Vertex;

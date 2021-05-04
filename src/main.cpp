@@ -9,7 +9,11 @@
 int main() {
     Graph G;
 
-    defaultGraphBuilder(G);
+    string path = "maps/GridGraphs/4x4";
+    if( !readGraphFromFile(G, path) ) {
+        cout << "Error reading graph from file" << endl;
+        return 1;
+    }
 
     G.printGraph();
 

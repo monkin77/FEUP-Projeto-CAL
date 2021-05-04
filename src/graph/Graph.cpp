@@ -35,15 +35,26 @@ Vertex* Graph::findVertex(const Position &in) const {
     return NULL;
 }
 
+Vertex* Graph::findVertex(int idNode) const {
+    auto nodeTuple = this->vertexMap.find(idNode);
+    if(nodeTuple == this->vertexMap.end())
+        return NULL;
+    return nodeTuple->second;
+}
+
 /**
  *  Adds a vertex with a given content or info (in) to a graph (this).
  *  Returns true if successful, and false if a vertex with that content already exists.
  */
 
-bool Graph::addVertex(const Position &in) {
+bool Graph::addVertex(int id, const Position &in) {
     if ( findVertex(in) != NULL)
         return false;
-    vertexSet.push_back(new Vertex(in));
+    Vertex* newVertex = new Vertex(id, in);
+
+    vertexSet.push_back(newVertex); // Need to check if this vertexSet is needed
+    this->vertexMap.insert(pair<int, Vertex*>(id, newVertex));
+
     return true;
 }
 
@@ -58,6 +69,16 @@ bool Graph::addEdge(const Position &sourc, const Position &dest, double weight) 
     auto v2 = findVertex(dest);
     if (v1 == NULL || v2 == NULL)
         return false;
+    v1->addEdge(v2, weight);
+    return true;
+}
+
+bool Graph::addEdge(int idNodeOrig, int idNodeDest, double weight) {
+    Vertex *v1 = this->findVertex(idNodeOrig);
+    Vertex *v2 = this->findVertex(idNodeDest);
+    if(v1 == NULL || v2 == NULL)
+        return false;
+
     v1->addEdge(v2, weight);
     return true;
 }
@@ -159,6 +180,10 @@ void Graph::filterByRadius(Vertex* start, int radius) {
 
 void Graph::printGraph() {
     for(Vertex *v : this->vertexSet){
-        cout << v->id << " " << v->info << endl;
+        cout << "Vertex id: " << v->id << " " << v->info << endl;
+
+        for(Edge e : v->adj) {
+            cout << "   " << e << endl;
+        }
     }
 }

@@ -30,6 +30,7 @@ class Vertex {
 public:
     static int nextID;
     Vertex(Position in);
+    Vertex(int id, Position in);
     Vertex() {this->info = Position();};
 
     int getId() const;
