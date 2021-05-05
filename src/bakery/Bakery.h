@@ -12,21 +12,19 @@
 
 class Bakery {
 public:
-    Bakery(const vector<Client> &clients, const vector<Van> &vans, int startVertexId, double radius, int maxDelay,
+    Bakery(const vector<Client> &clients, const vector<Van> &vans, Vertex* startingVertex, double radius, int maxDelay,
            int maxTimeBefore);
+
     Bakery(string filePath);
 
 private:
     vector<Client> clients;
     vector<Van> vans;
-    int startVertexId;
+    Vertex* startingVertex;
     double radius;
     int maxDelay;
     int maxTimeBefore;
-    Graph G;
-public:
-
-
+    Graph graph;
 };
 
 

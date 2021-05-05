@@ -5,8 +5,12 @@
 #include "bakery/Van.h"
 #include "utils/Position.h"
 #include "utils/GraphBuilder.h"
+#include "bakery/Bakery.h"
 
 int main() {
+    Bakery bakery("bakeryInput/bakery.txt");
+
+    /*
     Graph G;
 
     string path = "maps/GridGraphs/4x4";
@@ -16,6 +20,7 @@ int main() {
     }
 
     G.printGraph();
+     */
 
     return 0;
 }

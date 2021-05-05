@@ -14,18 +14,17 @@ using namespace std;
 class Client {
 private:
     int id;
-    int vertexID;
     string name;
-    Position position;
+    Vertex* vertex;
     Time scheduledTime;
     Time realTime;
     int breadQuantity;
 public:
-    Client(int id, const string &name, const Position &position, const Time &scheduledTime, int breadQuantity);
+    Client(int id, const string &name, Vertex* vertex, const Time &scheduledTime, int breadQuantity);
 
     int getId() const;
     const string &getName() const;
-    const Position &getPosition() const;
+    Vertex* getVertex() const;
     const Time &getDeliveryTime() const;
     int getBreadQuantity() const;
 
