@@ -35,7 +35,7 @@ public:
 
     int getId() const;
     const vector<Edge> &getAdj() const;
-    Position getInfo() const;
+    Position getPosition() const;
     double getDist() const;
     Vertex *getPath() const;
 

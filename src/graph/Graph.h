@@ -26,6 +26,8 @@ class Graph {
 
     void filterBySCC();
     void filterByRadius(Vertex* start, int radius);
+
+    void DFSVisit(Vertex* v);
 public:
     Vertex* findVertex(const Position &inf) const;
     Vertex* findVertex(int idNode) const;
@@ -36,6 +38,8 @@ public:
     bool addVertex(int id, const Position &in);
     bool addEdge(const Position &sourc, const Position &dest, double weight);
     bool addEdge(int idNodeOrig, int idNodeDest, double weight);
+
+    void removeVertex(int id);
 
     void printGraph();
 

@@ -28,7 +28,7 @@ bool Vertex::operator<(Vertex & vertex) const {
     return this->dist < vertex.dist;
 }
 
-Position Vertex::getInfo() const {
+Position Vertex::getPosition() const {
     return this->info;
 }
 

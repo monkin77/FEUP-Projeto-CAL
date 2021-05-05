@@ -83,6 +83,24 @@ bool Graph::addEdge(int idNodeOrig, int idNodeDest, double weight) {
     return true;
 }
 
+void Graph::removeVertex(int id) {
+    vertexMap.erase(id);
+    for (int i = 0; i < vertexSet.size(); ++i) {
+        Vertex* v = vertexSet.at(i);
+        if (v->id == id) {
+            vertexSet.erase(vertexSet.begin() + i);
+            i--;
+        }
+        for (int j = 0; j < v->adj.size(); ++j) {
+            Edge e = v->adj.at(j);
+            if (e.dest->id == id) {
+                v->adj.erase(v->adj.begin() + j);
+                --j;
+            }
+        }
+    }
+}
+
 /**
  * Auxiliary function used by Dijkstra
  * Analyzes the path from v to e.dest
@@ -145,12 +163,20 @@ void Graph::dijkstraShortestPath(Vertex *s, Vertex *d) {
     }
 }
 
+void Graph::DFSVisit(Vertex *v) {
+    v->visited = true;
+    for (Edge e : v->adj) {
+        if (!e.dest->visited) DFSVisit(e.dest);
+    }
+}
 
+/**
+ * THIS IS JUST FOR AN UNDIRECTED GRAPH
+ */
 void Graph::analyzeConnectivity(Vertex *start) {
-    /* TODO
-     * THIS DEPENDS IF THE GRAPH IS DIRECTED OR NOT
-     * IT'S MUCH EASIER TO HAVE IT UNDIRECTED. ASK THE TEACHER
-     */
+    for (Vertex* v : vertexSet)
+        v->visited = false;
+    DFSVisit(start);
 }
 
 
@@ -166,7 +192,13 @@ void Graph::removeUnreachableVertexes(Vertex* start, int radius) {
  */
 
 void Graph::filterBySCC() {
-    // TODO
+    for (int i = 0; i < vertexSet.size(); ++i) {
+        Vertex* v = vertexSet.at(i);
+        if (!v->visited) {
+            removeVertex(v->id);
+            --i;
+        }
+    }
 }
 
 /**
@@ -174,8 +206,13 @@ void Graph::filterBySCC() {
  */
 
 void Graph::filterByRadius(Vertex* start, int radius) {
-    // TODO
-    // Maybe, we should only erase clients not in the radius instead of all the vertexes?
+    for (int i = 0; i < vertexSet.size(); ++i) {
+        Vertex* v = vertexSet.at(i);
+        if (start->getPosition().distance(v->getPosition()) > radius) {
+            removeVertex(v->id);
+            --i;
+        }
+    }
 }
 
 void Graph::printGraph() {
