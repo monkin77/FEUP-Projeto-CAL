@@ -8,31 +8,40 @@
 #include <vector>
 
 #include "Edge.h"
-#include "MutablePriorityQueue.h"
+#include "../utils/MutablePriorityQueue.h"
+#include "../utils/Position.h"
 
 using namespace std;
 
-template <class T>
+
 class Vertex {
-    T info;
-    vector<Edge<T> *> outgoing;
-    vector<Edge<T> *> incoming;
+    int id;
+    Position info;						// content of the vertex (position)
 
-    bool visited;  // for path finding
-    Edge<T> *path; // for path finding
-    double dist;   // for path finding
-    int queueIndex = 0; // required by MutablePriorityQueue
+    std::vector<Edge > adj;		// outgoing edges
 
-    Vertex(T in);
-    void addEdge(Edge<T> *e);
-    bool operator<(Vertex<T> & vertex) const; // required by MutablePriorityQueue
+    double dist = 0;
+    Vertex *path = nullptr;
+    int queueIndex = 0; 		// required by MutablePriorityQueue
+    bool visited = false;		// auxiliary field
+
+    void addEdge(Vertex *dest, double w);
 
 public:
-    T getInfo() const;
-    vector<Edge<T> *> getIncoming() const;
-    vector<Edge<T> *> getOutgoing() const;
-    friend class Graph<T>;
-    friend class MutablePriorityQueue<Vertex<T>>;
+    static int nextID;
+    Vertex(Position in);
+    Vertex(int id, Position in);
+    Vertex() {this->info = Position();};
+
+    int getId() const;
+    const vector<Edge> &getAdj() const;
+    Position getInfo() const;
+    double getDist() const;
+    Vertex *getPath() const;
+
+    bool operator<(Vertex & vertex) const; // required by MutablePriorityQueue
+    friend class Graph;
+    friend class MutablePriorityQueue<Vertex>;
 };
 
 

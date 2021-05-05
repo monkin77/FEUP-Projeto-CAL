@@ -6,33 +6,41 @@
 #define FEUP_PROJETO_CAL_GRAPH_H
 
 #include <queue>
+#include <limits>
+#include <unordered_map>
 
 #include "Vertex.h"
+#include "../utils/Position.h"
 
 using namespace std;
 
-template <class T>
+constexpr auto INF = std::numeric_limits<double>::max();
+
 class Graph {
-    vector<Vertex<T> *> vertexSet;
+    unordered_map<int, Vertex*> vertexMap;
+    vector<Vertex*> vertexSet;
 
-    void dijkstraShortestPath(Vertex<T> *s);
-    void bellmanFordShortestPath(Vertex<T> *s);
-    bool relax(Vertex<T> *v, Vertex<T> *w, Edge<T> *e, double residual, double cost);
+    bool relax(Vertex* v, Edge e);
+    void dijkstraShortestPath(Vertex *s);
+    void dijkstraShortestPath(Vertex *s, Vertex* d);
 
-    void resetFlows();
-    bool findAugmentationPath(Vertex<T> *s, Vertex<T> *t);
-    void testAndVisit(queue< Vertex<T>*> &q, Edge<T> *e, Vertex<T> *w, double residual);
-    double findMinResidualAlongPath(Vertex<T> *s, Vertex<T> *t);
-    void augmentFlowAlongPath(Vertex<T> *s, Vertex<T> *t, double flow);
-
+    void filterBySCC();
+    void filterByRadius(Vertex* start, int radius);
 public:
-    Vertex<T>* findVertex(const T &inf) const;
-    vector<Vertex<T> *> getVertexSet() const;
-    Vertex<T> *addVertex(const T &in);
-    Edge<T> *addEdge(const T &sourc, const T &dest, double capacity, double cost, double flow=0);
-    double getFlow(const T &sourc, const T &dest) const ;
-    void fordFulkerson(T source, T target);
-    double minCostFlow(T source, T target, double flow);
+    Vertex* findVertex(const Position &inf) const;
+    Vertex* findVertex(int idNode) const;
+
+    vector<Vertex *> getVertexSet() const;
+    int getNumVertex() const;
+
+    bool addVertex(int id, const Position &in);
+    bool addEdge(const Position &sourc, const Position &dest, double weight);
+    bool addEdge(int idNodeOrig, int idNodeDest, double weight);
+
+    void printGraph();
+
+    void analyzeConnectivity(Vertex* start);
+    void removeUnreachableVertexes(Vertex* start, int radius);
 };
 
 

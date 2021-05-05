@@ -6,26 +6,32 @@
 #define FEUP_PROJETO_CAL_EDGE_H
 
 
+#include <ostream>
+
 using namespace std;
 
+class Graph;     // Forward declaration
+class Vertex;    // Forward declaration
 
-template <class T> class Graph;     // Forward declaration
-template <class T> class Vertex;    // Forward declaration
 
-template <class T>
 class Edge {
-    Vertex<T> * orig;
-    Vertex<T> * dest;
-    double capacity;
-    double cost;
-    double flow;
-
-    Edge(Vertex<T> *o, Vertex<T> *d, double capacity, double cost=0, double flow=0);
-
+    int id;
+    Vertex * orig;  // this might be useful
+    Vertex * dest;
+    double weight;
 public:
-    friend class Graph<T>;
-    friend class Vertex<T>;
-    double getFlow() const;
+    static int nextId;
+    Edge(Vertex *orig, Vertex *dest, double weight);    // increments the nextID variable
+
+    int getId() const;
+    Vertex *getOrig() const;
+    Vertex *getDest() const;
+    double getWeight() const;
+
+    friend std::ostream &operator<<(std::ostream &os, const Edge &edge);
+
+    friend class Graph;
+    friend class Vertex;
 };
 
 
