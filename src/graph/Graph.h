@@ -25,7 +25,7 @@ class Graph {
     void dijkstraShortestPath(Vertex *s, Vertex* d);
 
     void filterBySCC();
-    void filterByRadius(Vertex* start, int radius);
+    void filterByRadius(Vertex* start, double radius);
 
     void DFSVisit(Vertex* v);
 public:
@@ -44,7 +44,7 @@ public:
     void printGraph();
 
     void analyzeConnectivity(Vertex* start);
-    void removeUnreachableVertexes(Vertex* start, int radius);
+    void removeUnreachableVertexes(Vertex* start, double radius);
 };
 
 

@@ -180,7 +180,7 @@ void Graph::analyzeConnectivity(Vertex *start) {
 }
 
 
-void Graph::removeUnreachableVertexes(Vertex* start, int radius) {
+void Graph::removeUnreachableVertexes(Vertex* start, double radius) {
     filterByRadius(start, radius);
     analyzeConnectivity(start);
     filterBySCC();
@@ -205,7 +205,7 @@ void Graph::filterBySCC() {
  * Removes vertexes not in the range of a given radius, when comparing to start
  */
 
-void Graph::filterByRadius(Vertex* start, int radius) {
+void Graph::filterByRadius(Vertex* start, double radius) {
     for (int i = 0; i < vertexSet.size(); ++i) {
         Vertex* v = vertexSet.at(i);
         if (start->getPosition().distance(v->getPosition()) > radius) {
