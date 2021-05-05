@@ -36,3 +36,8 @@ Vertex *Edge::getDest() const {
 double Edge::getWeight() const {
     return weight;
 }
+
+ostream &operator<<(ostream &os, const Edge &edge) {
+    os << "id: " << edge.id << " orig: " << edge.orig->getId() << " dest: " << edge.dest->getId() << " weight: " << edge.weight;
+    return os;
+}

@@ -28,12 +28,14 @@ class Graph {
     void filterByRadius(Vertex* start, int radius);
 public:
     Vertex* findVertex(const Position &inf) const;
+    Vertex* findVertex(int idNode) const;
 
     vector<Vertex *> getVertexSet() const;
     int getNumVertex() const;
 
-    bool addVertex(const Position &in);
+    bool addVertex(int id, const Position &in);
     bool addEdge(const Position &sourc, const Position &dest, double weight);
+    bool addEdge(int idNodeOrig, int idNodeDest, double weight);
 
     void printGraph();
 

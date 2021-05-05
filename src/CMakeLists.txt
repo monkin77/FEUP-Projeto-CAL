@@ -3,4 +3,4 @@ project(FEUP_Projeto_CAL)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(FEUP_Projeto_CAL main.cpp graph/Graph.cpp graph/Graph.h graph/Vertex.cpp graph/Vertex.h graph/Edge.cpp graph/Edge.h utils/Position.cpp utils/Position.h utils/Time.cpp utils/Time.h utils/GraphBuidler.cpp utils/GraphBuilder.h bakery/Van.cpp bakery/Van.h bakery/Client.cpp bakery/Client.h)
+add_executable(FEUP_Projeto_CAL main.cpp graph/Graph.cpp graph/Graph.h graph/Vertex.cpp graph/Vertex.h graph/Edge.cpp graph/Edge.h utils/Position.cpp utils/Position.h utils/Time.cpp utils/Time.h utils/GraphBuilder.cpp utils/GraphBuilder.h bakery/Van.cpp bakery/Van.h bakery/Client.cpp bakery/Client.h)

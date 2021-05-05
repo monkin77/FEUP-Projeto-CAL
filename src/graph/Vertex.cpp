@@ -6,6 +6,11 @@
 
 int Vertex::nextID = 0;
 
+Vertex::Vertex(int id, Position in) {
+    this->id = id;
+    this->info = in;
+}
+
 Vertex::Vertex(Position in): info(in) {
     this->id = this->nextID;
     this->nextID++;
