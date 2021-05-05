@@ -14,6 +14,7 @@ using namespace std;
 class Client {
 private:
     int id;
+    int vertexID;
     string name;
     Vertex address;
     Time scheduledTime;
