@@ -25,11 +25,10 @@ Bakery::Bakery(string filePath) {
 
     string graphPathName, clientName;
 
-    int latitude, longitude, toleranceDelay, toleranceBefore, numVans, vanCapacity, deliveryTime;
-    double radius;
+    int latitude, longitude, numVans, vanCapacity, deliveryTime;
     char token;
 
-    fin >> graphPathName >> token >> latitude >> token >> longitude >> token >> radius >> toleranceDelay >> toleranceBefore >> numVans;
+    fin >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> this->maxDelay >> this->maxTimeBefore >> numVans;
 
     if( !readGraphFromFile(this->graph, graphPathName) ) {
         cout << "Error reading graph from file" << endl;
