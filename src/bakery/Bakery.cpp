@@ -84,7 +84,7 @@ Time Bakery::nearestNeighbour() {
 
     Vertex* v = this->startingVertex;   // Bakery
     int numVisited = -1;    // First increment will be the bakery (not a client)
-    double totalTime = 0;
+    double travelTime = 0;
 
     while(true) {
         v->visited = true;
@@ -107,9 +107,12 @@ Time Bakery::nearestNeighbour() {
         cout << "Visited " << closestClient->getName()  << endl;
 
         v = closestClient->getVertex();
-        totalTime += minDist;
+        travelTime += minDist;
     }
 
-    return Time(totalTime);
+    this->graph.dijkstraShortestPath(v, this->startingVertex);
+    double returningTime = this->startingVertex->getDist();
+
+    return Time(travelTime + returningTime);
 }
 
