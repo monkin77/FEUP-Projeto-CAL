@@ -6,6 +6,8 @@
 #define FEUP_PROJETO_CAL_TIME_H
 
 
+#include <ostream>
+
 class Time {
 private:
     int hour, minute;
@@ -24,6 +26,8 @@ public:
     Time operator+(const Time& t2) const;
     int operator-(const Time& t2) const;
     bool operator<(const Time& t2) const;
+
+    friend std::ostream &operator<<(std::ostream &os, const Time &time);
 };
 
 

@@ -42,6 +42,7 @@ public:
     bool operator<(Vertex & vertex) const; // required by MutablePriorityQueue
     friend class Graph;
     friend class MutablePriorityQueue<Vertex>;
+    friend class Bakery;
 };
 
 

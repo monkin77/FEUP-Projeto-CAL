@@ -17,6 +17,8 @@ public:
 
     Bakery(string filePath);
 
+    // 1st Phase Algorithms
+    Time nearestNeighbour();
 private:
     vector<Client> clients;
     vector<Van> vans;

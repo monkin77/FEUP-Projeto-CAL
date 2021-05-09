@@ -35,7 +35,7 @@ Bakery::Bakery(string filePath) {
         throw runtime_error("File not found (Graph)");
     }
 
-    this->graph.printGraph();
+    // this->graph.printGraph();
 
     // Confirm valid Bakery Position
     Position bakeryPosition(latitude, longitude);
@@ -72,5 +72,44 @@ Bakery::Bakery(string filePath) {
         Client client(clientId, clientName, clientVertex, Time(hours, minutes), numBread);
         clients.push_back(client);
     }
+}
+
+/**
+ * Greedy algorithm that chooses the closest Client at each iteration
+ * @return total travel time
+ */
+Time Bakery::nearestNeighbour() {
+    for(Vertex* v : this->graph.getVertexSet())
+        v->visited = false;
+
+    Vertex* v = this->startingVertex;   // Bakery
+    int numVisited = -1;    // First increment will be the bakery (not a client)
+    double totalTime = 0;
+
+    while(true) {
+        v->visited = true;
+        numVisited++;
+
+        if(numVisited == this->clients.size())
+            break;
+
+        this->graph.dijkstraShortestPath(v);
+
+        Client *closestClient;
+        double minDist = INF;
+        for(Client& client : this->clients) {
+            if(client.getVertex()->dist < minDist && (!client.getVertex()->visited)) {
+                minDist = client.getVertex()->dist;
+                closestClient = &client;
+            }
+        }
+
+        cout << "Visited " << closestClient->getName()  << endl;
+
+        v = closestClient->getVertex();
+        totalTime += minDist;
+    }
+
+    return Time(totalTime);
 }
 
