@@ -25,7 +25,9 @@ class Graph {
     void dijkstraShortestPath(Vertex *s, Vertex* d);
 
     void filterBySCC();
-    void filterByRadius(Vertex* start, int radius);
+    void filterByRadius(Vertex* start, double radius);
+
+    void DFSVisit(Vertex* v);
 public:
     Vertex* findVertex(const Position &inf) const;
     Vertex* findVertex(int idNode) const;
@@ -37,10 +39,12 @@ public:
     bool addEdge(const Position &sourc, const Position &dest, double weight);
     bool addEdge(int idNodeOrig, int idNodeDest, double weight);
 
+    void removeVertex(int id);
+
     void printGraph();
 
     void analyzeConnectivity(Vertex* start);
-    void removeUnreachableVertexes(Vertex* start, int radius);
+    void removeUnreachableVertexes(Vertex* start, double radius);
 };
 
 
