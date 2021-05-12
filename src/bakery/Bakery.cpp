@@ -96,7 +96,9 @@ Time Bakery::nearestNeighbour() {
         // We only need to reach the clients' vertices
         vector<Vertex*> clientVertices;
         for (Client& client : this->clients)
-            clientVertices.push_back(client.getVertex());
+            if (!client.getVertex()->visited)
+                clientVertices.push_back(client.getVertex());
+
         this->graph.dijkstraShortestPath(v, clientVertices);
 
         Client *closestClient;
