@@ -265,7 +265,7 @@ double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
 
     // Setup target
     d->dist = 0;
-    d->visited = true;
+    d->backwardsVisited = true;
     d_queue.insert(d);
 
     while(!s_queue.empty() && !d_queue.empty()) {
@@ -278,7 +278,7 @@ double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
         });
         for(Edge& e : orderedEdges) {
             Vertex* destV = e.dest;
-            if( destV->visited == true){   // If it has already been visited
+            if( destV->backwardsVisited == true){   // If it has already been visited in the other direction
                 int totalDistance = this->joinBidirectionalDistances(destV, sV, e.weight);
                 return totalDistance;
             }
@@ -300,14 +300,14 @@ double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
 
         for(Edge& e : orderedEdges) {
             Vertex* destV = e.dest;
-            if( destV->visited == true){   // If it has already been visited
+            if( destV->visited == true){   // If it has already been visited in the other direction
                 double totalDistance = this->joinBidirectionalDistances(destV, dV, e.weight);
                 return totalDistance;
             }
 
             double oldDist = e.dest->dist;
             if(relax(dV, e)) {
-                destV->visited = true;
+                destV->backwardsVisited = true;
                 if(oldDist == INF) d_queue.insert(e.dest);
                 else d_queue.decreaseKey(e.dest);
             }
