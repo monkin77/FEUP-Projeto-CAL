@@ -172,6 +172,35 @@ void Graph::DFSVisit(Vertex *v) {
     }
 }
 
+void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
+    for (Vertex* v : vertexSet) {
+        v->dist = INF;
+        v->path = nullptr;
+    }
+    s->dist = 0;
+    MutablePriorityQueue<Vertex> q;
+    q.insert(s);
+
+    while (!q.empty()) {
+        Vertex* v = q.extractMin();
+
+        // Check if we reached any vertices
+        vector<Vertex*>::iterator it;
+        if ((it = find(dests.begin(), dests.end(), v)) != dests.end()) {
+            dests.erase(it);
+            if (dests.empty()) break;
+        }
+
+        for (Edge e : v->adj) {
+            double oldDist = e.dest->dist;
+            if (relax(v, e)) {
+                if (oldDist == INF) q.insert(e.dest);
+                else q.decreaseKey(e.dest);
+            }
+        }
+    }
+}
+
 /**
  * THIS IS JUST FOR AN UNDIRECTED GRAPH
  */

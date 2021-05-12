@@ -10,17 +10,8 @@
 int main() {
     Bakery bakery("bakeryInput/bakery.txt");
 
-    /*
-    Graph G;
-
-    string path = "maps/GridGraphs/4x4";
-    if( !readGraphFromFile(G, path) ) {
-        cout << "Error reading graph from file" << endl;
-        return 1;
-    }
-
-    G.printGraph();
-     */
+    Time elapsedTime = bakery.nearestNeighbour();
+    cout << elapsedTime << endl;
 
     return 0;
 }

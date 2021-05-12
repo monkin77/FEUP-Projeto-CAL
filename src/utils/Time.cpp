@@ -56,3 +56,8 @@ void Time::addMinutes(int mins) {
 Time Time::operator+(const Time &t2) const {
     return Time(this->toMinutes() + t2.toMinutes());
 }
+
+std::ostream &operator<<(std::ostream &os, const Time &time) {
+    os << "hour: " << time.hour << " minute: " << time.minute;
+    return os;
+}

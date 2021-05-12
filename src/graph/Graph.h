@@ -8,9 +8,11 @@
 #include <queue>
 #include <limits>
 #include <unordered_map>
+#include <algorithm>
 
 #include "Vertex.h"
 #include "../utils/Position.h"
+#include "../utils/Time.h"
 
 using namespace std;
 
@@ -19,10 +21,6 @@ constexpr auto INF = std::numeric_limits<double>::max();
 class Graph {
     unordered_map<int, Vertex*> vertexMap;
     vector<Vertex*> vertexSet;
-
-    bool relax(Vertex* v, Edge e);
-    void dijkstraShortestPath(Vertex *s);
-    void dijkstraShortestPath(Vertex *s, Vertex* d);
 
     void filterBySCC();
     void filterByRadius(Vertex* start, double radius);
@@ -45,6 +43,11 @@ public:
 
     void analyzeConnectivity(Vertex* start);
     void removeUnreachableVertexes(Vertex* start, double radius);
+
+    bool relax(Vertex* v, Edge e);
+    void dijkstraShortestPath(Vertex *s);
+    void dijkstraShortestPath(Vertex *s, Vertex* d);
+    void dijkstraShortestPath(Vertex *s, vector<Vertex*> dests);
 };
 
 
