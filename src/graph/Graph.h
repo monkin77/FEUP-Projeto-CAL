@@ -8,6 +8,7 @@
 #include <queue>
 #include <limits>
 #include <unordered_map>
+#include <algorithm>
 
 #include "Vertex.h"
 #include "../utils/Position.h"
@@ -46,6 +47,7 @@ public:
     bool relax(Vertex* v, Edge e);
     void dijkstraShortestPath(Vertex *s);
     void dijkstraShortestPath(Vertex *s, Vertex* d);
+    void dijkstraShortestPath(Vertex *s, vector<Vertex*> dests);
 };
 
 

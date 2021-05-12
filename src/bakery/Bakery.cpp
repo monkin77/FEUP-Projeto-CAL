@@ -93,16 +93,20 @@ Time Bakery::nearestNeighbour() {
         if(numVisited == this->clients.size())
             break;
 
-        this->graph.dijkstraShortestPath(v);
+        // We only need to reach the clients' vertices
+        vector<Vertex*> clientVertices;
+        for (Client& client : this->clients)
+            clientVertices.push_back(client.getVertex());
+        this->graph.dijkstraShortestPath(v, clientVertices);
 
         Client *closestClient;
         double minDist = INF;
-        for(Client& client : this->clients) {
-            if(client.getVertex()->dist < minDist && (!client.getVertex()->visited)) {
+
+        for (Client& client : this->clients)
+            if (client.getVertex()->dist < minDist && (!client.getVertex()->visited)) {
                 minDist = client.getVertex()->dist;
                 closestClient = &client;
             }
-        }
 
         cout << "Visited " << closestClient->getName()  << endl;
 
