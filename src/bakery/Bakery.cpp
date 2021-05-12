@@ -109,6 +109,7 @@ void Bakery::nearestNeighbour(Van& van) {
     // TODO: TIME SHOULDN'T BE DOUBLE
     double returningTime = this->startingVertex->getDist();
     van.addTime(Time(returningTime));
+    van.setClients(clients);
 }
 
 Client &Bakery::getClosestClient() {
@@ -170,6 +171,7 @@ void Bakery::greedyWithDijkstra(Van& van) {
         }
 
         van.makeDelivery(travelTime, delay, client.getBreadQuantity());
+        client.setRealTime(start + van.getTotalTime());
         v1 = v2;
 
         cout << "Visited " << client.getName() << " at: " << start + van.getTotalTime() << endl
@@ -178,6 +180,7 @@ void Bakery::greedyWithDijkstra(Van& van) {
 
     this->graph.dijkstraShortestPath(v1, this->startingVertex);
     van.addTime(Time(startingVertex->dist));
+    van.setClients(clients);
 }
 
 void Bakery::solveSecondPhase() {

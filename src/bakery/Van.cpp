@@ -59,3 +59,7 @@ int Van::getLeftovers() const {
 void Van::addTime(Time time) {
     totalTime = totalTime + time;
 }
+
+void Van::setClients(const vector<Client> &clients) {
+    Van::clients = clients;
+}

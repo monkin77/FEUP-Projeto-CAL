@@ -36,6 +36,8 @@ public:
 
     void addTime(Time time);
 
+    void setClients(const vector<Client> &clients);
+
     void addClient(Client& c);
     void addEdge(Edge& e);
     void makeDelivery(Time travelTime, Time delay, int breadNum);
