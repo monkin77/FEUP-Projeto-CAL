@@ -250,53 +250,42 @@ Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
 double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
     int numVertices = this->vertexSet.size();
 
-    // Keep track on visited nodes (front and backwards DFS)
-    bool s_visited[numVertices], d_visited[numVertices];
-
-    // keep track on parent of nodes (front and backwards DFS)
-    int s_parent[numVertices], d_parent[numVertices];
-
     for (Vertex* v : vertexSet) {
         v->dist = INF;
         v->path = nullptr;
+        v->visited = false;
     }
 
     MutablePriorityQueue<Vertex> s_queue, d_queue;
 
-    int intersectNode = -1;
-
-    for(int i = 0; i < numVertices; i++) {
-        s_visited[i] = false;
-        d_visited[i] = false;
-    }
-
     // Setup source
+    s->dist = 0;
+    s->visited = true;
     s_queue.insert(s);
-    s_visited[s->id] = true;
-    s_parent[s->id] = -1;   // Parent of source is -1
 
     // Setup target
+    d->dist = 0;
+    d->visited = true;
     d_queue.insert(d);
-    d_visited[d->id] = true;
-    d_parent[d->id] = -1;   // Parent of target is -1
 
     while(!s_queue.empty() && !d_queue.empty()) {
         Vertex* sV = s_queue.extractMin();
 
-        // Order Edges to mantain the property of visiting the closest Vertex first
+        // Order Edges to maintain the property of visiting the closest Vertex first
         vector<Edge> orderedEdges = sV->adj;
         sort(orderedEdges.begin(), orderedEdges.end(), [&](const Edge& e1,const Edge& e2){
             return e1.weight < e2.weight;
         });
         for(Edge& e : orderedEdges) {
             Vertex* destV = e.dest;
-            if(d_visited[destV->id] == true){   // If it has already been visited
+            if( destV->visited == true){   // If it has already been visited
                 int totalDistance = this->joinBidirectionalDistances(destV, sV, e.weight);
                 return totalDistance;
             }
 
             double oldDist = e.dest->dist;
             if(relax(sV, e)) {
+                destV->visited = true;
                 if(oldDist == INF) s_queue.insert(e.dest);
                 else s_queue.decreaseKey(e.dest);
             }
@@ -311,13 +300,14 @@ double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
 
         for(Edge& e : orderedEdges) {
             Vertex* destV = e.dest;
-            if(s_visited[destV->id] == true){   // If it has already been visited
+            if( destV->visited == true){   // If it has already been visited
                 double totalDistance = this->joinBidirectionalDistances(destV, dV, e.weight);
                 return totalDistance;
             }
 
             double oldDist = e.dest->dist;
             if(relax(dV, e)) {
+                destV->visited = true;
                 if(oldDist == INF) d_queue.insert(e.dest);
                 else d_queue.decreaseKey(e.dest);
             }
