@@ -100,6 +100,7 @@ void Bakery::nearestNeighbour(Van& van) {
         Client closestClient = getClosestClient();
 
         v = closestClient.getVertex();
+        cout << "dist: " << v->dist << endl;
         //TODO: ADD EDGES AND CLIENTS
         van.makeDelivery(Time(v->dist), Time(0), closestClient.getBreadQuantity());
     }
@@ -108,6 +109,7 @@ void Bakery::nearestNeighbour(Van& van) {
 
     // TODO: TIME SHOULDN'T BE DOUBLE
     double returningTime = this->startingVertex->getDist();
+    cout << "dist retorno: " << returningTime << endl;
     van.addTime(Time(returningTime));
     van.setClients(clients);
 }

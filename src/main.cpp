@@ -11,7 +11,9 @@ int main() {
     Bakery bakery("bakeryInput/bakery.txt");
 
     bakery.solveFirstPhase();
-    bakery.solveSecondPhase();
+
+    Bakery bakery2("bakeryInput/bakery.txt");
+    bakery2.solveSecondPhase();
 
     return 0;
 }
