@@ -34,6 +34,8 @@ public:
     const vector<Client> &getClients() const;
     const vector<Edge> &getEdges() const;
 
+    void addTime(Time time);
+
     void addClient(Client& c);
     void addEdge(Edge& e);
     void makeDelivery(Time travelTime, Time delay, int breadNum);

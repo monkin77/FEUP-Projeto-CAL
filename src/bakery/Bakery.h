@@ -16,9 +16,8 @@ public:
            int maxTimeBefore);
 
     Bakery(string filePath);
+    void solveFirstPhase();
 
-    // 1st Phase Algorithms
-    Time nearestNeighbour();
 private:
     vector<Client> clients;
     vector<Van> vans;
@@ -27,6 +26,12 @@ private:
     int maxDelay;
     int maxTimeBefore;
     Graph graph;
+
+    // Common methods
+    Client& getClosestClient();
+
+    // 1st Phase Algorithms
+    void nearestNeighbour(Van& van);
 };
 
 

@@ -58,6 +58,6 @@ Time Time::operator+(const Time &t2) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Time &time) {
-    os << "hour: " << time.hour << " minute: " << time.minute;
+    os << time.hour << "h" << time.minute << "m";
     return os;
 }

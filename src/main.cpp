@@ -10,8 +10,7 @@
 int main() {
     Bakery bakery("bakeryInput/bakery.txt");
 
-    Time elapsedTime = bakery.nearestNeighbour();
-    cout << elapsedTime << endl;
+    bakery.solveFirstPhase();
 
     return 0;
 }

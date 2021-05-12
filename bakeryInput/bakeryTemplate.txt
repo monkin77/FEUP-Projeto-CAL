@@ -1,6 +1,6 @@
 maps/GridGraphs/4x4 -> Path do Graph
 (150,150) -> Posicao da padaria
-100 30 30 -> raio de acao /  tolerancia de atraso / tolerancia de adiantamento
+500 30 30 -> raio de acao /  tolerancia de atraso / tolerancia de adiantamento
 1   -> numero de carrinhas
 1000 5  -> capacidade de paes por carrinha / tempo de entrega ao cliente
 5   -> numero de clientes

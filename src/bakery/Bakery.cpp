@@ -78,13 +78,12 @@ Bakery::Bakery(string filePath) {
  * Greedy algorithm that chooses the closest Client at each iteration
  * @return total travel time
  */
-Time Bakery::nearestNeighbour() {
+void Bakery::nearestNeighbour(Van& van) {
     for(Vertex* v : this->graph.getVertexSet())
         v->visited = false;
 
     Vertex* v = this->startingVertex;   // Bakery
     int numVisited = -1;    // First increment will be the bakery (not a client)
-    double travelTime = 0;
 
     while(true) {
         v->visited = true;
@@ -101,24 +100,39 @@ Time Bakery::nearestNeighbour() {
 
         this->graph.dijkstraShortestPath(v, clientVertices);
 
-        Client *closestClient;
-        double minDist = INF;
+        Client closestClient = getClosestClient();
 
-        for (Client& client : this->clients)
-            if (client.getVertex()->dist < minDist && (!client.getVertex()->visited)) {
-                minDist = client.getVertex()->dist;
-                closestClient = &client;
-            }
-
-        cout << "Visited " << closestClient->getName()  << endl;
-
-        v = closestClient->getVertex();
-        travelTime += minDist;
+        v = closestClient.getVertex();
+        //TODO: ADD EDGES AND CLIENTS
+        van.makeDelivery(Time(v->dist), Time(0), closestClient.getBreadQuantity());
     }
 
     this->graph.dijkstraShortestPath(v, this->startingVertex);
-    double returningTime = this->startingVertex->getDist();
 
-    return Time(travelTime + returningTime);
+    // TODO: TIME SHOULDN'T BE DOUBLE
+    double returningTime = this->startingVertex->getDist();
+    van.addTime(Time(returningTime));
 }
+
+Client &Bakery::getClosestClient() {
+    Client* closestClient;
+    double minDist = INF;
+
+    for (Client& client : this->clients)
+        if (client.getVertex()->dist < minDist && (!client.getVertex()->visited)) {
+            minDist = client.getVertex()->dist;
+            closestClient = &client;
+        }
+
+    cout << "Visited " << closestClient->getName()  << endl;
+    return *closestClient;
+}
+
+void Bakery::solveFirstPhase() {
+    graph.removeUnreachableVertexes(startingVertex, radius);
+    nearestNeighbour(vans[0]);
+    Van& v = vans[0];
+    cout << "Time: " << v.getTotalTime() << endl << "Bread delivered: " << v.getDeliveredBread() << endl;
+}
+
 

@@ -24,8 +24,10 @@ class Graph {
 
     void filterBySCC();
     void filterByRadius(Vertex* start, double radius);
+    void analyzeConnectivity(Vertex* start);
 
     void DFSVisit(Vertex* v);
+    bool relax(Vertex* v, Edge e);
 public:
     Vertex* findVertex(const Position &inf) const;
     Vertex* findVertex(int idNode) const;
@@ -41,10 +43,8 @@ public:
 
     void printGraph();
 
-    void analyzeConnectivity(Vertex* start);
     void removeUnreachableVertexes(Vertex* start, double radius);
 
-    bool relax(Vertex* v, Edge e);
     void dijkstraShortestPath(Vertex *s);
     void dijkstraShortestPath(Vertex *s, Vertex* d);
     void dijkstraShortestPath(Vertex *s, vector<Vertex*> dests);

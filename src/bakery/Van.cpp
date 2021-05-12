@@ -55,3 +55,7 @@ const vector<Edge> &Van::getEdges() const {
 int Van::getLeftovers() const {
     return totalBread - deliveredBread;
 }
+
+void Van::addTime(Time time) {
+    totalTime = totalTime + time;
+}
