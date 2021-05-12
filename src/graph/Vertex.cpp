@@ -9,11 +9,13 @@ int Vertex::nextID = 0;
 Vertex::Vertex(int id, Position in) {
     this->id = id;
     this->info = in;
+    this->client = NULL;
 }
 
 Vertex::Vertex(Position in): info(in) {
     this->id = this->nextID;
     this->nextID++;
+    this->client = NULL;
 }
 
 /**
@@ -46,4 +48,12 @@ int Vertex::getId() const {
 
 const vector<Edge> &Vertex::getAdj() const {
     return adj;
+}
+
+Client *Vertex::getClient() const {
+    return client;
+}
+
+void Vertex::setClient(Client *client) {
+    this->client = client;
 }

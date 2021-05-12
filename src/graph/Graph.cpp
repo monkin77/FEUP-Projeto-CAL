@@ -172,6 +172,11 @@ void Graph::DFSVisit(Vertex *v) {
     }
 }
 
+/**
+ * Calculate the distance to every Vertex until we have visited all the clients (dests)
+ * @param s
+ * @param dests
+ */
 void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
     for (Vertex* v : vertexSet) {
         v->dist = INF;
@@ -187,7 +192,7 @@ void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
         // Check if we reached any vertices
         vector<Vertex*>::iterator it;
         if ((it = find(dests.begin(), dests.end(), v)) != dests.end()) {
-            dests.erase(it);
+            dests.erase(it);    // Remove Client from the clients who haven't been delivered
             if (dests.empty()) break;
         }
 
@@ -199,6 +204,41 @@ void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
             }
         }
     }
+}
+
+/**
+ * Similar to dijkstraShortestPath, but stops when it finds the first client (closest)
+ * @param s
+ * @param dests
+ */
+Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
+    for (Vertex* v : vertexSet) {
+        v->dist = INF;
+        v->path = nullptr;
+    }
+    s->dist = 0;
+    MutablePriorityQueue<Vertex> q;
+    q.insert(s);
+
+    while (!q.empty()) {
+        Vertex* v = q.extractMin();
+
+        // Check if we reached any vertices
+        vector<Vertex*>::iterator it;
+        if ((it = find(dests.begin(), dests.end(), v)) != dests.end()) {
+            return v->client;   // Found a Client
+        }
+
+        for (Edge e : v->adj) {
+            double oldDist = e.dest->dist;
+            if (relax(v, e)) {
+                if (oldDist == INF) q.insert(e.dest);
+                else q.decreaseKey(e.dest);
+            }
+        }
+    }
+
+    return NULL;
 }
 
 /**
