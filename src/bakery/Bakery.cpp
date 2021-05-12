@@ -25,19 +25,18 @@ Bakery::Bakery(string filePath) {
 
     string graphPathName, clientName;
 
-    int latitude, longitude, numVans, vanCapacity, deliveryTime;
+    int latitude, longitude, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
     char token;
 
-    fin >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> this->maxDelay >> this->maxTimeBefore >> numVans;
+    fin >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
+    this->maxTimeBefore = Time(maxTimeBefore);
+    this->maxDelay = Time(maxDelay);
 
     if( !readGraphFromFile(this->graph, graphPathName) ) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
     }
 
-    // this->graph.printGraph();
-
-    // Confirm valid Bakery Position
     Position bakeryPosition(latitude, longitude);
 
     Vertex* bakeryVertex = this->graph.findVertex(bakeryPosition);
@@ -62,15 +61,13 @@ Bakery::Bakery(string filePath) {
     for(int i = 0; i < numClients; i++){
         fin >> clientName >> clientId >> token >> latitude >> token >> longitude >> token >> hours >> token >> minutes >> numBread;
 
-        // Confirm valid Client Position
         Position clientPosition(latitude, longitude);
 
         Vertex* clientVertex = this->graph.findVertex(clientPosition);
         if( clientVertex == NULL)
             continue;   // Discard this Client
 
-        Client client(clientId, clientName, clientVertex, Time(hours, minutes), numBread);
-        clients.push_back(client);
+        clients.push_back(Client(clientId, clientName, clientVertex, Time(hours, minutes), numBread));
     }
 }
 
@@ -128,11 +125,67 @@ Client &Bakery::getClosestClient() {
     return *closestClient;
 }
 
+void Bakery::filterClients() {
+    vector<Client>::iterator it;
+    for (it = clients.begin(); it != clients.end(); ++it) {
+        Client& c = *it;
+        if (graph.findVertex(c.getVertex()->getId()) == NULL) {
+            it = clients.erase(it);
+            --it;
+        }
+    }
+}
+
 void Bakery::solveFirstPhase() {
     graph.removeUnreachableVertexes(startingVertex, radius);
-    nearestNeighbour(vans[0]);
+    filterClients();
     Van& v = vans[0];
+    nearestNeighbour(v);
     cout << "Time: " << v.getTotalTime() << endl << "Bread delivered: " << v.getDeliveredBread() << endl;
 }
 
+void Bakery::greedyWithDijkstra(Van& van) {
+    sort(clients.begin(), clients.end(), [](const Client& c1, const Client& c2) -> bool {
+        return c1.getDeliveryTime() < c2.getDeliveryTime();
+    });
 
+    Vertex *v1 = startingVertex, *v2;
+    Time start(7, 0);
+    for (int i = 0; i < clients.size(); ++i) {
+        Client& client = clients[i];
+        v2 = client.getVertex();
+        graph.dijkstraShortestPath(v1, v2);
+
+        Time travelTime(v2->dist);
+        Time delay(0);
+        Time difference = start + van.getTotalTime() + travelTime - client.getDeliveryTime();
+
+        if ((difference + maxTimeBefore).toMinutes() < 0) {
+            // Before time, wait
+            travelTime = travelTime - (difference + maxTimeBefore);
+
+        } else if ((difference - maxDelay).toMinutes() > 0) {
+            // After time, increase delay
+            delay = delay + difference - maxDelay;
+        }
+
+        van.makeDelivery(travelTime, delay, client.getBreadQuantity());
+        v1 = v2;
+
+        cout << "Visited " << client.getName() << " at: " << start + van.getTotalTime() << endl
+            << "While travelling " << travelTime << endl << "Total: " << van.getTotalTime() << endl << endl;
+    }
+
+    this->graph.dijkstraShortestPath(v1, this->startingVertex);
+    van.addTime(Time(startingVertex->dist));
+}
+
+void Bakery::solveSecondPhase() {
+    graph.removeUnreachableVertexes(startingVertex, radius);
+    filterClients();
+    //TODO: Choose the algorithm here. We only have one for now
+    Van& v = vans[0];
+    greedyWithDijkstra(v);
+    cout << "Total Time: " << v.getTotalTime() << endl << "Delay: " << v.getTotalDelay() << endl
+    << "Delivered Bread: " << v.getDeliveredBread() << endl;
+}

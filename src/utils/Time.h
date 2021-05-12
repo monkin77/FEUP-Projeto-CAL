@@ -24,7 +24,7 @@ public:
     int toMinutes() const;
 
     Time operator+(const Time& t2) const;
-    int operator-(const Time& t2) const;
+    Time operator-(const Time& t2) const;
     bool operator<(const Time& t2) const;
 
     friend std::ostream &operator<<(std::ostream &os, const Time &time);

@@ -17,21 +17,26 @@ public:
 
     Bakery(string filePath);
     void solveFirstPhase();
+    void solveSecondPhase();
 
 private:
     vector<Client> clients;
     vector<Van> vans;
     Vertex* startingVertex;
     double radius;
-    int maxDelay;
-    int maxTimeBefore;
+    Time maxDelay;
+    Time maxTimeBefore;
     Graph graph;
 
     // Common methods
     Client& getClosestClient();
+    void filterClients();
 
     // 1st Phase Algorithms
     void nearestNeighbour(Van& van);
+
+    // 2nd Phase Algorithms
+    void greedyWithDijkstra(Van& van);
 };
 
 
