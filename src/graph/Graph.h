@@ -49,6 +49,9 @@ public:
     void dijkstraShortestPath(Vertex *s, Vertex* d);
     void dijkstraShortestPath(Vertex *s, vector<Vertex*> dests);
     Client* dijkstraClosestClient(Vertex *s, vector<Vertex*> dests);
+
+    double bidirectionalDijkstra(Vertex *s, Vertex *d);
+    double joinBidirectionalDistances(Vertex* intersectionVertex, Vertex* oppDirectionVertex, double oppDirectionWeight);
 };
 
 

@@ -74,6 +74,11 @@ Bakery::Bakery(string filePath) {
     }
 }
 
+Bakery::~Bakery() {
+    for(Client* client : this->clients)
+        delete client;
+}
+
 /**
  * Greedy algorithm that chooses the closest Client at each iteration
  * @return total travel time
@@ -103,6 +108,7 @@ void Bakery::nearestNeighbour(Van& van) {
         Client *closestClient = getClosestClient();
          */
         Client *closestClient = this->graph.dijkstraClosestClient(v, clientVertices);
+        cout << "Visited " << closestClient->getName()  << endl;
 
         v = closestClient->getVertex();
         cout << "dist: " << v->dist << endl;
@@ -111,12 +117,11 @@ void Bakery::nearestNeighbour(Van& van) {
         van.makeDelivery(Time(v->dist), Time(0), closestClient->getBreadQuantity());
     }
 
-    // Could use Bi-directional Dijkstra
-    this->graph.dijkstraShortestPath(v, this->startingVertex);
-
     // TODO: TIME SHOULDN'T BE DOUBLE
-    double returningTime = this->startingVertex->getDist();
+    double returningTime = this->graph.bidirectionalDijkstra(v, this->startingVertex);
+
     cout << "dist retorno: " << returningTime << endl;
+
     van.addTime(Time(returningTime));
     van.setClients(clients);
 }

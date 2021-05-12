@@ -16,6 +16,7 @@ public:
            int maxTimeBefore);
 
     Bakery(string filePath);
+    ~Bakery();
     void solveFirstPhase();
     void solveSecondPhase();
 
