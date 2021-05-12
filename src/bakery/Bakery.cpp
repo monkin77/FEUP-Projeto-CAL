@@ -142,7 +142,7 @@ void Bakery::solveFirstPhase() {
     filterClients();
     Van& v = vans[0];
     nearestNeighbour(v);
-    cout << "Time: " << v.getTotalTime() << endl << "Bread delivered: " << v.getDeliveredBread() << endl;
+    cout << "Time: " << v.getTotalTime() << endl << "Bread delivered: " << v.getDeliveredBread() << endl << endl;
 }
 
 void Bakery::greedyWithDijkstra(Van& van) {
@@ -160,6 +160,7 @@ void Bakery::greedyWithDijkstra(Van& van) {
         Time travelTime(v2->dist);
         Time delay(0);
         Time difference = start + van.getTotalTime() + travelTime - client.getDeliveryTime();
+        Time road = travelTime;  // TESTING ONLY
 
         if ((difference + maxTimeBefore).toMinutes() < 0) {
             // Before time, wait
@@ -171,11 +172,11 @@ void Bakery::greedyWithDijkstra(Van& van) {
         }
 
         van.makeDelivery(travelTime, delay, client.getBreadQuantity());
-        client.setRealTime(start + van.getTotalTime());
+        client.setRealTime(start + van.getTotalTime() - van.getDeliveryTime());
         v1 = v2;
 
-        cout << "Visited " << client.getName() << " at: " << start + van.getTotalTime() << endl
-            << "While travelling " << travelTime << endl << "Total: " << van.getTotalTime() << endl << endl;
+        cout << "Visited " << client.getName() << " at: " << client.getRealTime() << endl << "While travelling " << road
+        << endl << "Delay: " << delay << endl << "Total: " << van.getTotalTime() << endl << endl;
     }
 
     this->graph.dijkstraShortestPath(v1, this->startingVertex);

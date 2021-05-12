@@ -37,3 +37,7 @@ void Client::setRealTime(const Time &realTime) {
 Vertex *Client::getVertex() const {
     return this->vertex;
 }
+
+const Time &Client::getRealTime() const {
+    return realTime;
+}

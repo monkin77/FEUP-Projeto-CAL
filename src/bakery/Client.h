@@ -28,6 +28,8 @@ public:
     const Time &getDeliveryTime() const;
     int getBreadQuantity() const;
 
+    const Time &getRealTime() const;
+
     void setRealTime(const Time &realTime);
 };
 
