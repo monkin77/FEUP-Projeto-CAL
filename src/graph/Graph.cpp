@@ -70,6 +70,7 @@ bool Graph::addEdge(const Position &sourc, const Position &dest, double weight) 
     if (v1 == NULL || v2 == NULL)
         return false;
     v1->addEdge(v2, weight);
+    v2->addEdge(v1, weight);
     return true;
 }
 
@@ -80,6 +81,7 @@ bool Graph::addEdge(int idNodeOrig, int idNodeDest, double weight) {
         return false;
 
     v1->addEdge(v2, weight);
+    v2->addEdge(v1, weight);
     return true;
 }
 
