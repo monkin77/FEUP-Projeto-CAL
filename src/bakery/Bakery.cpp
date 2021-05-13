@@ -58,13 +58,13 @@ Bakery::Bakery(string filePath) {
 
     fin >> numClients;
 
-    for(int i = 0; i < numClients; i++){
+    for (int i = 0; i < numClients; i++) {
         fin >> clientName >> clientId >> token >> latitude >> token >> longitude >> token >> hours >> token >> minutes >> numBread;
 
         Position clientPosition(latitude, longitude);
 
         Vertex* clientVertex = this->graph.findVertex(clientPosition);
-        if( clientVertex == NULL)
+        if (clientVertex == NULL)
             continue;   // Discard this Client
 
         Client *newClient = new Client(clientId, clientName, clientVertex, Time(hours, minutes), numBread);
@@ -87,7 +87,7 @@ void Bakery::nearestNeighbour(Van& van) {
     for(Vertex* v : this->graph.getVertexSet())
         v->visited = false;
 
-    Vertex* v = this->startingVertex;   // Bakery
+    Vertex* v = this->startingVertex;
     int numVisited = -1;    // First increment will be the bakery (not a client)
 
     while(true) {
@@ -97,16 +97,11 @@ void Bakery::nearestNeighbour(Van& van) {
         if(numVisited == this->clients.size())
             break;
 
-        // WE could do this by using Dijkstra until we find the first Client (Closer)
-
         vector<Vertex*> clientVertices;
         for (Client* client : this->clients)
             if(!client->getVertex()->visited)
                 clientVertices.push_back(client->getVertex());
-        /*
-        this->graph.dijkstraShortestPath(v, clientVertices);
-        Client *closestClient = getClosestClient();
-         */
+
         Client *closestClient = this->graph.dijkstraClosestClient(v, clientVertices);
         cout << "Visited " << closestClient->getName()  << endl;
 
@@ -190,7 +185,7 @@ void Bakery::greedyWithDijkstra(Van& van) {
         v1 = v2;
 
         cout << "Visited " << client->getName() << " at: " << start + van.getTotalTime() << endl
-            << "While travelling " << travelTime << endl << "Total: " << van.getTotalTime() << endl << endl;
+            << "While travelling " << road << endl << "Total: " << van.getTotalTime() << endl << endl;
     }
 
     this->graph.dijkstraShortestPath(v1, this->startingVertex);
