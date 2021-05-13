@@ -11,7 +11,6 @@
 using namespace std;
 
 
-
 Bakery::Bakery(const vector<Client *> &clients, const vector<Van> &vans, Vertex *startingVertex, double radius,
                int maxDelay, int maxTimeBefore) : clients(clients), vans(vans), startingVertex(startingVertex),
                                                   radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {}
@@ -76,9 +75,6 @@ Bakery::Bakery(string filePath) {
 }
 
 Bakery::~Bakery() {
-    for (Client* client : this->clients)
-        delete client;
-
     for (Van& van : vans)
         for (Client* client : van.getClients())
             delete client;
@@ -113,12 +109,11 @@ void Bakery::nearestNeighbour(Van& van) {
         v = closestClient->getVertex();
         cout << "dist: " << v->dist << endl;
 
-        //TODO: ADD EDGES AND CLIENTS
+        //TODO: ADD EDGES
         van.makeDelivery(Time(v->dist), Time(0), closestClient->getBreadQuantity());
     }
 
-    // TODO: TIME SHOULDN'T BE DOUBLE
-    double returningTime = this->graph.bidirectionalDijkstra(v, this->startingVertex);
+    int returningTime = this->graph.bidirectionalDijkstra(v, this->startingVertex);
 
     cout << "dist retorno: " << returningTime << endl;
 
@@ -128,7 +123,7 @@ void Bakery::nearestNeighbour(Van& van) {
 
 Client *Bakery::getClosestClient() {
     Client* closestClient;
-    double minDist = INF;
+    int minDist = INF;
 
     for (Client* client : this->clients)
         if (client->getVertex()->dist < minDist && (!client->getVertex()->visited)) {
