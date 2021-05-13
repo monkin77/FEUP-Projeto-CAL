@@ -76,8 +76,12 @@ Bakery::Bakery(string filePath) {
 }
 
 Bakery::~Bakery() {
-    for(Client* client : this->clients)
+    for (Client* client : this->clients)
         delete client;
+
+    for (Van& van : vans)
+        for (Client* client : van.getClients())
+            delete client;
 }
 
 /**
@@ -95,11 +99,11 @@ void Bakery::nearestNeighbour(Van& van) {
         v->visited = true;
         numVisited++;
 
-        if(numVisited == this->clients.size())
+        if(numVisited == van.getClients().size())
             break;
 
         vector<Vertex*> clientVertices;
-        for (Client* client : this->clients)
+        for (Client* client : van.getClients())
             if(!client->getVertex()->visited)
                 clientVertices.push_back(client->getVertex());
 
@@ -140,6 +144,7 @@ void Bakery::filterClients() {
     vector<Client *>::iterator it;
     for (it = clients.begin(); it != clients.end(); ++it) {
         Client* c = *it;
+        delete c;
         if (graph.findVertex(c->getVertex()->getId()) == NULL) {
             it = clients.erase(it);
             --it;
@@ -147,16 +152,11 @@ void Bakery::filterClients() {
     }
 }
 
-// TODO: CHANGE CLIENTS TO VAN.CLIENTS
 void Bakery::greedyWithDijkstra(Van& van) {
-    sort(clients.begin(), clients.end(), [](const Client* c1, const Client* c2) -> bool {
-        return c1->getDeliveryTime() < c2->getDeliveryTime();
-    });
-
     Vertex *v1 = startingVertex, *v2;
     Time start(7, 0);
-    for (int i = 0; i < clients.size(); ++i) {
-        Client* client = clients[i];
+    for (int i = 0; i < van.getClients().size(); ++i) {
+        Client* client = van.getClients()[i];
         v2 = client->getVertex();
         graph.dijkstraShortestPath(v1, v2);
 
@@ -182,9 +182,7 @@ void Bakery::greedyWithDijkstra(Van& van) {
             << "While travelling " << road << endl << "Total: " << van.getTotalTime() << endl << endl;
     }
 
-    this->graph.dijkstraShortestPath(v1, this->startingVertex);
-    van.addTime(Time(startingVertex->dist));
-    van.setClients(clients);
+    van.addTime(Time(graph.bidirectionalDijkstra(v1, startingVertex)));
 }
 
 void Bakery::knapsackIteration(Van &v, vector<double>& values) {
@@ -194,18 +192,18 @@ void Bakery::knapsackIteration(Van &v, vector<double>& values) {
         for (int w = 0; w <= v.getTotalBread(); ++w) {
             if (i == 0 || w == 0)
                 table[i][w] = 0;
-            else if (clients[i - 1].getBreadQuantity() <= w)
-                table[i][w] = max(values[i - 1] + table[i - 1][w - clients[i - 1].getBreadQuantity()],
+            else if (clients[i - 1]->getBreadQuantity() <= w)
+                table[i][w] = max(values[i - 1] + table[i - 1][w - clients[i - 1]->getBreadQuantity()],
                                   table[i - 1][w]);
             else
                 table[i][w] = table[i - 1][w];
         }
 
 
-    vector<Client> clientsCopy(clients);
+    vector<Client*> clientsCopy(clients);
     int w = v.getTotalBread(), i = clients.size(), removed = 0;
     while (i > 0) {
-        if (table[i][w] - table[i - 1][w - clientsCopy[i].getBreadQuantity()] == values[i]) {
+        if (table[i][w] - table[i - 1][w - clientsCopy[i]->getBreadQuantity()] == values[i]) {
             // Element i should be allocated
             v.addClient(clientsCopy[i]);
             clients.erase(clients.begin() + i - removed);
@@ -233,8 +231,8 @@ void Bakery::allocateClientsToVans() {
 
     // Value = breadQuantity / 10 + 1 (the client itself has value)
     vector<double> values(clients.size());
-    for (Client& client : clients)
-        values.push_back((double) client.getBreadQuantity() / 10 + 1);
+    for (Client* client : clients)
+        values.push_back((double) client->getBreadQuantity() / 10 + 1);
 
     for (Van& v : vans) {
         if (clients.empty()) break;
@@ -249,6 +247,7 @@ void Bakery::solveFirstPhase() {
     graph.removeUnreachableVertexes(startingVertex, radius);
     filterClients();
     Van& v = vans[0];
+    v.setClients(clients);
     nearestNeighbour(v);
     cout << "Time: " << v.getTotalTime() << endl << "Bread delivered: " << v.getDeliveredBread() << endl << endl;
 }
@@ -256,8 +255,15 @@ void Bakery::solveFirstPhase() {
 void Bakery::solveSecondPhase() {
     graph.removeUnreachableVertexes(startingVertex, radius);
     filterClients();
+
     //TODO: Choose the algorithm here. We only have one for now
+
+    sort(clients.begin(), clients.end(), [](const Client* c1, const Client* c2) -> bool {
+        return c1->getDeliveryTime() < c2->getDeliveryTime();
+    });
+
     Van& v = vans[0];
+    v.setClients(clients);
     greedyWithDijkstra(v);
     cout << "Total Time: " << v.getTotalTime() << endl << "Delay: " << v.getTotalDelay() << endl
     << "Delivered Bread: " << v.getDeliveredBread() << endl;
