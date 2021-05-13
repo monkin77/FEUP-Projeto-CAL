@@ -248,8 +248,6 @@ Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
  * @return distance between vertices if successful, -1 otherwise
  */
 double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
-    int numVertices = this->vertexSet.size();
-
     for (Vertex* v : vertexSet) {
         v->dist = INF;
         v->path = nullptr;
