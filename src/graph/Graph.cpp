@@ -172,6 +172,11 @@ void Graph::DFSVisit(Vertex *v) {
     }
 }
 
+/**
+ * Calculate the distance to every Vertex until we have visited all the clients (dests)
+ * @param s
+ * @param dests
+ */
 void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
     for (Vertex* v : vertexSet) {
         v->dist = INF;
@@ -187,7 +192,7 @@ void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
         // Check if we reached any vertices
         vector<Vertex*>::iterator it;
         if ((it = find(dests.begin(), dests.end(), v)) != dests.end()) {
-            dests.erase(it);
+            dests.erase(it);    // Remove Client from the clients who haven't been delivered
             if (dests.empty()) break;
         }
 
@@ -199,6 +204,120 @@ void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
             }
         }
     }
+}
+
+/**
+ * Similar to dijkstraShortestPath, but stops when it finds the first client (closest)
+ * @param s
+ * @param dests
+ */
+Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
+    for (Vertex* v : vertexSet) {
+        v->dist = INF;
+        v->path = nullptr;
+    }
+    s->dist = 0;
+    MutablePriorityQueue<Vertex> q;
+    q.insert(s);
+
+    while (!q.empty()) {
+        Vertex* v = q.extractMin();
+
+        // Check if we reached any vertices
+        vector<Vertex*>::iterator it;
+        if ((it = find(dests.begin(), dests.end(), v)) != dests.end()) {
+            return v->client;   // Found a Client
+        }
+
+        for (Edge e : v->adj) {
+            double oldDist = e.dest->dist;
+            if (relax(v, e)) {
+                if (oldDist == INF) q.insert(e.dest);
+                else q.decreaseKey(e.dest);
+            }
+        }
+    }
+
+    return NULL;
+}
+
+/**
+ * Bidirectional Dijkstra search.
+ * @param s
+ * @param d
+ * @return distance between vertices if successful, -1 otherwise
+ */
+double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
+    int numVertices = this->vertexSet.size();
+
+    for (Vertex* v : vertexSet) {
+        v->dist = INF;
+        v->path = nullptr;
+        v->visited = false;
+    }
+
+    MutablePriorityQueue<Vertex> s_queue, d_queue;
+
+    // Setup source
+    s->dist = 0;
+    s->visited = true;
+    s_queue.insert(s);
+
+    // Setup target
+    d->dist = 0;
+    d->backwardsVisited = true;
+    d_queue.insert(d);
+
+    while(!s_queue.empty() && !d_queue.empty()) {
+        Vertex* sV = s_queue.extractMin();
+
+        // Order Edges to maintain the property of visiting the closest Vertex first
+        vector<Edge> orderedEdges = sV->adj;
+        sort(orderedEdges.begin(), orderedEdges.end(), [&](const Edge& e1,const Edge& e2){
+            return e1.weight < e2.weight;
+        });
+        for(Edge& e : orderedEdges) {
+            Vertex* destV = e.dest;
+            if( destV->backwardsVisited == true){   // If it has already been visited in the other direction
+                int totalDistance = this->joinBidirectionalDistances(destV, sV, e.weight);
+                return totalDistance;
+            }
+
+            double oldDist = e.dest->dist;
+            if(relax(sV, e)) {
+                destV->visited = true;
+                if(oldDist == INF) s_queue.insert(e.dest);
+                else s_queue.decreaseKey(e.dest);
+            }
+        }
+
+        Vertex* dV = d_queue.extractMin();
+        // Order Edges to mantain the property of visiting the closest Vertex first
+        orderedEdges = dV->adj;
+        sort(orderedEdges.begin(), orderedEdges.end(), [&](const Edge& e1,const Edge& e2){
+            return e1.weight < e2.weight;
+        });
+
+        for(Edge& e : orderedEdges) {
+            Vertex* destV = e.dest;
+            if( destV->visited == true){   // If it has already been visited in the other direction
+                double totalDistance = this->joinBidirectionalDistances(destV, dV, e.weight);
+                return totalDistance;
+            }
+
+            double oldDist = e.dest->dist;
+            if(relax(dV, e)) {
+                destV->backwardsVisited = true;
+                if(oldDist == INF) d_queue.insert(e.dest);
+                else d_queue.decreaseKey(e.dest);
+            }
+        }
+    }
+    return -1;
+}
+
+double Graph::joinBidirectionalDistances(Vertex *intersectionVertex, Vertex *oppDirectionVertex, double oppDirectionWeight) {
+    return intersectionVertex->dist + oppDirectionVertex->dist + oppDirectionWeight;
 }
 
 /**

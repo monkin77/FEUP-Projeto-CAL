@@ -13,10 +13,12 @@
 
 using namespace std;
 
+class Client;   // Forward declaration
 
 class Vertex {
     int id;
     Position info;						// content of the vertex (position)
+    Client* client;
 
     std::vector<Edge > adj;		// outgoing edges
 
@@ -24,6 +26,7 @@ class Vertex {
     Vertex *path = nullptr;
     int queueIndex = 0; 		// required by MutablePriorityQueue
     bool visited = false;		// auxiliary field
+    bool backwardsVisited = false;  // auxiliary field for bidirectional Dijkstra
 
     void addEdge(Vertex *dest, double w);
 
@@ -38,8 +41,13 @@ public:
     Position getPosition() const;
     double getDist() const;
     Vertex *getPath() const;
+    Client *getClient() const;
 
-    bool operator<(Vertex & vertex) const; // required by MutablePriorityQueue
+    bool operator<(Vertex & vertex) const;
+
+    void setClient(Client *client);
+
+    // required by MutablePriorityQueue
     friend class Graph;
     friend class MutablePriorityQueue<Vertex>;
     friend class Bakery;

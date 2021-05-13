@@ -10,7 +10,7 @@ Van::Van(int totalBread, const Time &deliveryTime) : totalBread(totalBread), del
     totalDelay = Time(0);
 }
 
-void Van::addClient(Client& c) {
+void Van::addClient(Client* c) {
     clients.push_back(c);
 }
 
@@ -44,7 +44,7 @@ const Time &Van::getTotalDelay() const {
     return totalDelay;
 }
 
-const vector <Client> &Van::getClients() const {
+const vector <Client *> &Van::getClients() const {
     return clients;
 }
 
@@ -60,6 +60,6 @@ void Van::addTime(Time time) {
     totalTime = totalTime + time;
 }
 
-void Van::setClients(const vector<Client> &clients) {
+void Van::setClients(const vector<Client *> &clients) {
     Van::clients = clients;
 }

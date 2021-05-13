@@ -12,15 +12,16 @@
 
 class Bakery {
 public:
-    Bakery(const vector<Client> &clients, const vector<Van> &vans, Vertex* startingVertex, double radius, int maxDelay,
+    Bakery(const vector<Client *> &clients, const vector<Van> &vans, Vertex* startingVertex, double radius, int maxDelay,
            int maxTimeBefore);
 
     Bakery(string filePath);
+    ~Bakery();
     void solveFirstPhase();
     void solveSecondPhase();
 
 private:
-    vector<Client> clients;
+    vector<Client *> clients;
     vector<Van> vans;
     Vertex* startingVertex;
     double radius;
@@ -29,7 +30,7 @@ private:
     Graph graph;
 
     // Common methods
-    Client& getClosestClient();
+    Client* getClosestClient();
     void filterClients();
 
     // 1st Phase Algorithms

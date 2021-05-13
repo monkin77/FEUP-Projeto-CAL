@@ -20,7 +20,7 @@ private:
     Time totalDelay;
 
     // these containers might become HashMaps
-    vector<Client> clients;
+    vector<Client *> clients;
     vector<Edge> edges;
 public:
     Van(int totalBread, const Time &deliveryTime);
@@ -31,14 +31,14 @@ public:
     const Time &getDeliveryTime() const;
     const Time &getTotalTime() const;
     const Time &getTotalDelay() const;
-    const vector<Client> &getClients() const;
+    const vector<Client *> &getClients() const;
     const vector<Edge> &getEdges() const;
 
     void addTime(Time time);
 
-    void setClients(const vector<Client> &clients);
+    void setClients(const vector<Client *> &clients);
 
-    void addClient(Client& c);
+    void addClient(Client* c);
     void addEdge(Edge& e);
     void makeDelivery(Time travelTime, Time delay, int breadNum);
 };

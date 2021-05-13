@@ -11,7 +11,7 @@ using namespace std;
 
 
 
-Bakery::Bakery(const vector<Client> &clients, const vector<Van> &vans, Vertex *startingVertex, double radius,
+Bakery::Bakery(const vector<Client *> &clients, const vector<Van> &vans, Vertex *startingVertex, double radius,
                int maxDelay, int maxTimeBefore) : clients(clients), vans(vans), startingVertex(startingVertex),
                                                   radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {}
 
@@ -67,8 +67,16 @@ Bakery::Bakery(string filePath) {
         if( clientVertex == NULL)
             continue;   // Discard this Client
 
-        clients.push_back(Client(clientId, clientName, clientVertex, Time(hours, minutes), numBread));
+        Client *newClient = new Client(clientId, clientName, clientVertex, Time(hours, minutes), numBread);
+
+        clientVertex->client = newClient;
+        clients.push_back(newClient);
     }
+}
+
+Bakery::~Bakery() {
+    for(Client* client : this->clients)
+        delete client;
 }
 
 /**
@@ -89,50 +97,54 @@ void Bakery::nearestNeighbour(Van& van) {
         if(numVisited == this->clients.size())
             break;
 
-        // We only need to reach the clients' vertices
+        // WE could do this by using Dijkstra until we find the first Client (Closer)
+
         vector<Vertex*> clientVertices;
-        for (Client& client : this->clients)
-            if (!client.getVertex()->visited)
-                clientVertices.push_back(client.getVertex());
-
+        for (Client* client : this->clients)
+            if(!client->getVertex()->visited)
+                clientVertices.push_back(client->getVertex());
+        /*
         this->graph.dijkstraShortestPath(v, clientVertices);
+        Client *closestClient = getClosestClient();
+         */
+        Client *closestClient = this->graph.dijkstraClosestClient(v, clientVertices);
+        cout << "Visited " << closestClient->getName()  << endl;
 
-        Client closestClient = getClosestClient();
-
-        v = closestClient.getVertex();
+        v = closestClient->getVertex();
         cout << "dist: " << v->dist << endl;
+
         //TODO: ADD EDGES AND CLIENTS
-        van.makeDelivery(Time(v->dist), Time(0), closestClient.getBreadQuantity());
+        van.makeDelivery(Time(v->dist), Time(0), closestClient->getBreadQuantity());
     }
 
-    this->graph.dijkstraShortestPath(v, this->startingVertex);
-
     // TODO: TIME SHOULDN'T BE DOUBLE
-    double returningTime = this->startingVertex->getDist();
+    double returningTime = this->graph.bidirectionalDijkstra(v, this->startingVertex);
+
     cout << "dist retorno: " << returningTime << endl;
+
     van.addTime(Time(returningTime));
     van.setClients(clients);
 }
 
-Client &Bakery::getClosestClient() {
+Client *Bakery::getClosestClient() {
     Client* closestClient;
     double minDist = INF;
 
-    for (Client& client : this->clients)
-        if (client.getVertex()->dist < minDist && (!client.getVertex()->visited)) {
-            minDist = client.getVertex()->dist;
-            closestClient = &client;
+    for (Client* client : this->clients)
+        if (client->getVertex()->dist < minDist && (!client->getVertex()->visited)) {
+            minDist = client->getVertex()->dist;
+            closestClient = client;
         }
 
     cout << "Visited " << closestClient->getName()  << endl;
-    return *closestClient;
+    return closestClient;
 }
 
 void Bakery::filterClients() {
-    vector<Client>::iterator it;
+    vector<Client *>::iterator it;
     for (it = clients.begin(); it != clients.end(); ++it) {
-        Client& c = *it;
-        if (graph.findVertex(c.getVertex()->getId()) == NULL) {
+        Client* c = *it;
+        if (graph.findVertex(c->getVertex()->getId()) == NULL) {
             it = clients.erase(it);
             --it;
         }
@@ -148,20 +160,20 @@ void Bakery::solveFirstPhase() {
 }
 
 void Bakery::greedyWithDijkstra(Van& van) {
-    sort(clients.begin(), clients.end(), [](const Client& c1, const Client& c2) -> bool {
-        return c1.getDeliveryTime() < c2.getDeliveryTime();
+    sort(clients.begin(), clients.end(), [](const Client* c1, const Client* c2) -> bool {
+        return c1->getDeliveryTime() < c2->getDeliveryTime();
     });
 
     Vertex *v1 = startingVertex, *v2;
     Time start(7, 0);
     for (int i = 0; i < clients.size(); ++i) {
-        Client& client = clients[i];
-        v2 = client.getVertex();
+        Client* client = clients[i];
+        v2 = client->getVertex();
         graph.dijkstraShortestPath(v1, v2);
 
         Time travelTime(v2->dist);
         Time delay(0);
-        Time difference = start + van.getTotalTime() + travelTime - client.getDeliveryTime();
+        Time difference = start + van.getTotalTime() + travelTime - client->getDeliveryTime();
         Time road = travelTime;  // TESTING ONLY
 
         if ((difference + maxTimeBefore).toMinutes() < 0) {
@@ -173,12 +185,12 @@ void Bakery::greedyWithDijkstra(Van& van) {
             delay = delay + difference - maxDelay;
         }
 
-        van.makeDelivery(travelTime, delay, client.getBreadQuantity());
-        client.setRealTime(start + van.getTotalTime() - van.getDeliveryTime());
+        van.makeDelivery(travelTime, delay, client->getBreadQuantity());
+        client->setRealTime(start + van.getTotalTime());
         v1 = v2;
 
-        cout << "Visited " << client.getName() << " at: " << client.getRealTime() << endl << "While travelling " << road
-        << endl << "Delay: " << delay << endl << "Total: " << van.getTotalTime() << endl << endl;
+        cout << "Visited " << client->getName() << " at: " << start + van.getTotalTime() << endl
+            << "While travelling " << travelTime << endl << "Total: " << van.getTotalTime() << endl << endl;
     }
 
     this->graph.dijkstraShortestPath(v1, this->startingVertex);
