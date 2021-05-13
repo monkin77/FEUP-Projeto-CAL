@@ -8,7 +8,7 @@
 int main() {
     Bakery bakery("resources/bakeryInput/bakery.txt");
 
-    bakery.solveFirstPhase();
+    bakery.solveSecondPhase();
 
     return 0;
 }
