@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <algorithm>
 #include "Bakery.h"
 #include "../utils/GraphBuilder.h"
 
@@ -146,14 +147,7 @@ void Bakery::filterClients() {
     }
 }
 
-void Bakery::solveFirstPhase() {
-    graph.removeUnreachableVertexes(startingVertex, radius);
-    filterClients();
-    Van& v = vans[0];
-    nearestNeighbour(v);
-    cout << "Time: " << v.getTotalTime() << endl << "Bread delivered: " << v.getDeliveredBread() << endl << endl;
-}
-
+// TODO: CHANGE CLIENTS TO VAN.CLIENTS
 void Bakery::greedyWithDijkstra(Van& van) {
     sort(clients.begin(), clients.end(), [](const Client* c1, const Client* c2) -> bool {
         return c1->getDeliveryTime() < c2->getDeliveryTime();
@@ -193,6 +187,72 @@ void Bakery::greedyWithDijkstra(Van& van) {
     van.setClients(clients);
 }
 
+void Bakery::knapsackIteration(Van &v, vector<double>& values) {
+    vector<vector<double>> table(clients.size() + 1, vector<double>(v.getTotalBread() + 1));
+
+    for (int i = 0; i <= clients.size(); ++i)
+        for (int w = 0; w <= v.getTotalBread(); ++w) {
+            if (i == 0 || w == 0)
+                table[i][w] = 0;
+            else if (clients[i - 1].getBreadQuantity() <= w)
+                table[i][w] = max(values[i - 1] + table[i - 1][w - clients[i - 1].getBreadQuantity()],
+                                  table[i - 1][w]);
+            else
+                table[i][w] = table[i - 1][w];
+        }
+
+
+    vector<Client> clientsCopy(clients);
+    int w = v.getTotalBread(), i = clients.size(), removed = 0;
+    while (i > 0) {
+        if (table[i][w] - table[i - 1][w - clientsCopy[i].getBreadQuantity()] == values[i]) {
+            // Element i should be allocated
+            v.addClient(clientsCopy[i]);
+            clients.erase(clients.begin() + i - removed);
+            removed++;
+        } else i--;
+    }
+}
+
+/**
+ * TODO
+ * Consider a greedy algorithm where we choose the biggest value until the van is full.
+ * VALUE INFLUENCED BY:
+ * Number of clients (same value for everyone)
+ * Number of breads in the delivery
+ * Distance to other clients (possibly the first. Dijkstra or Euclidean?)
+ * Time difference, compared to the previous client
+ */
+
+void Bakery::allocateClientsToVans() {
+    // IF WE USE KNAPSACK (faster but not as good)
+
+    sort(vans.begin(), vans.end(), [](const Van& v1, const Van& v2) -> bool {
+        return v1.getTotalBread() > v2.getTotalBread();
+    });
+
+    // Value = breadQuantity / 10 + 1 (the client itself has value)
+    vector<double> values(clients.size());
+    for (Client& client : clients)
+        values.push_back((double) client.getBreadQuantity() / 10 + 1);
+
+    for (Van& v : vans) {
+        if (clients.empty()) break;
+        knapsackIteration(v, values);
+    }
+    //TODO: OPTIMIZE AFTER KNAPSACK
+
+    // IF WE USE GREEDY (slower but better results, theoretically)
+}
+
+void Bakery::solveFirstPhase() {
+    graph.removeUnreachableVertexes(startingVertex, radius);
+    filterClients();
+    Van& v = vans[0];
+    nearestNeighbour(v);
+    cout << "Time: " << v.getTotalTime() << endl << "Bread delivered: " << v.getDeliveredBread() << endl << endl;
+}
+
 void Bakery::solveSecondPhase() {
     graph.removeUnreachableVertexes(startingVertex, radius);
     filterClients();
@@ -201,4 +261,9 @@ void Bakery::solveSecondPhase() {
     greedyWithDijkstra(v);
     cout << "Total Time: " << v.getTotalTime() << endl << "Delay: " << v.getTotalDelay() << endl
     << "Delivered Bread: " << v.getDeliveredBread() << endl;
+}
+
+void Bakery::solveThirdPhase() {
+    graph.removeUnreachableVertexes(startingVertex, radius);
+    filterClients();
 }

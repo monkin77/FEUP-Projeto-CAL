@@ -19,6 +19,7 @@ public:
     ~Bakery();
     void solveFirstPhase();
     void solveSecondPhase();
+    void solveThirdPhase();
 
 private:
     vector<Client *> clients;
@@ -38,6 +39,10 @@ private:
 
     // 2nd Phase Algorithms
     void greedyWithDijkstra(Van& van);
+
+    // 3rd Phase Algorithms
+    void allocateClientsToVans();
+    void knapsackIteration(Van& v, vector<double>& values);
 };
 
 
