@@ -180,6 +180,7 @@ void Bakery::greedyWithDijkstra(Van& van) {
     }
 
     van.addTime(Time(graph.bidirectionalDijkstra(v1, startingVertex)));
+    cout << "Total van time: " << van.getTotalTime() << endl;
 }
 
 void Bakery::knapsackIteration(Van &v, const vector<int>& values) {
