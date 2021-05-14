@@ -139,15 +139,17 @@ void Bakery::filterClients() {
     vector<Client *>::iterator it;
     for (it = clients.begin(); it != clients.end(); ++it) {
         Client* c = *it;
-        delete c;
         if (graph.findVertex(c->getVertex()->getId()) == NULL) {
             it = clients.erase(it);
             --it;
+            delete c;
         }
     }
 }
 
 void Bakery::greedyWithDijkstra(Van& van) {
+    van.sortClientsByTime();
+
     Vertex *v1 = startingVertex, *v2;
     Time start(7, 0);
     for (int i = 0; i < van.getClients().size(); ++i) {
@@ -180,8 +182,8 @@ void Bakery::greedyWithDijkstra(Van& van) {
     van.addTime(Time(graph.bidirectionalDijkstra(v1, startingVertex)));
 }
 
-void Bakery::knapsackIteration(Van &v, vector<double>& values) {
-    vector<vector<double>> table(clients.size() + 1, vector<double>(v.getTotalBread() + 1));
+void Bakery::knapsackIteration(Van &v, const vector<int>& values) {
+    vector<vector<int>> table(clients.size() + 1, vector<int>(v.getTotalBread() + 1));
 
     for (int i = 0; i <= clients.size(); ++i)
         for (int w = 0; w <= v.getTotalBread(); ++w) {
@@ -195,15 +197,18 @@ void Bakery::knapsackIteration(Van &v, vector<double>& values) {
         }
 
 
+    //TODO: ISTO ESTA A CRIAR UMA EXCEÇAO NO FIM. PARECE MAIS FACIL USAR & EM VEZ DE *
     vector<Client*> clientsCopy(clients);
     int w = v.getTotalBread(), i = clients.size(), removed = 0;
     while (i > 0) {
-        if (table[i][w] - table[i - 1][w - clientsCopy[i]->getBreadQuantity()] == values[i]) {
+        if (table[i][w] - table[i - 1][w - clientsCopy[i - 1]->getBreadQuantity()] == values[i - 1]) {
             // Element i should be allocated
-            v.addClient(clientsCopy[i]);
-            clients.erase(clients.begin() + i - removed);
+            v.addClient(clientsCopy[i - 1]);
+            clients.erase(clients.begin() + i - removed - 1);
             removed++;
-        } else i--;
+            w -= clientsCopy[i - 1]->getBreadQuantity();
+        }
+        i--;
     }
 }
 
@@ -225,13 +230,16 @@ void Bakery::allocateClientsToVans() {
     });
 
     // Value = breadQuantity / 10 + 1 (the client itself has value)
-    vector<double> values(clients.size());
-    for (Client* client : clients)
-        values.push_back((double) client->getBreadQuantity() / 10 + 1);
+    vector<int> values;
 
     for (Van& v : vans) {
         if (clients.empty()) break;
+
+        for (Client* client : clients)
+            values.push_back(client->getBreadQuantity() + 10);
+
         knapsackIteration(v, values);
+        values.clear();
     }
     //TODO: OPTIMIZE AFTER KNAPSACK
 
@@ -253,10 +261,6 @@ void Bakery::solveSecondPhase() {
 
     //TODO: Choose the algorithm here. We only have one for now
 
-    sort(clients.begin(), clients.end(), [](const Client* c1, const Client* c2) -> bool {
-        return c1->getDeliveryTime() < c2->getDeliveryTime();
-    });
-
     Van& v = vans[0];
     v.setClients(clients);
     greedyWithDijkstra(v);
@@ -267,4 +271,7 @@ void Bakery::solveSecondPhase() {
 void Bakery::solveThirdPhase() {
     graph.removeUnreachableVertexes(startingVertex, radius);
     filterClients();
+    allocateClientsToVans();
+    for (Van& van : vans)
+        greedyWithDijkstra(van);
 }

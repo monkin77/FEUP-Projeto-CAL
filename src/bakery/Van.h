@@ -10,6 +10,7 @@
 #include "../graph/Edge.h"
 #include "Client.h"
 #include <vector>
+#include <algorithm>
 
 class Van {
 private:
@@ -37,6 +38,7 @@ public:
     void addTime(Time time);
 
     void setClients(const vector<Client *> &clients);
+    void sortClientsByTime();
 
     void addClient(Client* c);
     void addEdge(Edge& e);
