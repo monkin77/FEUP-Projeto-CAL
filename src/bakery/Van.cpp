@@ -63,3 +63,9 @@ void Van::addTime(Time time) {
 void Van::setClients(const vector<Client *> &clients) {
     Van::clients = clients;
 }
+
+void Van::sortClientsByTime() {
+    sort(clients.begin(), clients.end(), [](const Client* c1, const Client* c2) -> bool {
+        return c1->getDeliveryTime() < c2->getDeliveryTime();
+    });
+}
