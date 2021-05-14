@@ -252,6 +252,7 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
         v->dist = INF;
         v->path = nullptr;
         v->visited = false;
+        v->backwardsVisited = false;
     }
 
     MutablePriorityQueue<Vertex> s_queue, d_queue;

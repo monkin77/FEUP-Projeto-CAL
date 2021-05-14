@@ -6,7 +6,7 @@
 #include "bakery/Bakery.h"
 
 int main() {
-    Bakery bakery("resources/bakeryInput/bakery.txt");
+    Bakery bakery("resources/bakeryInput/multipleVans.txt");
 
     bakery.solveThirdPhase();
 
