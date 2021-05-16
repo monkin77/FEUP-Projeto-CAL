@@ -249,7 +249,7 @@ int Bakery::greedyAllocation(Van &v) {
     return count;
 }
 
-void Bakery::allocateClientsToVans(bool useKnapsack) {
+void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
     sort(vans.begin(), vans.end(), [](const Van& v1, const Van& v2) -> bool {
         return v1.getTotalBread() > v2.getTotalBread();
     });
@@ -275,17 +275,19 @@ void Bakery::allocateClientsToVans(bool useKnapsack) {
         }
     }
 
-    /* Since the last used van probably has space left,
-     * it will try to take some clients from other vans
-     */
-    for (int i = vans.size() - 1; i >= 0; --i)
-        if (!vans[i].getClients().empty()) {
-            for (int j = i - 1; j >= 0; --j) {
-                Client* client = vans[j].removeFarthestClientInRange(vans[i].getReservedBread());
-                if (client != NULL) vans[i].addClient(client);
+    if (optimize) {
+        /* Since the last used van probably has space left,
+         * it will try to take some clients from other vans
+         */
+        for (int i = vans.size() - 1; i >= 0; --i)
+            if (!vans[i].getClients().empty()) {
+                for (int j = i - 1; j >= 0; --j) {
+                    Client *client = vans[j].removeFarthestClientInRange(vans[i].getReservedBread());
+                    if (client != NULL) vans[i].addClient(client);
+                }
+                break;
             }
-            break;
-        }
+    }
 }
 
 void Bakery::solveFirstPhase() {
@@ -310,10 +312,10 @@ void Bakery::solveSecondPhase() {
     << "Delivered Bread: " << v.getDeliveredBread() << endl;
 }
 
-void Bakery::solveThirdPhase() {
+void Bakery::solveThirdPhase(bool useKnapsack, bool optimize) {
     graph.removeUnreachableVertexes(startingVertex, radius);
     filterClients();
-    allocateClientsToVans(false);
+    allocateClientsToVans(useKnapsack, optimize);
     for (Van& van : vans)
         if (!van.getClients().empty())
             greedyWithDijkstra(van);
