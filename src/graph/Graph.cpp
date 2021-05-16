@@ -113,6 +113,7 @@ bool Graph::relax(Vertex *v, Edge e) {
     if (v->dist + e.weight < w->dist) {
         w->dist = v->dist + e.weight;
         w->path = v;
+        w->pathEdge = e;
         return true;
     }
     return false;
@@ -169,40 +170,6 @@ void Graph::DFSVisit(Vertex *v) {
     v->visited = true;
     for (Edge e : v->adj) {
         if (!e.dest->visited) DFSVisit(e.dest);
-    }
-}
-
-/**
- * Calculate the distance to every Vertex until we have visited all the clients (dests)
- * @param s
- * @param dests
- */
-void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
-    for (Vertex* v : vertexSet) {
-        v->dist = INF;
-        v->path = nullptr;
-    }
-    s->dist = 0;
-    MutablePriorityQueue<Vertex> q;
-    q.insert(s);
-
-    while (!q.empty()) {
-        Vertex* v = q.extractMin();
-
-        // Check if we reached any vertices
-        vector<Vertex*>::iterator it;
-        if ((it = find(dests.begin(), dests.end(), v)) != dests.end()) {
-            dests.erase(it);    // Remove Client from the clients who haven't been delivered
-            if (dests.empty()) break;
-        }
-
-        for (Edge e : v->adj) {
-            int oldDist = e.dest->dist;
-            if (relax(v, e)) {
-                if (oldDist == INF) q.insert(e.dest);
-                else q.decreaseKey(e.dest);
-            }
-        }
     }
 }
 
@@ -372,4 +339,15 @@ void Graph::printGraph() {
             cout << "   " << e << endl;
         }
     }
+}
+
+void Graph::addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest) {
+    if (dest->dist == INF) return;  // No path available
+
+    vector<Edge> reversedList;
+    for (; dest->id != source->id; dest = dest->path)
+        reversedList.push_back(dest->pathEdge);
+
+    for (int i = reversedList.size() - 1; i >= 0; --i)
+        edges.push_back(reversedList[i]);
 }

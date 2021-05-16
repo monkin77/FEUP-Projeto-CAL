@@ -47,11 +47,12 @@ public:
 
     void dijkstraShortestPath(Vertex *s);
     void dijkstraShortestPath(Vertex *s, Vertex* d);
-    void dijkstraShortestPath(Vertex *s, vector<Vertex*> dests);
     Client* dijkstraClosestClient(Vertex *s, vector<Vertex*> dests);
 
     int bidirectionalDijkstra(Vertex *s, Vertex *d);
     int joinBidirectionalDistances(Vertex* intersectionVertex, Vertex* oppDirectionVertex, int oppDirectionWeight);
+
+    void addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest);
 };
 
 

@@ -34,7 +34,7 @@ public:
     const Time &getTotalTime() const;
     const Time &getTotalDelay() const;
     const vector<Client *> &getClients() const;
-    const vector<Edge> &getEdges() const;
+    vector<Edge> &getEdges();
 
     int getReservedBread() const;
 

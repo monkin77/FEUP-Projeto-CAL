@@ -1,12 +1,14 @@
-//
-// Created by joaog on 4/28/2021.
-//
-
 #include "Edge.h"
-#include "Graph.h"  // Get the full information about this class (forward declaration)
-#include "Vertex.h" // Get the full information about this class (forward declaration)
+#include "Graph.h"
 
 int Edge::nextId = 0;
+
+Edge::Edge() {
+    this->id = -1;
+    this->orig = NULL;
+    this->dest = NULL;
+    this->weight = INF;
+}
 
 Edge::Edge(Vertex *orig, Vertex *dest, double weight) {
     this->id = this->nextId;
