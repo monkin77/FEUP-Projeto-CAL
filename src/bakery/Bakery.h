@@ -19,7 +19,7 @@ public:
     ~Bakery();
     void solveFirstPhase();
     void solveSecondPhase();
-    void solveThirdPhase();
+    void solveThirdPhase(bool useKnapsack, bool optimize);
 
 private:
     vector<Client *> clients;
@@ -41,7 +41,7 @@ private:
     void greedyWithDijkstra(Van& van);
 
     // 3rd Phase Algorithms
-    void allocateClientsToVans(bool useKnapsack);
+    void allocateClientsToVans(bool useKnapsack, bool optimize);
     int knapsackAllocation(Van& v, const vector<int>& values);
     int greedyAllocation(Van& v);
 };
