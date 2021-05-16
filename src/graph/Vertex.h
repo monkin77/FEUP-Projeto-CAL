@@ -24,6 +24,7 @@ class Vertex {
 
     int dist = 0;
     Vertex *path = nullptr;
+    Edge pathEdge;
     int queueIndex = 0; 		// required by MutablePriorityQueue
     bool visited = false;		// auxiliary field
     bool backwardsVisited = false;  // auxiliary field for bidirectional Dijkstra

@@ -21,6 +21,7 @@ class Edge {
     double weight;
 public:
     static int nextId;
+    Edge();
     Edge(Vertex *orig, Vertex *dest, double weight);    // increments the nextID variable
 
     int getId() const;

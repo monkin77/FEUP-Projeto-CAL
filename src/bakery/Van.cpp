@@ -51,7 +51,7 @@ const vector <Client *> &Van::getClients() const {
     return clients;
 }
 
-const vector<Edge> &Van::getEdges() const {
+vector<Edge> &Van::getEdges() {
     return edges;
 }
 

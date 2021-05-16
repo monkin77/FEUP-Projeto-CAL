@@ -113,11 +113,11 @@ void Bakery::nearestNeighbour(Van& van) {
 
         Client *closestClient = this->graph.dijkstraClosestClient(v, clientVertices);
         cout << "Visited " << closestClient->getName()  << endl;
+        this->graph.addPathToEdgeList(van.getEdges(), v, closestClient->getVertex());
 
         v = closestClient->getVertex();
         cout << "dist: " << v->dist << endl;
 
-        //TODO: ADD EDGES
         van.makeDelivery(Time(v->dist), Time(0), closestClient->getBreadQuantity());
     }
 
@@ -179,6 +179,7 @@ void Bakery::greedyWithDijkstra(Van& van) {
             delay = delay + difference - maxDelay;
         }
 
+        this->graph.addPathToEdgeList(van.getEdges(), v1, v2);
         van.makeDelivery(travelTime, delay, client->getBreadQuantity());
         client->setRealTime(start + van.getTotalTime());
         v1 = v2;
@@ -311,8 +312,6 @@ void Bakery::solveFirstPhase() {
 void Bakery::solveSecondPhase() {
     graph.removeUnreachableVertexes(startingVertex, radius);
     filterClients();
-
-    //TODO: Choose the algorithm here. We only have one for now
 
     Van& v = vans[0];
     v.setClients(clients);
