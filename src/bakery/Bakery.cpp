@@ -11,9 +11,18 @@
 using namespace std;
 
 
-Bakery::Bakery(const vector<Client *> &clients, const vector<Van> &vans, Vertex *startingVertex, double radius,
-               int maxDelay, int maxTimeBefore) : clients(clients), vans(vans), startingVertex(startingVertex),
-                                                  radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {}
+Bakery::Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius,
+               int maxDelay, int maxTimeBefore) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
+
+    if (!readGraphFromFile(this->graph, graphFile)) {
+        cout << "Error reading graph from file" << endl;
+        throw runtime_error("File not found (Graph)");
+    }
+
+    startingVertex = graph.findVertex(start);
+    if (startingVertex == NULL)
+        throw runtime_error("Invalid Bakery Position");
+}
 
 Bakery::Bakery(string filePath) {
     ifstream fin;
@@ -32,7 +41,7 @@ Bakery::Bakery(string filePath) {
     this->maxTimeBefore = Time(maxTimeBefore);
     this->maxDelay = Time(maxDelay);
 
-    if( !readGraphFromFile(this->graph, graphPathName) ) {
+    if (!readGraphFromFile(this->graph, graphPathName)) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
     }
@@ -62,16 +71,16 @@ Bakery::Bakery(string filePath) {
         fin >> clientName >> clientId >> token >> latitude >> token >> longitude >> token >> hours >> token >> minutes >> numBread;
 
         Position clientPosition(latitude, longitude);
-
-        Vertex* clientVertex = this->graph.findVertex(clientPosition);
-        if (clientVertex == NULL)
-            continue;   // Discard this Client
-
-        Client *newClient = new Client(clientId, clientName, clientVertex, Time(hours, minutes), numBread);
-
-        clientVertex->client = newClient;
-        clients.push_back(newClient);
+        addClient(clientId, clientName, clientPosition, Time(hours, minutes), numBread);
     }
+}
+
+void Bakery::addClient(int id, string name, Position pos, Time time, int breadNum) {
+    Vertex* v = graph.findVertex(pos);
+    if (v == NULL) return; // Discard this Client
+    Client* client = new Client(id, name, v, time, breadNum);
+    v->setClient(client);
+    clients.push_back(client);
 }
 
 Bakery::~Bakery() {
