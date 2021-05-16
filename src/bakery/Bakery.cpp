@@ -75,9 +75,8 @@ Bakery::Bakery(string filePath) {
 }
 
 Bakery::~Bakery() {
-    for (Van& van : vans)
-        for (Client* client : van.getClients())
-            delete client;
+    for (Client* client : clients)
+        delete client;
 }
 
 /**
@@ -183,7 +182,11 @@ void Bakery::greedyWithDijkstra(Van& van) {
     cout << "Total van time: " << van.getTotalTime() << endl;
 }
 
-void Bakery::knapsackIteration(Van &v, const vector<int>& values) {
+int Bakery::knapsackIteration(Van &v, const vector<int>& values) {
+    vector<Client*> clients;
+    for (Client* client : this->clients)
+        if (!client->isAllocated()) clients.push_back(client);
+
     vector<vector<int>> table(clients.size() + 1, vector<int>(v.getTotalBread() + 1));
 
     for (int i = 0; i <= clients.size(); ++i)
@@ -198,19 +201,17 @@ void Bakery::knapsackIteration(Van &v, const vector<int>& values) {
         }
 
 
-    //TODO: ISTO ESTA A CRIAR UMA EXCEÇAO NO FIM. PARECE MAIS FACIL USAR & EM VEZ DE *
-    vector<Client*> clientsCopy(clients);
     int w = v.getTotalBread(), i = clients.size(), removed = 0;
     while (i > 0) {
-        if (table[i][w] - table[i - 1][w - clientsCopy[i - 1]->getBreadQuantity()] == values[i - 1]) {
+        if (table[i][w] - table[i - 1][w - clients[i - 1]->getBreadQuantity()] == values[i - 1]) {
             // Element i should be allocated
-            v.addClient(clientsCopy[i - 1]);
-            clients.erase(clients.begin() + i - removed - 1);
+            v.addClient(clients[i - 1]);
             removed++;
-            w -= clientsCopy[i - 1]->getBreadQuantity();
+            w -= clients[i - 1]->getBreadQuantity();
         }
         i--;
     }
+    return removed;
 }
 
 /**
@@ -232,14 +233,15 @@ void Bakery::allocateClientsToVans() {
 
     // Value = breadQuantity / 10 + 1 (the client itself has value)
     vector<int> values;
+    int clientsAllocated = 0;
 
     for (Van& v : vans) {
-        if (clients.empty()) break;
+        if (clientsAllocated == clients.size()) break;
 
         for (Client* client : clients)
             values.push_back(client->getBreadQuantity() + 10);
 
-        knapsackIteration(v, values);
+        clientsAllocated += knapsackIteration(v, values);
         values.clear();
     }
     //TODO: OPTIMIZE AFTER KNAPSACK

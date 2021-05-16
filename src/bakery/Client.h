@@ -19,6 +19,7 @@ private:
     Time scheduledTime;
     Time realTime;
     int breadQuantity;
+    bool allocated;
 public:
     Client(int id, const string &name, Vertex* vertex, const Time &scheduledTime, int breadQuantity);
 
@@ -31,6 +32,10 @@ public:
     const Time &getRealTime() const;
 
     void setRealTime(const Time &realTime);
+
+    bool isAllocated() const;
+
+    void setAllocated(bool allocated);
 };
 
 

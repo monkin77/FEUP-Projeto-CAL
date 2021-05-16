@@ -42,7 +42,7 @@ private:
 
     // 3rd Phase Algorithms
     void allocateClientsToVans();
-    void knapsackIteration(Van& v, const vector<int>& values);
+    int knapsackIteration(Van& v, const vector<int>& values);
 };
 
 
