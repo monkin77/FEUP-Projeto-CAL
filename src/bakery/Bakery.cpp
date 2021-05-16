@@ -182,7 +182,7 @@ void Bakery::greedyWithDijkstra(Van& van) {
     cout << "Total van time: " << van.getTotalTime() << endl;
 }
 
-int Bakery::knapsackIteration(Van &v, const vector<int>& values) {
+int Bakery::knapsackAllocation(Van &v, const vector<int>& values) {
     vector<Client*> clients;
     for (Client* client : this->clients)
         if (!client->isAllocated()) clients.push_back(client);
@@ -214,39 +214,77 @@ int Bakery::knapsackIteration(Van &v, const vector<int>& values) {
     return removed;
 }
 
+int Bakery::greedyAllocation(Van &v) {
+    int count = 0;
+    int capacity = v.getTotalBread();
+
+    while (true) {
+        int highestValue = -INF;
+        Client *chosen = NULL;
+
+        /*
+         * Value = 50000 + 10 * numBreads - 100 * Euclidean(start, pos)
+         * Summation(10 * abs(v.clients[i].time - time) - 100 * Euclidean(v.clients[i].pos, pos))
+         */
+        for (Client *client : clients) {
+            if (client->isAllocated()) continue;
+
+            int value = 50000 + 10 * client->getBreadQuantity() - 100 *
+                    startingVertex->getPosition().distance(client->getVertex()->getPosition());
+
+            for (Client *client2 : v.getClients())
+                value += abs((client2->getRealTime() - client->getRealTime()).toMinutes())
+                        - 100 * client2->getVertex()->getPosition().distance(client->getVertex()->getPosition());
+
+            if (value > highestValue && client->getBreadQuantity() <= capacity) {
+                highestValue = value;
+                chosen = client;
+            }
+        }
+        if (chosen == NULL) break;
+        v.addClient(chosen);
+        count++;
+        capacity -= chosen->getBreadQuantity();
+    }
+    return count;
+}
+
 /**
  * TODO
  * Consider a greedy algorithm where we choose the biggest value until the van is full.
  * VALUE INFLUENCED BY:
  * Number of clients (same value for everyone)
  * Number of breads in the delivery
- * Distance to other clients (possibly the first. Dijkstra or Euclidean?)
+ * Distance to other clients (possibly the last. Euclidean)
  * Time difference, compared to the previous client
  */
 
-void Bakery::allocateClientsToVans() {
-    // IF WE USE KNAPSACK (faster but not as good)
-
+void Bakery::allocateClientsToVans(bool useKnapsack) {
     sort(vans.begin(), vans.end(), [](const Van& v1, const Van& v2) -> bool {
         return v1.getTotalBread() > v2.getTotalBread();
     });
 
-    // Value = breadQuantity / 10 + 1 (the client itself has value)
-    vector<int> values;
     int clientsAllocated = 0;
 
-    for (Van& v : vans) {
-        if (clientsAllocated == clients.size()) break;
+    if (useKnapsack) {
+        // Value = breadQuantity / 10 + 1 (the client itself has value)
+        vector<int> values;
+        for (Van &v : vans) {
+            if (clientsAllocated == clients.size()) break;
 
-        for (Client* client : clients)
-            values.push_back(client->getBreadQuantity() + 10);
+            for (Client *client : clients)
+                values.push_back(client->getBreadQuantity() + 10);
 
-        clientsAllocated += knapsackIteration(v, values);
-        values.clear();
+            clientsAllocated += knapsackAllocation(v, values);
+            values.clear();
+        }
+    } else {
+        for (Van &v : vans) {
+            if (clientsAllocated == clients.size()) break;
+            clientsAllocated += greedyAllocation(v);
+        }
     }
-    //TODO: OPTIMIZE AFTER KNAPSACK
-
-    // IF WE USE GREEDY (slower but better results, theoretically)
+    //TODO: OPTIMIZE AFTER ALLOCATION
 }
 
 void Bakery::solveFirstPhase() {
@@ -274,7 +312,7 @@ void Bakery::solveSecondPhase() {
 void Bakery::solveThirdPhase() {
     graph.removeUnreachableVertexes(startingVertex, radius);
     filterClients();
-    allocateClientsToVans();
+    allocateClientsToVans(false);
     for (Van& van : vans)
         greedyWithDijkstra(van);
 }
