@@ -112,18 +112,14 @@ void Bakery::nearestNeighbour(Van& van) {
                 clientVertices.push_back(client->getVertex());
 
         Client *closestClient = this->graph.dijkstraClosestClient(v, clientVertices);
-        cout << "Visited " << closestClient->getName()  << endl;
         this->graph.addPathToEdgeList(van.getEdges(), v, closestClient->getVertex());
 
         v = closestClient->getVertex();
-        cout << "dist: " << v->dist << endl;
 
         van.makeDelivery(Time(v->dist), Time(0), closestClient->getBreadQuantity());
     }
 
     int returningTime = this->graph.bidirectionalDijkstra(v, this->startingVertex);
-
-    cout << "dist retorno: " << returningTime << endl;
 
     van.addTime(Time(returningTime));
     van.setClients(clients);
@@ -139,7 +135,6 @@ Client *Bakery::getClosestClient() {
             closestClient = client;
         }
 
-    cout << "Visited " << closestClient->getName()  << endl;
     return closestClient;
 }
 
@@ -168,7 +163,6 @@ void Bakery::greedyWithDijkstra(Van& van) {
         Time travelTime(v2->dist);
         Time delay(0);
         Time difference = start + van.getTotalTime() + travelTime - client->getDeliveryTime();
-        Time road = travelTime;  // TESTING ONLY
 
         if ((difference + maxTimeBefore).toMinutes() < 0) {
             // Before time, wait
@@ -180,16 +174,13 @@ void Bakery::greedyWithDijkstra(Van& van) {
         }
 
         this->graph.addPathToEdgeList(van.getEdges(), v1, v2);
-        van.makeDelivery(travelTime, delay, client->getBreadQuantity());
-        client->setRealTime(start + van.getTotalTime());
-        v1 = v2;
 
-        cout << "Visited " << client->getName() << " at: " << start + van.getTotalTime() << endl
-            << "While travelling " << road << endl << "Total: " << van.getTotalTime() << endl << endl;
+        client->setRealTime(start + van.getTotalTime() + travelTime);
+        van.makeDelivery(travelTime, delay, client->getBreadQuantity());
+        v1 = v2;
     }
 
     van.addTime(Time(graph.bidirectionalDijkstra(v1, startingVertex)));
-    cout << "Total van time: " << van.getTotalTime() << endl;
 }
 
 int Bakery::knapsackAllocation(Van &v, const vector<int>& values) {
@@ -306,7 +297,6 @@ void Bakery::solveFirstPhase() {
     Van& v = vans[0];
     v.setClients(clients);
     nearestNeighbour(v);
-    cout << "Time: " << v.getTotalTime() << endl << "Bread delivered: " << v.getDeliveredBread() << endl << endl;
 }
 
 void Bakery::solveSecondPhase() {
@@ -316,8 +306,6 @@ void Bakery::solveSecondPhase() {
     Van& v = vans[0];
     v.setClients(clients);
     greedyWithDijkstra(v);
-    cout << "Total Time: " << v.getTotalTime() << endl << "Delay: " << v.getTotalDelay() << endl
-    << "Delivered Bread: " << v.getDeliveredBread() << endl;
 }
 
 void Bakery::solveThirdPhase(bool useKnapsack, bool optimize) {
@@ -327,4 +315,8 @@ void Bakery::solveThirdPhase(bool useKnapsack, bool optimize) {
     for (Van& van : vans)
         if (!van.getClients().empty())
             greedyWithDijkstra(van);
+}
+
+const vector<Van> &Bakery::getVans() const {
+    return vans;
 }

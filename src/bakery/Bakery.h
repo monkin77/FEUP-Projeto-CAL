@@ -22,6 +22,7 @@ public:
     void solveThirdPhase(bool useKnapsack, bool optimize);
 
     void addClient(int id, string name, Position pos, Time time, int breadNum);
+    const vector<Van>& getVans() const;
 
 private:
     vector<Client *> clients;
