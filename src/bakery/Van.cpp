@@ -11,6 +11,7 @@ Van::Van(int totalBread, const Time &deliveryTime) : totalBread(totalBread), del
 }
 
 void Van::addClient(Client* c) {
+    c->setAllocated(true);
     clients.push_back(c);
 }
 

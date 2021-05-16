@@ -41,8 +41,9 @@ private:
     void greedyWithDijkstra(Van& van);
 
     // 3rd Phase Algorithms
-    void allocateClientsToVans();
-    int knapsackIteration(Van& v, const vector<int>& values);
+    void allocateClientsToVans(bool useKnapsack);
+    int knapsackAllocation(Van& v, const vector<int>& values);
+    int greedyAllocation(Van& v);
 };
 
 
