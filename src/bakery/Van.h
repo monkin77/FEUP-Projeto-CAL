@@ -15,6 +15,7 @@
 class Van {
 private:
     int totalBread;
+    int reservedBread;
     int deliveredBread;
     Time deliveryTime;
     Time totalTime;
@@ -35,6 +36,8 @@ public:
     const vector<Client *> &getClients() const;
     const vector<Edge> &getEdges() const;
 
+    int getReservedBread() const;
+
     void addTime(Time time);
 
     void setClients(const vector<Client *> &clients);
@@ -43,6 +46,8 @@ public:
     void addClient(Client* c);
     void addEdge(Edge& e);
     void makeDelivery(Time travelTime, Time delay, int breadNum);
+
+    Client* removeFarthestClientInRange(int maxBreadRange);
 };
 
 

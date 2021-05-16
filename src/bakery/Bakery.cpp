@@ -249,16 +249,6 @@ int Bakery::greedyAllocation(Van &v) {
     return count;
 }
 
-/**
- * TODO
- * Consider a greedy algorithm where we choose the biggest value until the van is full.
- * VALUE INFLUENCED BY:
- * Number of clients (same value for everyone)
- * Number of breads in the delivery
- * Distance to other clients (possibly the last. Euclidean)
- * Time difference, compared to the previous client
- */
-
 void Bakery::allocateClientsToVans(bool useKnapsack) {
     sort(vans.begin(), vans.end(), [](const Van& v1, const Van& v2) -> bool {
         return v1.getTotalBread() > v2.getTotalBread();
@@ -284,7 +274,18 @@ void Bakery::allocateClientsToVans(bool useKnapsack) {
             clientsAllocated += greedyAllocation(v);
         }
     }
-    //TODO: OPTIMIZE AFTER ALLOCATION
+
+    /* Since the last used van probably has space left,
+     * it will try to take some clients from other vans
+     */
+    for (int i = vans.size() - 1; i >= 0; --i)
+        if (!vans[i].getClients().empty()) {
+            for (int j = i - 1; j >= 0; --j) {
+                Client* client = vans[j].removeFarthestClientInRange(vans[i].getReservedBread());
+                if (client != NULL) vans[i].addClient(client);
+            }
+            break;
+        }
 }
 
 void Bakery::solveFirstPhase() {
@@ -314,5 +315,6 @@ void Bakery::solveThirdPhase() {
     filterClients();
     allocateClientsToVans(false);
     for (Van& van : vans)
-        greedyWithDijkstra(van);
+        if (!van.getClients().empty())
+            greedyWithDijkstra(van);
 }

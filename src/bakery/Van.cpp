@@ -6,6 +6,7 @@
 
 Van::Van(int totalBread, const Time &deliveryTime) : totalBread(totalBread), deliveryTime(deliveryTime) {
     deliveredBread = 0;
+    reservedBread = 0;
     totalTime = Time(0);
     totalDelay = Time(0);
 }
@@ -13,6 +14,7 @@ Van::Van(int totalBread, const Time &deliveryTime) : totalBread(totalBread), del
 void Van::addClient(Client* c) {
     c->setAllocated(true);
     clients.push_back(c);
+    reservedBread += c->getBreadQuantity();
 }
 
 void Van::addEdge(Edge &e) {
@@ -69,4 +71,31 @@ void Van::sortClientsByTime() {
     sort(clients.begin(), clients.end(), [](const Client* c1, const Client* c2) -> bool {
         return c1->getDeliveryTime() < c2->getDeliveryTime();
     });
+}
+
+Client *Van::removeFarthestClientInRange(int maxBreadRange) {
+    int chosen = -1;
+    int maxDistance = 0;
+    for (int i = 0; i < clients.size(); ++i) {
+        Client* client = clients[i];
+        if (client->getBreadQuantity() > maxBreadRange) continue;
+        int dist = 0;
+        for (Client *client2 : clients) {
+            if (client->getId() == client2->getId()) continue;
+            dist += client->getVertex()->getPosition().distance(client2->getVertex()->getPosition());
+        }
+        if (dist > maxDistance) {
+            maxDistance = dist;
+            chosen = i;
+        }
+    }
+    if (chosen == -1) return NULL;
+    Client* result = clients[chosen];
+    reservedBread -= result->getBreadQuantity();
+    clients.erase(clients.begin() + chosen);
+    return result;
+}
+
+int Van::getReservedBread() const {
+    return reservedBread;
 }
