@@ -22,13 +22,14 @@ class Vertex {
 
     std::vector<Edge > adj;		// outgoing edges
 
-    double dist = 0;
+    int dist = 0;
     Vertex *path = nullptr;
+    Edge pathEdge;
     int queueIndex = 0; 		// required by MutablePriorityQueue
     bool visited = false;		// auxiliary field
     bool backwardsVisited = false;  // auxiliary field for bidirectional Dijkstra
 
-    void addEdge(Vertex *dest, double w);
+    void addEdge(Vertex *dest, int w);
 
 public:
     static int nextID;
@@ -39,7 +40,7 @@ public:
     int getId() const;
     const vector<Edge> &getAdj() const;
     Position getPosition() const;
-    double getDist() const;
+    int getDist() const;
     Vertex *getPath() const;
     Client *getClient() const;
 

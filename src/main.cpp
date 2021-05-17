@@ -1,14 +1,10 @@
 #include <iostream>
 
-#include "graph/Graph.h"
-#include "bakery/Client.h"
-#include "bakery/Van.h"
-#include "bakery/Bakery.h"
+#include "bakery/Interface.h"
 
 int main() {
-    Bakery bakery("resources/bakeryInput/bakery.txt");
-
-    bakery.solveFirstPhase();
+    Interface interface;
+    interface.start();
 
     return 0;
 }

@@ -64,7 +64,7 @@ bool Graph::addVertex(int id, const Position &in) {
  * Returns true if successful, and false if the source or destination vertex does not exist.
  */
 
-bool Graph::addEdge(const Position &sourc, const Position &dest, double weight) {
+bool Graph::addEdge(const Position &sourc, const Position &dest, int weight) {
     auto v1 = findVertex(sourc);
     auto v2 = findVertex(dest);
     if (v1 == NULL || v2 == NULL)
@@ -74,7 +74,7 @@ bool Graph::addEdge(const Position &sourc, const Position &dest, double weight) 
     return true;
 }
 
-bool Graph::addEdge(int idNodeOrig, int idNodeDest, double weight) {
+bool Graph::addEdge(int idNodeOrig, int idNodeDest, int weight) {
     Vertex *v1 = this->findVertex(idNodeOrig);
     Vertex *v2 = this->findVertex(idNodeDest);
     if(v1 == NULL || v2 == NULL)
@@ -113,6 +113,7 @@ bool Graph::relax(Vertex *v, Edge e) {
     if (v->dist + e.weight < w->dist) {
         w->dist = v->dist + e.weight;
         w->path = v;
+        w->pathEdge = e;
         return true;
     }
     return false;
@@ -131,7 +132,7 @@ void Graph::dijkstraShortestPath(Vertex *s) {
     while (!q.empty()) {
         Vertex* v = q.extractMin();
         for (Edge e : v->adj) {
-            double oldDist = e.dest->dist;
+            int oldDist = e.dest->dist;
             if (relax(v, e)) {
                 if (oldDist == INF) q.insert(e.dest);
                 else q.decreaseKey(e.dest);
@@ -156,7 +157,7 @@ void Graph::dijkstraShortestPath(Vertex *s, Vertex *d) {
         if (v == d) return;
 
         for (Edge e : v->adj) {
-            double oldDist = e.dest->dist;
+            int oldDist = e.dest->dist;
             if (relax(v, e)) {
                 if (oldDist == INF) q.insert(e.dest);
                 else q.decreaseKey(e.dest);
@@ -169,40 +170,6 @@ void Graph::DFSVisit(Vertex *v) {
     v->visited = true;
     for (Edge e : v->adj) {
         if (!e.dest->visited) DFSVisit(e.dest);
-    }
-}
-
-/**
- * Calculate the distance to every Vertex until we have visited all the clients (dests)
- * @param s
- * @param dests
- */
-void Graph::dijkstraShortestPath(Vertex *s, vector<Vertex *> dests) {
-    for (Vertex* v : vertexSet) {
-        v->dist = INF;
-        v->path = nullptr;
-    }
-    s->dist = 0;
-    MutablePriorityQueue<Vertex> q;
-    q.insert(s);
-
-    while (!q.empty()) {
-        Vertex* v = q.extractMin();
-
-        // Check if we reached any vertices
-        vector<Vertex*>::iterator it;
-        if ((it = find(dests.begin(), dests.end(), v)) != dests.end()) {
-            dests.erase(it);    // Remove Client from the clients who haven't been delivered
-            if (dests.empty()) break;
-        }
-
-        for (Edge e : v->adj) {
-            double oldDist = e.dest->dist;
-            if (relax(v, e)) {
-                if (oldDist == INF) q.insert(e.dest);
-                else q.decreaseKey(e.dest);
-            }
-        }
     }
 }
 
@@ -230,7 +197,7 @@ Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
         }
 
         for (Edge e : v->adj) {
-            double oldDist = e.dest->dist;
+            int oldDist = e.dest->dist;
             if (relax(v, e)) {
                 if (oldDist == INF) q.insert(e.dest);
                 else q.decreaseKey(e.dest);
@@ -247,13 +214,12 @@ Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
  * @param d
  * @return distance between vertices if successful, -1 otherwise
  */
-double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
-    int numVertices = this->vertexSet.size();
-
+int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
     for (Vertex* v : vertexSet) {
         v->dist = INF;
         v->path = nullptr;
         v->visited = false;
+        v->backwardsVisited = false;
     }
 
     MutablePriorityQueue<Vertex> s_queue, d_queue;
@@ -283,7 +249,7 @@ double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
                 return totalDistance;
             }
 
-            double oldDist = e.dest->dist;
+            int oldDist = e.dest->dist;
             if(relax(sV, e)) {
                 destV->visited = true;
                 if(oldDist == INF) s_queue.insert(e.dest);
@@ -301,11 +267,11 @@ double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
         for(Edge& e : orderedEdges) {
             Vertex* destV = e.dest;
             if( destV->visited == true){   // If it has already been visited in the other direction
-                double totalDistance = this->joinBidirectionalDistances(destV, dV, e.weight);
+                int totalDistance = this->joinBidirectionalDistances(destV, dV, e.weight);
                 return totalDistance;
             }
 
-            double oldDist = e.dest->dist;
+            int oldDist = e.dest->dist;
             if(relax(dV, e)) {
                 destV->backwardsVisited = true;
                 if(oldDist == INF) d_queue.insert(e.dest);
@@ -316,7 +282,7 @@ double Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
     return -1;
 }
 
-double Graph::joinBidirectionalDistances(Vertex *intersectionVertex, Vertex *oppDirectionVertex, double oppDirectionWeight) {
+int Graph::joinBidirectionalDistances(Vertex *intersectionVertex, Vertex *oppDirectionVertex, int oppDirectionWeight) {
     return intersectionVertex->dist + oppDirectionVertex->dist + oppDirectionWeight;
 }
 
@@ -373,4 +339,15 @@ void Graph::printGraph() {
             cout << "   " << e << endl;
         }
     }
+}
+
+void Graph::addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest) {
+    if (dest->dist == INF) return;  // No path available
+
+    vector<Edge> reversedList;
+    for (; dest->id != source->id; dest = dest->path)
+        reversedList.push_back(dest->pathEdge);
+
+    for (int i = reversedList.size() - 1; i >= 0; --i)
+        edges.push_back(reversedList[i]);
 }

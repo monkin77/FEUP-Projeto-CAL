@@ -30,7 +30,7 @@ bool Position::operator!=(const Position &rhs) const {
 }
 
 ostream &operator<<(ostream &os, const Position &position) {
-    os << "latitude: " << position.latitude << " longitude: " << position.longitude;
+    os << "(" << position.latitude << ", " << position.longitude << ")";
     return os;
 }
 

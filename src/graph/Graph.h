@@ -16,7 +16,7 @@
 
 using namespace std;
 
-constexpr auto INF = std::numeric_limits<double>::max();
+constexpr auto INF = std::numeric_limits<int>::max();
 
 class Graph {
     unordered_map<int, Vertex*> vertexMap;
@@ -36,8 +36,8 @@ public:
     int getNumVertex() const;
 
     bool addVertex(int id, const Position &in);
-    bool addEdge(const Position &sourc, const Position &dest, double weight);
-    bool addEdge(int idNodeOrig, int idNodeDest, double weight);
+    bool addEdge(const Position &sourc, const Position &dest, int weight);
+    bool addEdge(int idNodeOrig, int idNodeDest, int weight);
 
     void removeVertex(int id);
 
@@ -47,11 +47,12 @@ public:
 
     void dijkstraShortestPath(Vertex *s);
     void dijkstraShortestPath(Vertex *s, Vertex* d);
-    void dijkstraShortestPath(Vertex *s, vector<Vertex*> dests);
     Client* dijkstraClosestClient(Vertex *s, vector<Vertex*> dests);
 
-    double bidirectionalDijkstra(Vertex *s, Vertex *d);
-    double joinBidirectionalDistances(Vertex* intersectionVertex, Vertex* oppDirectionVertex, double oppDirectionWeight);
+    int bidirectionalDijkstra(Vertex *s, Vertex *d);
+    int joinBidirectionalDistances(Vertex* intersectionVertex, Vertex* oppDirectionVertex, int oppDirectionWeight);
+
+    void addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest);
 };
 
 

@@ -22,7 +22,7 @@ Vertex::Vertex(Position in): info(in) {
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
  */
-void Vertex::addEdge(Vertex *dest, double w) {
+void Vertex::addEdge(Vertex *dest, int w) {
     adj.push_back(Edge(this, dest, w));
 }
 
@@ -34,7 +34,7 @@ Position Vertex::getPosition() const {
     return this->info;
 }
 
-double Vertex::getDist() const {
+int Vertex::getDist() const {
     return this->dist;
 }
 
