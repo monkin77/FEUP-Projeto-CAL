@@ -45,6 +45,7 @@ void Interface::start() {
         bakery = new Bakery("resources/bakeryInput/" + file);
     }
     servicePlanner();
+    printResult();
 }
 
 void Interface::servicePlanner() {
@@ -223,5 +224,49 @@ void Interface::loadByInput() {
         cout << endl;
 
         bakery->addClient(id++, name, Position(latitute, longitude), Time(hours, mins), breadNum);
+    }
+}
+
+void Interface::printResult() {
+    vector<Van> vans = bakery->getVans();
+    for (int i = 0; i < vans.size(); ++i) {
+        Van& van = vans[i];
+        vector<Client*> clients = van.getClients();
+        vector<Edge> edges = van.getEdges();
+
+        cout << "Delivery results for van number " << i + 1 << ":" << endl;
+        if (clients.empty()) {
+            cout << "No deliveries made. The van stayed at the bakery" << endl << endl;
+            continue;
+        }
+
+        cout << "Delivered breads: " << van.getDeliveredBread() << endl;
+
+        if (selectedPhase == 3)
+            cout << "Breads left: " << van.getLeftovers() << endl;
+
+        if (selectedPhase != 1) {
+            cout << "Total delivery time: " << van.getTotalTime() << endl;
+            cout << "Total delay time: " << van.getTotalDelay() << endl;
+        } else
+            cout << "Time was not considered" << endl;
+
+        cout << endl << "Client information (by order of delivery):" << endl;
+
+        for (Client* client : clients) {
+            cout << client->getName() << " " << client->getVertex()->getPosition() << ":" << endl;
+            if (selectedPhase != 1) {
+                cout << "Scheduled time: " << client->getDeliveryTime() << endl;
+                cout << "Real time: " << client->getRealTime() << endl << endl;
+            } else
+                cout << "Time was not considered" << endl << endl;
+        }
+
+        cout  << "Van's path (by Edge ID):" << endl;
+        for (int i = 0; i < edges.size(); ++i) {
+            if (i != 0) cout << "-";
+            cout << edges[i].getId();
+        }
+        cout << endl << endl;
     }
 }
