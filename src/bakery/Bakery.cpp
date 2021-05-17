@@ -320,3 +320,11 @@ void Bakery::solveThirdPhase(bool useKnapsack, bool optimize) {
 const vector<Van> &Bakery::getVans() const {
     return vans;
 }
+
+void Bakery::calculateSCC() {
+    this->graph.calculateSccTarjan(this->startingVertex);
+}
+
+void Bakery::displayAllScc() {
+    this->graph.displaySccTarjan();
+}

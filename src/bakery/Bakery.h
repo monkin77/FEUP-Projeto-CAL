@@ -21,9 +21,13 @@ public:
     void solveSecondPhase();
     void solveThirdPhase(bool useKnapsack, bool optimize);
 
+
     void addClient(int id, string name, Position pos, Time time, int breadNum);
     const vector<Van>& getVans() const;
 
+    // Filter SCC that includes the Bakery
+    void calculateSCC();
+    void displayAllScc();
 private:
     vector<Client *> clients;
     vector<Van> vans;

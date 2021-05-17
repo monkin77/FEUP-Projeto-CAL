@@ -53,10 +53,11 @@ void Interface::servicePlanner() {
     cout << "[1]: Single van visiting all clients without delivery times or capacity" << endl;
     cout << "[2]: Single van visiting all clients with delivery times but no capacity" << endl;
     cout << "[3]: Multiple vans with client allocation, capacity and delivery times" << endl;
+    cout << "[4]: SCC component of the graph containing the Bakery" << endl;
 
     while (true) {
         cin >> selectedPhase;
-        if (cin.fail() || cin.eof() || selectedPhase < 1 || selectedPhase > 3) {
+        if (cin.fail() || cin.eof() || selectedPhase < 1 || selectedPhase > 4) {
             cin.clear();
             cin.ignore(100, '\n');
             cout << "Invalid choice!" << endl;
@@ -107,6 +108,9 @@ void Interface::servicePlanner() {
             optimize = toupper(res) == 'Y';
 
             bakery->solveThirdPhase(useKnapsack, optimize);
+            break;
+        case 4:
+            bakery->calculateSCC();
             break;
         default:
             break;
