@@ -99,6 +99,7 @@ void Bakery::nearestNeighbour(Van& van) {
     Vertex* v = this->startingVertex;
     int numVisited = -1;    // First increment will be the bakery (not a client)
 
+    Time start(7, 0);
     while(true) {
         v->visited = true;
         numVisited++;
@@ -113,6 +114,7 @@ void Bakery::nearestNeighbour(Van& van) {
 
         Client *closestClient = this->graph.dijkstraClosestClient(v, clientVertices);
         this->graph.addPathToEdgeList(van.getEdges(), v, closestClient->getVertex());
+        closestClient->setRealTime(start + van.getTotalTime() + v->dist);
 
         v = closestClient->getVertex();
 

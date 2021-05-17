@@ -298,8 +298,10 @@ void Graph::analyzeConnectivity(Vertex *start) {
 
 void Graph::removeUnreachableVertexes(Vertex* start, double radius) {
     filterByRadius(start, radius);
+    /*
     analyzeConnectivity(start);
-    filterBySCC();
+    filterBySCC(); */
+    calculateSccTarjan(start);
 }
 
 /**
@@ -396,7 +398,27 @@ void Graph::calculateSccTarjan(Vertex *startingVertex) {
 
     int u = startingVertex->id;
 
+    // The Bakery SSC will be stored on st
     sccTarjanUtil(u, disc, low, st, stackMember);
+
+    unordered_map<int, Vertex*> newVertexMap;
+    vector<Vertex*> newVertexSet;
+    newVertexSet.push_back(startingVertex);
+    newVertexMap.insert(pair<int, Vertex*>(u, startingVertex));
+
+    int w = 0;  // To store stack extracted vertices
+    while(st.top() != u) {  // Traverse the stack from the last element until the first of the SCC
+        w = st.top();
+        Vertex* currVertex = this->findVertex(w);   // possibly store currVertex
+
+        newVertexSet.push_back(currVertex);
+        newVertexMap.insert(pair<int, Vertex*>(w, currVertex));
+
+        st.pop();
+    }
+
+    this->vertexSet = newVertexSet;
+    this->vertexMap = newVertexMap;
 }
 
 void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember) {
@@ -433,15 +455,20 @@ void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int>
 
     // Head node found, pop the stack and print an SCC
     int w = 0;  // To store stack extracted vertices
+
+    stack<int> savedSSC;
+
     if(low[u] == disc[u]) {     // Head node of the SCC
+        if(disc[u] == 1)    // Bakery Vertex
+            savedSSC = st;
         while(st.top() != u) {  // Traverse the stack from the last element until the first of the SCC
             w = st.top();
-            Vertex* currVertex = this->findVertex(w);   // possibly store currVertex
             cout << w << " ";
             stackMember[w] = false;
             st.pop();
         }
         cout << endl << endl;
+        if(disc[u] == 1)
+            st = savedSSC;  // Save the SSC of the bakery
     }
-
 }

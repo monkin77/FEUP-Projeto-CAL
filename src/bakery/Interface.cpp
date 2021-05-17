@@ -249,21 +249,19 @@ void Interface::printResult() {
         if (selectedPhase == 3)
             cout << "Breads left: " << van.getLeftovers() << endl;
 
-        if (selectedPhase != 1) {
-            cout << "Total delivery time: " << van.getTotalTime() << endl;
+        cout << "Total delivery time: " << van.getTotalTime() << endl;
+        if (selectedPhase != 1)
             cout << "Total delay time: " << van.getTotalDelay() << endl;
-        } else
-            cout << "Time was not considered" << endl;
 
         cout << endl << "Client information (by order of delivery):" << endl;
 
         for (Client* client : clients) {
             cout << client->getName() << " " << client->getVertex()->getPosition() << ":" << endl;
+
             if (selectedPhase != 1) {
                 cout << "Scheduled time: " << client->getDeliveryTime() << endl;
-                cout << "Real time: " << client->getRealTime() << endl << endl;
-            } else
-                cout << "Time was not considered" << endl << endl;
+            }
+            cout << "Real time: " << client->getRealTime() << endl << endl;
         }
 
         cout  << "Van's path (by Edge ID):" << endl;
