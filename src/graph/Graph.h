@@ -9,6 +9,7 @@
 #include <limits>
 #include <unordered_map>
 #include <algorithm>
+#include <stack>
 
 #include "Vertex.h"
 #include "../utils/Position.h"
@@ -53,6 +54,9 @@ public:
     int joinBidirectionalDistances(Vertex* intersectionVertex, Vertex* oppDirectionVertex, int oppDirectionWeight);
 
     void addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest);
+
+    void sccTarjan();
+    void sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember);
 };
 
 
