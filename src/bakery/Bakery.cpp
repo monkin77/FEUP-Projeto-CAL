@@ -150,6 +150,8 @@ void Bakery::filterClients() {
     }
 }
 
+// TODO: MAKE A WAY FOR BIDIRECTION DIJKSTRA TO STORE EDGES
+// TODO: STORE THE EDGES FROM LAST CLIENT TO BAKERY
 void Bakery::greedyWithDijkstra(Van& van) {
     van.sortClientsByTime();
 
