@@ -352,7 +352,10 @@ void Graph::addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest)
         edges.push_back(reversedList[i]);
 }
 
-void Graph::sccTarjan() {
+/**
+ * Display All the Strongly Connected Components in the Graph using the Tarjan Algorithm
+ */
+void Graph::displaySccTarjan() {
     vector<int> disc(getNumVertex());
     vector<int> low(getNumVertex());
     vector<bool> stackMember(getNumVertex());
@@ -371,6 +374,29 @@ void Graph::sccTarjan() {
     for (int i = 0; i < getNumVertex(); i++)
         if (disc[i] == -1)
             sccTarjanUtil(i, disc, low, st, stackMember);
+}
+
+/**
+ * Calculate the Strongly Connected Component to which the startingVertex Belongs
+ * @param startingVertex
+ */
+void Graph::calculateSccTarjan(Vertex *startingVertex) {
+    vector<int> disc(getNumVertex());
+    vector<int> low(getNumVertex());
+    vector<bool> stackMember(getNumVertex());
+
+    stack<int> st;
+
+    // Initialize disc, low and stackMember arrays
+    for(int i = 0; i < getNumVertex(); i++) {
+        disc[i] = -1;
+        low[i] = -1;
+        stackMember[i] = false;
+    }
+
+    int u = startingVertex->id;
+
+    sccTarjanUtil(u, disc, low, st, stackMember);
 }
 
 void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember) {
@@ -415,6 +441,7 @@ void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int>
             stackMember[w] = false;
             st.pop();
         }
+        cout << endl << endl;
     }
 
 }
