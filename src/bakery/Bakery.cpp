@@ -259,6 +259,7 @@ int Bakery::greedyAllocation(Van &v) {
     return count;
 }
 
+// TODO: Explore the idea of sorting clients by position, somehow
 void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
     sort(vans.begin(), vans.end(), [](const Van& v1, const Van& v2) -> bool {
         return v1.getTotalBread() > v2.getTotalBread();
@@ -285,6 +286,7 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
         }
     }
 
+    // TODO: calculateSimulation function that checks if it gets better
     if (optimize) {
         /* Since the last used van probably has space left,
          * it will try to take some clients from other vans
