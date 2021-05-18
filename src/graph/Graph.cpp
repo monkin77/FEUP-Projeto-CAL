@@ -81,7 +81,7 @@ bool Graph::addEdge(int idNodeOrig, int idNodeDest, int weight) {
         return false;
 
     v1->addEdge(v2, weight);
-    v2->addEdge(v1, weight);
+    if(!isDirected) v2->addEdge(v1, weight);
     return true;
 }
 
@@ -298,10 +298,15 @@ void Graph::analyzeConnectivity(Vertex *start) {
 
 void Graph::removeUnreachableVertexes(Vertex* start, double radius) {
     filterByRadius(start, radius);
-    /*
-    analyzeConnectivity(start);
-    filterBySCC(); */
-    calculateSccTarjan(start);
+    if(this->isDirected){
+        calculateSccTarjan(start);
+        cout << "directed" << endl;
+    }
+    else {
+        cout << "Undirected" << endl;
+        analyzeConnectivity(start);
+        filterBySCC();
+    }
 }
 
 /**
@@ -471,4 +476,12 @@ void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int>
         if(disc[u] == 1)
             st = savedSSC;  // Save the SSC of the bakery
     }
+}
+
+bool Graph::getIsDirected() const {
+    return isDirected;
+}
+
+void Graph::setIsDirected(bool isDirected) {
+    Graph::isDirected = isDirected;
 }
