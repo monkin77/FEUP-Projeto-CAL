@@ -375,7 +375,7 @@ void Graph::displaySccTarjan() {
     // connected components in DFS tree with vertex 'i'
     for (int i = 0; i < getNumVertex(); i++)
         if (disc[i] == -1)
-            sccTarjanUtil(i, disc, low, st, stackMember);
+            sccTarjanUtil(i, disc, low, st, stackMember, true);
 }
 
 /**
@@ -399,7 +399,7 @@ void Graph::calculateSccTarjan(Vertex *startingVertex) {
     int u = startingVertex->id;
 
     // The Bakery SSC will be stored on st
-    sccTarjanUtil(u, disc, low, st, stackMember);
+    sccTarjanUtil(u, disc, low, st, stackMember, false);
 
     unordered_map<int, Vertex*> newVertexMap;
     vector<Vertex*> newVertexSet;
@@ -421,7 +421,7 @@ void Graph::calculateSccTarjan(Vertex *startingVertex) {
     this->vertexMap = newVertexMap;
 }
 
-void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember) {
+void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember, bool showResults) {
     // Static variable used for simplicity
     static int discoveryOrder = 0;
 
@@ -437,7 +437,7 @@ void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int>
         int vertexAdjID = e.dest->id;
 
         if(disc[vertexAdjID] == -1) {
-            this->sccTarjanUtil(vertexAdjID, disc, low, st, stackMember);
+            this->sccTarjanUtil(vertexAdjID, disc, low, st, stackMember, showResults);
 
             /* Check if the subtree rooted with 'vertexAdj' has a
              * connection to one of the ancestors of 'u'
@@ -463,11 +463,11 @@ void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int>
             savedSSC = st;
         while(st.top() != u) {  // Traverse the stack from the last element until the first of the SCC
             w = st.top();
-            cout << w << " ";
+            if(showResults) cout << w << " ";
             stackMember[w] = false;
             st.pop();
         }
-        cout << endl << endl;
+        if(showResults) cout << endl << endl;
         if(disc[u] == 1)
             st = savedSSC;  // Save the SSC of the bakery
     }
