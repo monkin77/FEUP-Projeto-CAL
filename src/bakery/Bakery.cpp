@@ -35,8 +35,9 @@ Bakery::Bakery(string filePath) {
 
     string graphPathName, clientName;
 
-    int isDirected, latitude, longitude, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
+    int isDirected, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
     char token;
+    double latitude, longitude;
 
     fin >> isDirected >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
     this->maxTimeBefore = Time(maxTimeBefore);
