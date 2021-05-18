@@ -158,6 +158,15 @@ void Interface::loadByInput() {
         cin >> bakeryX >> bakeryY;
     }
 
+    cout << "What's the delivery max radius?" << endl;
+    cin >> radius;
+    while (cin.eof() || cin.fail() || radius <= 0) {
+        cin.clear();
+        cin.ignore(100, '\n');
+        cout << "Invalid radius! Must be greater than 0" << endl;
+        cin >> radius;
+    }
+
     cout << "How many vans do you want to use?" << endl;
     cin >> numVans;
     while (cin.eof() || cin.fail() || numVans <= 0) {
