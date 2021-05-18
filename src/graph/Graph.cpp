@@ -437,7 +437,7 @@ void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int>
     // Head node found, pop the stack and print an SCC
     int w = 0;  // To store stack extracted vertices
     if(low[u] == disc[u]) {     // Head node of the SCC
-        cout << "HEAD NODE " << u << " : ";
+        cout << "HEAD NODE: " << u << " SCC: ";
         while(st.top() != u) {  // Traverse the stack from the last element until the first of the SCC
             w = st.top();
             Vertex* currVertex = this->findVertex(w);
