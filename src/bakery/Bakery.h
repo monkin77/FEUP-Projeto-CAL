@@ -25,9 +25,8 @@ public:
     void addClient(int id, string name, Position pos, Time time, int breadNum);
     const vector<Van>& getVans() const;
 
-    // Filter SCC that includes the Bakery
-    void calculateSCC();
-    void displayAllScc();
+    Graph getGraph();
+
 private:
     vector<Client *> clients;
     vector<Van> vans;

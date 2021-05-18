@@ -57,7 +57,7 @@ public:
 
     void displaySccTarjan();
     void calculateSccTarjan(Vertex* startingVertex);
-    void sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember);
+    void sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember, bool showResults);
 };
 
 

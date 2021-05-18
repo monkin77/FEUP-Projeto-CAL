@@ -110,7 +110,7 @@ void Interface::servicePlanner() {
             bakery->solveThirdPhase(useKnapsack, optimize);
             break;
         case 4:
-            bakery->calculateSCC();
+            bakery->getGraph().displaySccTarjan();
             break;
         default:
             break;
