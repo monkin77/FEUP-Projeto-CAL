@@ -32,6 +32,10 @@ class Vertex {
 
     void addEdge(Vertex *dest, int w);
 
+    // Tarjan SCC Algorithm Variables
+    int disc = -1;
+    int low = -1;
+    bool stackMember = false;
 public:
     static int nextID;
     Vertex(Position in);

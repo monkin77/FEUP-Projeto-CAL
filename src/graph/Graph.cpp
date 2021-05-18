@@ -298,7 +298,7 @@ void Graph::analyzeConnectivity(Vertex *start) {
 
 
 void Graph::removeUnreachableVertexes(Vertex* start, double radius) {
-    filterByRadius(start, radius);
+    // filterByRadius(start, radius);
     analyzeConnectivity(start);
     filterBySCC();
 }
@@ -357,24 +357,20 @@ void Graph::addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest)
  * Display All the Strongly Connected Components in the Graph using the Tarjan Algorithm
  */
 void Graph::displaySccTarjan() {
-    vector<int> disc(getNumVertex());
-    vector<int> low(getNumVertex());
-    vector<bool> stackMember(getNumVertex());
-
     stack<int> st;
 
     // Initialize disc, low and stackMember arrays
-    for(int i = 0; i < getNumVertex(); i++) {
-        disc[i] = -1;
-        low[i] = -1;
-        stackMember[i] = false;
+    for(Vertex* vertex : this->vertexSet) {
+        vertex->disc = -1;
+        vertex->low = -1;
+        vertex->stackMember = false;
     }
 
     // Call the recursive helper function to find strongly
     // connected components in DFS tree with vertex 'i'
-    for (int i = 0; i < getNumVertex(); i++)
-        if (disc[i] == -1)
-            sccTarjanUtil(i, disc, low, st, stackMember, true);
+    for (Vertex* vertex : vertexSet)
+        if (vertex->disc == -1)
+            sccTarjanUtil(vertex->id, st, true);
 }
 
 /**
@@ -382,75 +378,73 @@ void Graph::displaySccTarjan() {
  * @param startingVertex
  */
 void Graph::calculateSccTarjan(Vertex *startingVertex) {
-    vector<int> disc(getNumVertex());
-    vector<int> low(getNumVertex());
-    vector<bool> stackMember(getNumVertex());
-
     stack<int> st;
 
     // Initialize disc, low and stackMember arrays
-    for(int i = 0; i < getNumVertex(); i++) {
-        disc[i] = -1;
-        low[i] = -1;
-        stackMember[i] = false;
+    for(Vertex* vertex : this->vertexSet) {
+        vertex->disc = -1;
+        vertex->low = -1;
+        vertex->stackMember = false;
     }
 
     int u = startingVertex->id;
 
     // The Bakery SSC will be stored on st
-    sccTarjanUtil(u, disc, low, st, stackMember, false);
-    startingVertex->visited = true;
+    sccTarjanUtil(u, st, false);
 }
 
-void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember, bool showResults) {
+void Graph::sccTarjanUtil(int u, stack<int> &st, bool showResults) {
     // Static variable used for simplicity
     static int discoveryOrder = 0;
 
     Vertex* vertexU = this->vertexMap.at(u);
 
     // Initialize discovery time and low value
-    disc[u] = low[u] = ++discoveryOrder;
+    vertexU->disc = vertexU->low = ++discoveryOrder;
     st.push(u);
-    stackMember[u] = true;
+    vertexU->stackMember = true;
 
     // Go through all vertices adjacent to this
     for(Edge &e: vertexU->adj) {
-        int vertexAdjID = e.dest->id;
+        Vertex* vertexAdj = e.dest;
+        int vertexAdjID =vertexAdj->id;
 
-        if(disc[vertexAdjID] == -1) {
-            this->sccTarjanUtil(vertexAdjID, disc, low, st, stackMember, showResults);
+        if(vertexAdj->disc == -1) {
+            this->sccTarjanUtil(vertexAdjID, st, showResults);
 
             /* Check if the subtree rooted with 'vertexAdj' has a
              * connection to one of the ancestors of 'u'
             */
-            low[u] = min(low[u], low[vertexAdjID]);
+            vertexU->low = min(vertexU->low, vertexAdj->low);
         }
 
         /*
          * Update low value of 'u' only if 'vertexAdj' is still
          * in stack. (i.e it's a back edge, not cross edge).
          */
-        else if (stackMember[vertexAdjID])
-            low[u] = min(low[u], disc[vertexAdjID]);
+        else if (vertexAdj->stackMember)
+            vertexU->low = min(vertexU->low, vertexAdj->disc);
     }
 
     // Head node found, pop the stack and print an SCC
     int w = 0;  // To store stack extracted vertices
-    if(low[u] == disc[u]) {     // Head node of the SCC
+    if(vertexU->low == vertexU->disc) {     // Head node of the SCC
         if(showResults) cout << "HEAD NODE: " << u << " SCC: ";
         while(st.top() != u) {  // Traverse the stack from the last element until the first of the SCC
             w = st.top();
-            Vertex* currVertex = this->findVertex(w);
+            Vertex* currVertex = this->vertexMap.at(w);
             if(showResults) cout << w << " ";
-            stackMember[w] = false;
+            currVertex->stackMember = false;
 
-            if(disc[u] == 1) currVertex->visited = true;
+            if(vertexU->disc == 1) currVertex->visited = true;
 
             st.pop();
         }
         w = st.top();
+        Vertex* currVertex = this->vertexMap.at(w);
         if(showResults) cout << w << endl;
-        stackMember[w] = false;
+        currVertex->stackMember = false;
+        if(vertexU->disc == 1) currVertex->visited = true;
         st.pop();
     }
 }
