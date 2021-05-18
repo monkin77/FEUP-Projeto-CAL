@@ -12,21 +12,41 @@
 
 class Bakery {
 public:
-    Bakery(const vector<Client> &clients, const vector<Van> &vans, Vertex* startingVertex, double radius, int maxDelay,
+    Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius, int maxDelay,
            int maxTimeBefore);
 
     Bakery(string filePath);
+    ~Bakery();
+    void solveFirstPhase();
+    void solveSecondPhase();
+    void solveThirdPhase(bool useKnapsack, bool optimize);
 
-    // 1st Phase Algorithms
-    Time nearestNeighbour();
+    void addClient(int id, string name, Position pos, Time time, int breadNum);
+    const vector<Van>& getVans() const;
+
 private:
-    vector<Client> clients;
+    vector<Client *> clients;
     vector<Van> vans;
     Vertex* startingVertex;
     double radius;
-    int maxDelay;
-    int maxTimeBefore;
+    Time maxDelay;
+    Time maxTimeBefore;
     Graph graph;
+
+    // Common methods
+    Client* getClosestClient();
+    void filterClients();
+
+    // 1st Phase Algorithms
+    void nearestNeighbour(Van& van);
+
+    // 2nd Phase Algorithms
+    void greedyWithDijkstra(Van& van);
+
+    // 3rd Phase Algorithms
+    void allocateClientsToVans(bool useKnapsack, bool optimize);
+    int knapsackAllocation(Van& v, const vector<int>& values);
+    int greedyAllocation(Van& v);
 };
 
 

@@ -10,17 +10,19 @@
 #include "../graph/Edge.h"
 #include "Client.h"
 #include <vector>
+#include <algorithm>
 
 class Van {
 private:
     int totalBread;
+    int reservedBread;
     int deliveredBread;
     Time deliveryTime;
     Time totalTime;
     Time totalDelay;
 
     // these containers might become HashMaps
-    vector<Client> clients;
+    vector<Client *> clients;
     vector<Edge> edges;
 public:
     Van(int totalBread, const Time &deliveryTime);
@@ -31,12 +33,21 @@ public:
     const Time &getDeliveryTime() const;
     const Time &getTotalTime() const;
     const Time &getTotalDelay() const;
-    const vector<Client> &getClients() const;
-    const vector<Edge> &getEdges() const;
+    const vector<Client *> &getClients() const;
+    vector<Edge> &getEdges();
 
-    void addClient(Client& c);
+    int getReservedBread() const;
+
+    void addTime(Time time);
+
+    void setClients(const vector<Client *> &clients);
+    void sortClientsByTime();
+
+    void addClient(Client* c);
     void addEdge(Edge& e);
     void makeDelivery(Time travelTime, Time delay, int breadNum);
+
+    Client* removeFarthestClientInRange(int maxBreadRange);
 };
 
 

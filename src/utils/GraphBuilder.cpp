@@ -64,7 +64,8 @@ bool readGraphFromFile(Graph &G, string directoryName) {
         int idNodeOrig, idNodeDest;
         ss >> token >> idNodeOrig >> token >> idNodeDest;
 
-        G.addEdge(idNodeOrig, idNodeDest, 1);   // add edge with unitary weight
+        if(idNodeOrig != idNodeDest)    // Avoid having edges that point to itself
+            G.addEdge(idNodeOrig, idNodeDest, 1);   // add edge with unitary weight
     }
 
     fin.close();

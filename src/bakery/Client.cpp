@@ -11,6 +11,7 @@ Client::Client(int id, const string &name, Vertex* vertex, const Time &scheduled
     this->scheduledTime = scheduledTime;
     this->breadQuantity = breadQuantity;
     this->realTime = Time(0);
+    this->allocated = false;
 }
 
 int Client::getId() const {
@@ -36,4 +37,16 @@ void Client::setRealTime(const Time &realTime) {
 
 Vertex *Client::getVertex() const {
     return this->vertex;
+}
+
+const Time &Client::getRealTime() const {
+    return realTime;
+}
+
+bool Client::isAllocated() const {
+    return allocated;
+}
+
+void Client::setAllocated(bool allocated) {
+    Client::allocated = allocated;
 }

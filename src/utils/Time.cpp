@@ -37,8 +37,8 @@ int Time::toMinutes() const {
  * Calculate the difference between two times, in minutes
  * Note that this can return a negative time
  */
-int Time::operator-(const Time &t2) const {
-    return this->toMinutes() - t2.toMinutes();
+Time Time::operator-(const Time &t2) const {
+    return Time(this->toMinutes() - t2.toMinutes());
 }
 
 bool Time::operator<(const Time &t2) const {
@@ -58,6 +58,6 @@ Time Time::operator+(const Time &t2) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Time &time) {
-    os << "hour: " << time.hour << " minute: " << time.minute;
+    os << time.hour << "h" << time.minute << "m";
     return os;
 }

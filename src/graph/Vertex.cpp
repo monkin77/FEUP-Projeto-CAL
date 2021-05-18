@@ -9,18 +9,20 @@ int Vertex::nextID = 0;
 Vertex::Vertex(int id, Position in) {
     this->id = id;
     this->info = in;
+    this->client = NULL;
 }
 
 Vertex::Vertex(Position in): info(in) {
     this->id = this->nextID;
     this->nextID++;
+    this->client = NULL;
 }
 
 /**
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
  */
-void Vertex::addEdge(Vertex *dest, double w) {
+void Vertex::addEdge(Vertex *dest, int w) {
     adj.push_back(Edge(this, dest, w));
 }
 
@@ -32,7 +34,7 @@ Position Vertex::getPosition() const {
     return this->info;
 }
 
-double Vertex::getDist() const {
+int Vertex::getDist() const {
     return this->dist;
 }
 
@@ -46,4 +48,12 @@ int Vertex::getId() const {
 
 const vector<Edge> &Vertex::getAdj() const {
     return adj;
+}
+
+Client *Vertex::getClient() const {
+    return client;
+}
+
+void Vertex::setClient(Client *client) {
+    this->client = client;
 }
