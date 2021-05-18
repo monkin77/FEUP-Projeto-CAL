@@ -38,7 +38,8 @@ bool readGraphFromFile(Graph &G, string directoryName) {
         getline(fin, line);
         stringstream ss(line);
 
-        int id, latitude, longitude;
+        int id;
+        double latitude, longitude;
         ss >> token >> id >> token >> latitude >> token >> longitude;
 
         G.addVertex(id, Position(latitude, longitude));
