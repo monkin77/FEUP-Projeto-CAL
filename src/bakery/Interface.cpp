@@ -53,7 +53,7 @@ void Interface::servicePlanner() {
     cout << "[1]: Single van visiting all clients without delivery times or capacity" << endl;
     cout << "[2]: Single van visiting all clients with delivery times but no capacity" << endl;
     cout << "[3]: Multiple vans with client allocation, capacity and delivery times" << endl;
-    cout << "[4]: SCC component of the graph containing the Bakery" << endl;
+    cout << "[4]: Show SCC components of the graph" << endl;
 
     while (true) {
         cin >> selectedPhase;
