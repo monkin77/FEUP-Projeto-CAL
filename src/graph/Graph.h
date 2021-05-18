@@ -22,6 +22,7 @@ constexpr auto INF = std::numeric_limits<int>::max();
 class Graph {
     unordered_map<int, Vertex*> vertexMap;
     vector<Vertex*> vertexSet;
+    bool directed = false;
 
     void filterBySCC();
     void filterByRadius(Vertex* start, double radius);
@@ -39,6 +40,8 @@ public:
     bool addVertex(int id, const Position &in);
     bool addEdge(const Position &sourc, const Position &dest, int weight);
     bool addEdge(int idNodeOrig, int idNodeDest, int weight);
+
+    void setDirected(bool directed);
 
     void removeVertex(int id);
 

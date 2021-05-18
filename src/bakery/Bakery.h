@@ -13,7 +13,7 @@
 class Bakery {
 public:
     Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius, int maxDelay,
-           int maxTimeBefore);
+           int maxTimeBefore, bool directed);
 
     Bakery(string filePath);
     ~Bakery();

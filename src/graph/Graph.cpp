@@ -4,9 +4,12 @@
 
 #include <iostream>
 #include "Graph.h"
-#include "../utils/Position.h"
 
 using namespace std;
+
+void Graph::setDirected(bool directed) {
+    Graph::directed = directed;
+}
 
 /**
  * Gets the vector of vertices
@@ -70,7 +73,7 @@ bool Graph::addEdge(const Position &sourc, const Position &dest, int weight) {
     if (v1 == NULL || v2 == NULL)
         return false;
     v1->addEdge(v2, weight);
-    v2->addEdge(v1, weight);
+    if (!directed) v2->addEdge(v1, weight);
     return true;
 }
 
@@ -81,7 +84,7 @@ bool Graph::addEdge(int idNodeOrig, int idNodeDest, int weight) {
         return false;
 
     v1->addEdge(v2, weight);
-    v2->addEdge(v1, weight);
+    if (!directed) v2->addEdge(v1, weight);
     return true;
 }
 
@@ -292,7 +295,11 @@ int Graph::joinBidirectionalDistances(Vertex *intersectionVertex, Vertex *oppDir
 void Graph::analyzeConnectivity(Vertex *start) {
     for (Vertex* v : vertexSet)
         v->visited = false;
-    DFSVisit(start);
+    // TODO: NOT WORKING WITH CURRENT IMPLEMENTATION. NEED VISITED ATTRIBUTE OR ANOTHER WAY TO FILTER
+    if (directed)
+        calculateSccTarjan(start);
+    else
+        DFSVisit(start);
 }
 
 

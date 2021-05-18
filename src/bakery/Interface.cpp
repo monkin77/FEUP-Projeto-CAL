@@ -120,6 +120,7 @@ void Interface::servicePlanner() {
 void Interface::loadByInput() {
     string graphFile;
     int bakeryX, bakeryY, radius, maxDelay, maxBefore, numVans, numClients;
+    bool directed;
     vector<Van> vans;
     vector<Client*> clients;
 
@@ -132,6 +133,21 @@ void Interface::loadByInput() {
         cin >> graphFile;
     }
     graphFile = "resources/maps/" + graphFile;
+
+    cout << "Is this graph directed? (Y/N)" << endl;
+
+    char res;
+    while (true) {
+        cin >> res;
+        if (cin.fail() || cin.eof() || (toupper(res) != 'Y' && toupper(res) != 'N')) {
+            cin.clear();
+            cin.ignore(100, '\n');
+            cout << "That's not a valid answer. Please answer with 'Y' or 'N'" << endl;
+            continue;
+        }
+        break;
+    }
+    directed = toupper(res) == 'Y';
 
     cout << "Type the position of the bakery in the form X Y" << endl;
     cin >> bakeryX >> bakeryY;
@@ -174,7 +190,7 @@ void Interface::loadByInput() {
         vans.push_back(Van(capacity, Time(deliveryTime)));
     }
 
-    bakery = new Bakery(graphFile, vans, Position(bakeryX, bakeryY), radius, maxDelay, maxBefore);
+    bakery = new Bakery(graphFile, vans, Position(bakeryX, bakeryY), radius, maxDelay, maxBefore, directed);
 
     cout << "How many clients do you want to use?" << endl;
     cin >> numClients;

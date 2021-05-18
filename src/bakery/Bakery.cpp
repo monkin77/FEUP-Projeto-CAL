@@ -12,12 +12,13 @@ using namespace std;
 
 
 Bakery::Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius,
-               int maxDelay, int maxTimeBefore) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
+               int maxDelay, int maxTimeBefore, bool directed) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
 
     if (!readGraphFromFile(this->graph, graphFile)) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
     }
+    this->graph.setDirected(directed);
 
     startingVertex = graph.findVertex(start);
     if (startingVertex == NULL)
@@ -34,10 +35,11 @@ Bakery::Bakery(string filePath) {
 
     string graphPathName, clientName;
 
-    int latitude, longitude, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
+    int latitude, longitude, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore, directed;
     char token;
 
-    fin >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
+    fin >> directed >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
+    this->graph.setDirected(directed == 1);
     this->maxTimeBefore = Time(maxTimeBefore);
     this->maxDelay = Time(maxDelay);
 
