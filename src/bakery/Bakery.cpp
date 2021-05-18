@@ -12,8 +12,9 @@ using namespace std;
 
 
 Bakery::Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius,
-               int maxDelay, int maxTimeBefore) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
+               int maxDelay, int maxTimeBefore, bool isDirected) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
 
+    this->graph.setIsDirected(isDirected);
     if (!readGraphFromFile(this->graph, graphFile)) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
