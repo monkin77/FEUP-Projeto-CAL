@@ -1,3 +1,4 @@
+1   -> 1 if Directed / 0 if Undirected
 resources/maps/GridGraphs/4x4 -> Path do Graph
 (150,150) -> Posicao da padaria
 500 30 30 -> raio de acao /  tolerancia de atraso / tolerancia de adiantamento

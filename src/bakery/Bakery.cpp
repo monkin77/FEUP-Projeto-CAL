@@ -12,8 +12,9 @@ using namespace std;
 
 
 Bakery::Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius,
-               int maxDelay, int maxTimeBefore) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
+               int maxDelay, int maxTimeBefore, bool isDirected) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
 
+    this->graph.setIsDirected(isDirected);
     if (!readGraphFromFile(this->graph, graphFile)) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
@@ -34,12 +35,15 @@ Bakery::Bakery(string filePath) {
 
     string graphPathName, clientName;
 
-    int latitude, longitude, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
+    int isDirected, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
     char token;
+    double latitude, longitude;
 
-    fin >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
+    fin >> isDirected >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
     this->maxTimeBefore = Time(maxTimeBefore);
     this->maxDelay = Time(maxDelay);
+
+    this->graph.setIsDirected(isDirected == 1 ? true : false);
 
     if (!readGraphFromFile(this->graph, graphPathName)) {
         cout << "Error reading graph from file" << endl;
@@ -99,6 +103,7 @@ void Bakery::nearestNeighbour(Van& van) {
     Vertex* v = this->startingVertex;
     int numVisited = -1;    // First increment will be the bakery (not a client)
 
+    Time start(7, 0);
     while(true) {
         v->visited = true;
         numVisited++;
@@ -113,6 +118,7 @@ void Bakery::nearestNeighbour(Van& van) {
 
         Client *closestClient = this->graph.dijkstraClosestClient(v, clientVertices);
         this->graph.addPathToEdgeList(van.getEdges(), v, closestClient->getVertex());
+        closestClient->setRealTime(start + van.getTotalTime() + v->dist);
 
         v = closestClient->getVertex();
 
@@ -323,4 +329,8 @@ void Bakery::solveThirdPhase(bool useKnapsack, bool optimize) {
 
 const vector<Van> &Bakery::getVans() const {
     return vans;
+}
+
+Graph Bakery::getGraph() {
+    return graph;
 }

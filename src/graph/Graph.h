@@ -9,6 +9,7 @@
 #include <limits>
 #include <unordered_map>
 #include <algorithm>
+#include <stack>
 
 #include "Vertex.h"
 #include "../utils/Position.h"
@@ -21,6 +22,7 @@ constexpr auto INF = std::numeric_limits<int>::max();
 class Graph {
     unordered_map<int, Vertex*> vertexMap;
     vector<Vertex*> vertexSet;
+    bool isDirected;
 
     void filterBySCC();
     void filterByRadius(Vertex* start, double radius);
@@ -53,6 +55,14 @@ public:
     int joinBidirectionalDistances(Vertex* intersectionVertex, Vertex* oppDirectionVertex, int oppDirectionWeight);
 
     void addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest);
+
+    void displaySccTarjan();
+    void calculateSccTarjan(Vertex* startingVertex);
+    void sccTarjanUtil(int u, stack<int> &st, bool showResults);
+
+    bool getIsDirected() const;
+
+    void setIsDirected(bool isDirected);
 };
 
 

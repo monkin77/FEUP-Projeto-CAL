@@ -13,7 +13,7 @@
 class Bakery {
 public:
     Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius, int maxDelay,
-           int maxTimeBefore);
+           int maxTimeBefore, bool isDirected);
 
     Bakery(string filePath);
     ~Bakery();
@@ -21,8 +21,11 @@ public:
     void solveSecondPhase();
     void solveThirdPhase(bool useKnapsack, bool optimize);
 
+
     void addClient(int id, string name, Position pos, Time time, int breadNum);
     const vector<Van>& getVans() const;
+
+    Graph getGraph();
 
 private:
     vector<Client *> clients;

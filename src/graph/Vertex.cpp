@@ -10,12 +10,16 @@ Vertex::Vertex(int id, Position in) {
     this->id = id;
     this->info = in;
     this->client = NULL;
+    this->vertexSetIdx = nextID;
+    nextID++;
 }
 
 Vertex::Vertex(Position in): info(in) {
     this->id = this->nextID;
     this->nextID++;
     this->client = NULL;
+    this->vertexSetIdx = nextID;
+    nextID++;
 }
 
 /**

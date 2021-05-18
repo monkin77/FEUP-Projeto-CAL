@@ -53,10 +53,11 @@ void Interface::servicePlanner() {
     cout << "[1]: Single van visiting all clients without delivery times or capacity" << endl;
     cout << "[2]: Single van visiting all clients with delivery times but no capacity" << endl;
     cout << "[3]: Multiple vans with client allocation, capacity and delivery times" << endl;
+    cout << "[4]: Show SCC components of the graph" << endl;
 
     while (true) {
         cin >> selectedPhase;
-        if (cin.fail() || cin.eof() || selectedPhase < 1 || selectedPhase > 3) {
+        if (cin.fail() || cin.eof() || selectedPhase < 1 || selectedPhase > 4) {
             cin.clear();
             cin.ignore(100, '\n');
             cout << "Invalid choice!" << endl;
@@ -108,6 +109,9 @@ void Interface::servicePlanner() {
 
             bakery->solveThirdPhase(useKnapsack, optimize);
             break;
+        case 4:
+            bakery->getGraph().displaySccTarjan();
+            break;
         default:
             break;
     }
@@ -115,9 +119,20 @@ void Interface::servicePlanner() {
 
 void Interface::loadByInput() {
     string graphFile;
-    int bakeryX, bakeryY, radius, maxDelay, maxBefore, numVans, numClients;
+    int fetchIsDirected, bakeryX, bakeryY, radius, maxDelay, maxBefore, numVans, numClients;
+    bool isDirected;
     vector<Van> vans;
     vector<Client*> clients;
+
+    cout << "Is the Graph directed(1) or Undirected(0)?" << endl;
+    cin >> fetchIsDirected;
+    while (cin.fail() || cin.eof()) {
+        cin.clear();
+        cin.ignore(100, '\n');
+        cout << "Invalid input!" << endl;
+        cin >> fetchIsDirected;
+    }
+    isDirected = fetchIsDirected == 1 ? true : false;
 
     cout << "Type the path of the folder containing the graph (inside resources/maps/)" << endl;
     cin >> graphFile;
@@ -170,7 +185,7 @@ void Interface::loadByInput() {
         vans.push_back(Van(capacity, Time(deliveryTime)));
     }
 
-    bakery = new Bakery(graphFile, vans, Position(bakeryX, bakeryY), radius, maxDelay, maxBefore);
+    bakery = new Bakery(graphFile, vans, Position(bakeryX, bakeryY), radius, maxDelay, maxBefore, isDirected);
 
     cout << "How many clients do you want to use?" << endl;
     cin >> numClients;
@@ -245,21 +260,19 @@ void Interface::printResult() {
         if (selectedPhase == 3)
             cout << "Breads left: " << van.getLeftovers() << endl;
 
-        if (selectedPhase != 1) {
-            cout << "Total delivery time: " << van.getTotalTime() << endl;
+        cout << "Total delivery time: " << van.getTotalTime() << endl;
+        if (selectedPhase != 1)
             cout << "Total delay time: " << van.getTotalDelay() << endl;
-        } else
-            cout << "Time was not considered" << endl;
 
         cout << endl << "Client information (by order of delivery):" << endl;
 
         for (Client* client : clients) {
             cout << client->getName() << " " << client->getVertex()->getPosition() << ":" << endl;
+
             if (selectedPhase != 1) {
                 cout << "Scheduled time: " << client->getDeliveryTime() << endl;
-                cout << "Real time: " << client->getRealTime() << endl << endl;
-            } else
-                cout << "Time was not considered" << endl << endl;
+            }
+            cout << "Real time: " << client->getRealTime() << endl << endl;
         }
 
         cout  << "Van's path (by Edge ID):" << endl;
