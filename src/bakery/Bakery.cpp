@@ -34,12 +34,14 @@ Bakery::Bakery(string filePath) {
 
     string graphPathName, clientName;
 
-    int latitude, longitude, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
+    int isDirected, latitude, longitude, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
     char token;
 
-    fin >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
+    fin >> isDirected >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
     this->maxTimeBefore = Time(maxTimeBefore);
     this->maxDelay = Time(maxDelay);
+
+    this->graph.setIsDirected(isDirected == 1 ? true : false);
 
     if (!readGraphFromFile(this->graph, graphPathName)) {
         cout << "Error reading graph from file" << endl;

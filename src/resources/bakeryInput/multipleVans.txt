@@ -1,3 +1,4 @@
+1
 resources/maps/GridGraphs/8x8
 (150,150)
 500 30 30

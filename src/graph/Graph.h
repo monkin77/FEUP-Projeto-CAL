@@ -22,6 +22,7 @@ constexpr auto INF = std::numeric_limits<int>::max();
 class Graph {
     unordered_map<int, Vertex*> vertexMap;
     vector<Vertex*> vertexSet;
+    bool isDirected;
 
     void filterBySCC();
     void filterByRadius(Vertex* start, double radius);
@@ -58,6 +59,10 @@ public:
     void displaySccTarjan();
     void calculateSccTarjan(Vertex* startingVertex);
     void sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember, bool showResults);
+
+    bool getIsDirected() const;
+
+    void setIsDirected(bool isDirected);
 };
 
 
