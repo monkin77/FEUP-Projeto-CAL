@@ -292,21 +292,15 @@ int Graph::joinBidirectionalDistances(Vertex *intersectionVertex, Vertex *oppDir
 void Graph::analyzeConnectivity(Vertex *start) {
     for (Vertex* v : vertexSet)
         v->visited = false;
-    DFSVisit(start);
+    if (this->isDirected) this->calculateSccTarjan(start);
+    else DFSVisit(start);
 }
 
 
 void Graph::removeUnreachableVertexes(Vertex* start, double radius) {
     filterByRadius(start, radius);
-    if(this->isDirected){
-        calculateSccTarjan(start);
-        cout << "directed" << endl;
-    }
-    else {
-        cout << "Undirected" << endl;
-        analyzeConnectivity(start);
-        filterBySCC();
-    }
+    analyzeConnectivity(start);
+    filterBySCC();
 }
 
 /**
@@ -405,25 +399,7 @@ void Graph::calculateSccTarjan(Vertex *startingVertex) {
 
     // The Bakery SSC will be stored on st
     sccTarjanUtil(u, disc, low, st, stackMember, false);
-
-    unordered_map<int, Vertex*> newVertexMap;
-    vector<Vertex*> newVertexSet;
-    newVertexSet.push_back(startingVertex);
-    newVertexMap.insert(pair<int, Vertex*>(u, startingVertex));
-
-    int w = 0;  // To store stack extracted vertices
-    while(st.top() != u) {  // Traverse the stack from the last element until the first of the SCC
-        w = st.top();
-        Vertex* currVertex = this->findVertex(w);   // possibly store currVertex
-
-        newVertexSet.push_back(currVertex);
-        newVertexMap.insert(pair<int, Vertex*>(w, currVertex));
-
-        st.pop();
-    }
-
-    this->vertexSet = newVertexSet;
-    this->vertexMap = newVertexMap;
+    startingVertex->visited = true;
 }
 
 void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int> &st, vector<bool> &stackMember, bool showResults) {
@@ -460,21 +436,22 @@ void Graph::sccTarjanUtil(int u, vector<int> &disc, vector<int> &low, stack<int>
 
     // Head node found, pop the stack and print an SCC
     int w = 0;  // To store stack extracted vertices
-
-    stack<int> savedSSC;
-
     if(low[u] == disc[u]) {     // Head node of the SCC
-        if(disc[u] == 1)    // Bakery Vertex
-            savedSSC = st;
+        cout << "HEAD NODE " << u << " : ";
         while(st.top() != u) {  // Traverse the stack from the last element until the first of the SCC
             w = st.top();
+            Vertex* currVertex = this->findVertex(w);
             if(showResults) cout << w << " ";
             stackMember[w] = false;
+
+            if(disc[u] == 1) currVertex->visited = true;
+
             st.pop();
         }
-        if(showResults) cout << endl << endl;
-        if(disc[u] == 1)
-            st = savedSSC;  // Save the SSC of the bakery
+        w = st.top();
+        if(showResults) cout << w << endl;
+        stackMember[w] = false;
+        st.pop();
     }
 }
 
