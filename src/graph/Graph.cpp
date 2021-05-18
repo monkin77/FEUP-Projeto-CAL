@@ -70,7 +70,7 @@ bool Graph::addEdge(const Position &sourc, const Position &dest, int weight) {
     if (v1 == NULL || v2 == NULL)
         return false;
     v1->addEdge(v2, weight);
-    v2->addEdge(v1, weight);
+    if(!isDirected) v2->addEdge(v1, weight);
     return true;
 }
 
@@ -81,7 +81,7 @@ bool Graph::addEdge(int idNodeOrig, int idNodeDest, int weight) {
         return false;
 
     v1->addEdge(v2, weight);
-    v2->addEdge(v1, weight);
+    if(!isDirected) v2->addEdge(v1, weight);
     return true;
 }
 
@@ -292,12 +292,13 @@ int Graph::joinBidirectionalDistances(Vertex *intersectionVertex, Vertex *oppDir
 void Graph::analyzeConnectivity(Vertex *start) {
     for (Vertex* v : vertexSet)
         v->visited = false;
-    DFSVisit(start);
+    if (this->isDirected) this->calculateSccTarjan(start);
+    else DFSVisit(start);
 }
 
 
 void Graph::removeUnreachableVertexes(Vertex* start, double radius) {
-    filterByRadius(start, radius);
+    // filterByRadius(start, radius);
     analyzeConnectivity(start);
     filterBySCC();
 }
@@ -350,4 +351,108 @@ void Graph::addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest)
 
     for (int i = reversedList.size() - 1; i >= 0; --i)
         edges.push_back(reversedList[i]);
+}
+
+/**
+ * Display All the Strongly Connected Components in the Graph using the Tarjan Algorithm
+ */
+void Graph::displaySccTarjan() {
+    stack<int> st;
+
+    // Initialize disc, low and stackMember arrays
+    for(Vertex* vertex : this->vertexSet) {
+        vertex->disc = -1;
+        vertex->low = -1;
+        vertex->stackMember = false;
+    }
+
+    // Call the recursive helper function to find strongly
+    // connected components in DFS tree with vertex 'i'
+    for (Vertex* vertex : vertexSet)
+        if (vertex->disc == -1)
+            sccTarjanUtil(vertex->id, st, true);
+}
+
+/**
+ * Calculate the Strongly Connected Component to which the startingVertex Belongs
+ * @param startingVertex
+ */
+void Graph::calculateSccTarjan(Vertex *startingVertex) {
+    stack<int> st;
+
+    // Initialize disc, low and stackMember arrays
+    for(Vertex* vertex : this->vertexSet) {
+        vertex->disc = -1;
+        vertex->low = -1;
+        vertex->stackMember = false;
+    }
+
+    int u = startingVertex->id;
+
+    // The Bakery SSC will be stored on st
+    sccTarjanUtil(u, st, false);
+}
+
+void Graph::sccTarjanUtil(int u, stack<int> &st, bool showResults) {
+    // Static variable used for simplicity
+    static int discoveryOrder = 0;
+
+    Vertex* vertexU = this->vertexMap.at(u);
+
+    // Initialize discovery time and low value
+    vertexU->disc = vertexU->low = ++discoveryOrder;
+    st.push(u);
+    vertexU->stackMember = true;
+
+    // Go through all vertices adjacent to this
+    for(Edge &e: vertexU->adj) {
+        Vertex* vertexAdj = e.dest;
+        int vertexAdjID =vertexAdj->id;
+
+        if(vertexAdj->disc == -1) {
+            this->sccTarjanUtil(vertexAdjID, st, showResults);
+
+            /* Check if the subtree rooted with 'vertexAdj' has a
+             * connection to one of the ancestors of 'u'
+            */
+            vertexU->low = min(vertexU->low, vertexAdj->low);
+        }
+
+        /*
+         * Update low value of 'u' only if 'vertexAdj' is still
+         * in stack. (i.e it's a back edge, not cross edge).
+         */
+        else if (vertexAdj->stackMember)
+            vertexU->low = min(vertexU->low, vertexAdj->disc);
+    }
+
+    // Head node found, pop the stack and print an SCC
+    int w = 0;  // To store stack extracted vertices
+    if(vertexU->low == vertexU->disc) {     // Head node of the SCC
+        if(showResults) cout << "HEAD NODE: " << u << " SCC: ";
+        while(st.top() != u) {  // Traverse the stack from the last element until the first of the SCC
+            w = st.top();
+            Vertex* currVertex = this->vertexMap.at(w);
+            if(showResults) cout << w << " ";
+            currVertex->stackMember = false;
+
+            if(vertexU->disc == 1) currVertex->visited = true;
+
+            st.pop();
+        }
+        w = st.top();
+        Vertex* currVertex = this->vertexMap.at(w);
+        if(showResults) cout << w << endl;
+        currVertex->stackMember = false;
+        if(vertexU->disc == 1) currVertex->visited = true;
+        st.pop();
+    }
+}
+
+bool Graph::getIsDirected() const {
+    return isDirected;
+}
+
+void Graph::setIsDirected(bool isDirected) {
+    Graph::isDirected = isDirected;
 }

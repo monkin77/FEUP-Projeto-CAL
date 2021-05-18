@@ -1,5 +1,5 @@
-0
-resources/maps/GridGraphs/8x8
+1
+resources/maps/GridGraphs/4x4_directed
 (150,150)
 500 30 30
 2

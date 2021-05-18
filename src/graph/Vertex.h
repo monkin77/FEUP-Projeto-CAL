@@ -17,6 +17,7 @@ class Client;   // Forward declaration
 
 class Vertex {
     int id;
+    int vertexSetIdx;   // Represents the order of insertion
     Position info;						// content of the vertex (position)
     Client* client;
 
@@ -31,6 +32,10 @@ class Vertex {
 
     void addEdge(Vertex *dest, int w);
 
+    // Tarjan SCC Algorithm Variables
+    int disc = -1;
+    int low = -1;
+    bool stackMember = false;
 public:
     static int nextID;
     Vertex(Position in);
