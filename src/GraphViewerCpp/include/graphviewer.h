@@ -60,7 +60,8 @@ public:
         sf::Color outlineColor = sf::Color::Black;  ///< @brief Node outline color.
         sf::Shape *shape = nullptr;                 ///< @brief Node shape.
         sf::Text text;                              ///< @brief Node text.
-        
+        bool enabled = true;                        ///< @brief Enabled state of node.
+
         std::set<Edge*> edges;
 
         /**
@@ -124,12 +125,43 @@ public:
          * @param label     Node label
          */
         void setLabel(const std::string &label = "");
+
         /**
          * @brief Get node label.
-         * 
+         *
          * @return std::string  Node label
          */
         std::string getLabel() const;
+
+        /**
+         * @brief Set node label color.
+         *
+         * @param color     Node label color
+         */
+        void setLabelColor(const sf::Color &color);
+
+        /**
+         * @brief Get node label color.
+         *
+         * @return Node label color
+         */
+        const sf::Color &getLabelColor() const;
+        
+        /**
+         * @brief Set label character size, in pixels.
+         *
+         * Default size is 30.
+         *
+         * @param size Character size, in pixels
+         */
+        void setLabelSize(unsigned size);
+
+        /**
+         * @brief Get label character size, in pixels.
+         *
+         * @return Character size, in pixels
+         */
+        unsigned getLabelSize() const;
         
         /**
          * @brief Set node color.
@@ -203,6 +235,23 @@ public:
          * @return const sf::Text&  Node text 
          */
         const sf::Text& getText() const;
+
+        /**
+         * @brief Enable node.
+         */
+        void enable();
+
+        /**
+         * @brief Disable node.
+         */
+        void disable();
+
+        /**
+         * @brief Check if node is enabled.
+         *
+         * @return true if enabled, false if disabled
+         */
+        bool isEnabled() const;
     };
 
     /**
@@ -232,6 +281,7 @@ public:
         float *flow = nullptr;              ///< @brief Edge flow.
         LineShape *shape = nullptr;         ///< @brief Edge shape.
         sf::Text text;                      ///< @brief Edge text.
+        bool enabled = true;                ///< @brief Enabled state of edge.
 
         /**
          * @brief Update edge shape and text considering changes in properties.
@@ -312,7 +362,37 @@ public:
          * 
          * @return const std::string&   Edge label.
          */
-        const std::string& getLabel() const;
+        std::string getLabel() const;
+
+        /**
+         * @brief Set edge label color.
+         *
+         * @param color     Edge label color
+         */
+        void setLabelColor(const sf::Color &color);
+
+        /**
+         * @brief Get edge label color.
+         *
+         * @return Edge label color
+         */
+        const sf::Color &getLabelColor() const;
+
+        /**
+         * @brief Set label character size, in pixels.
+         *
+         * Default size is 30.
+         *
+         * @param size Character size, in pixels
+         */
+        void setLabelSize(unsigned size);
+
+        /**
+         * @brief Get label character size, in pixels.
+         *
+         * @return Character size, in pixels
+         */
+        unsigned getLabelSize() const;
 
         /**
          * @brief Set edge color.
@@ -399,6 +479,23 @@ public:
          * @return const sf::Text&  Edge text
          */
         const sf::Text& getText() const;
+
+        /**
+         * @brief Enable edge.
+         */
+        void enable();
+
+        /**
+         * @brief Disable edge.
+         */
+        void disable();
+
+        /**
+         * @brief Check if edge is enabled.
+         *
+         * @return true if enabled, false if disabled
+         */
+        bool isEnabled() const;
     };
     
 public:
@@ -424,7 +521,11 @@ public:
 
     void setCenter(const sf::Vector2f &center);
 
+    const sf::Vector2f& getCenter() const;
+
     void setScale(double scale);
+
+    double getScale() const;
 
     /**
      * @brief Add node.
@@ -496,6 +597,20 @@ private:
     void removeEdge_noLock(id_t id);
 
 public:
+    /**
+     * @brief Set background color.
+     *
+     * @param color Color of background
+     */
+    void setBackgroundColor(const sf::Color &color = sf::Color::White);
+
+    /**
+     * @brief Get background color.
+     *
+     * @return Color of background
+     */
+    const sf::Color &getBackgroundColor() const;
+
     /**
      * @brief Set background image.
      *
@@ -578,7 +693,7 @@ public:
     void unlock();
 
 private:
-    static std::mutex createWindowMutex;
+    static std::mutex createWindowMutex;        ///< @brief Create window mutex; this is used to avoid overloading window engines.
 
     static const sf::Font DEBUG_FONT;           ///< @brief Debug font.
     static const int DEBUG_FONT_SIZE = 14;      ///< @brief Debug font size, in pixels.
@@ -604,6 +719,7 @@ private:
 
     sf::Texture background_texture;             ///< @brief Background texture (must be kept alive).
     sf::Sprite background_sprite;               ///< @brief Background sprite.
+    sf::Color background_color = sf::Color::White; ///< @brief Background color.
     sf::RenderWindow *window = nullptr;         ///< @brief Window.
     sf::View *view       = nullptr;             ///< @brief Default view, to draw the graph.
     sf::View *debug_view = nullptr;             ///< @brief Debug view, to draw debug information.

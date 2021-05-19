@@ -242,11 +242,12 @@ void Interface::loadByInput() {
     }
 }
 
+
 void Interface::printResult() {
     vector<Van> vans = bakery->getVans();
     for (int i = 0; i < vans.size(); ++i) {
-        Van& van = vans[i];
-        vector<Client*> clients = van.getClients();
+        Van &van = vans[i];
+        vector<Client *> clients = van.getClients();
         vector<Edge> edges = van.getEdges();
 
         cout << "Delivery results for van number " << i + 1 << ":" << endl;
@@ -266,7 +267,7 @@ void Interface::printResult() {
 
         cout << endl << "Client information (by order of delivery):" << endl;
 
-        for (Client* client : clients) {
+        for (Client *client : clients) {
             cout << client->getName() << " " << client->getVertex()->getPosition() << ":" << endl;
 
             if (selectedPhase != 1) {
@@ -275,11 +276,35 @@ void Interface::printResult() {
             cout << "Real time: " << client->getRealTime() << endl << endl;
         }
 
-        cout  << "Van's path (by Edge ID):" << endl;
+        cout << "Van's path (by Edge ID):" << endl;
         for (int i = 0; i < edges.size(); ++i) {
             if (i != 0) cout << "-";
             cout << edges[i].getId();
         }
         cout << endl << endl;
     }
+}
+
+void Interface::showResultGraphViewer() {
+    // Set coordinates of window center
+    gv.setCenter(sf::Vector2f(300, 300));
+
+    gvNode &node0 = gv.addNode(0, sf::Vector2f(200, 300)); // Create node
+    node0.setColor(GraphViewer::BLUE); // Change color
+
+    // Create a blue vertex with ID 1 at (400, 300)
+    gvNode &node1 = gv.addNode(1, sf::Vector2f(400, 300)); // Create node
+    node1.setColor(GraphViewer::BLUE); // Change color
+
+    // Create a black edge between the two previously created vertices
+    gvEdge &edge1 = gv.addEdge(0, node0, node1, gvEdge::UNDIRECTED);
+
+    // Make the “background.png” image the background
+    // gv.setBackground("./resources/background.png");
+
+    // Create window
+    gv.createWindow(600, 600);
+
+    // Join viewer thread (blocks till window closed)
+    gv.join();
 }

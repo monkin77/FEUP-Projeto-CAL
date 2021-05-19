@@ -128,15 +128,15 @@ void GraphViewer::ArrowHead::process(){
 
     resize(0);
 
-    append(Vertex(u));
-    append(Vertex(u));
-    append(Vertex(u+(uvUnitVec*lengthFactor + uvNormUnitVec*widthFactor/2.0f)*getWidth()));
-    append(Vertex(u+(uvUnitVec*(lengthFactor - advanceFactor))*getWidth()));
+    append(Vertex(v));
+    append(Vertex(v));
+    append(Vertex(v-(uvUnitVec*lengthFactor + uvNormUnitVec*widthFactor/2.0f)*getWidth()));
+    append(Vertex(v-(uvUnitVec*(lengthFactor - advanceFactor))*getWidth()));
     
-    append(Vertex(u));
-    append(Vertex(u));
-    append(Vertex(u+(uvUnitVec*lengthFactor - uvNormUnitVec*widthFactor/2.0f)*getWidth()));
-    append(Vertex(u+(uvUnitVec*(lengthFactor - advanceFactor))*getWidth()));
+    append(Vertex(v));
+    append(Vertex(v));
+    append(Vertex(v-(uvUnitVec*lengthFactor - uvNormUnitVec*widthFactor/2.0f)*getWidth()));
+    append(Vertex(v-(uvUnitVec*(lengthFactor - advanceFactor))*getWidth()));
 }
 
 sf::Vector2f GraphViewer::ArrowHead::getLineConnection() const {
@@ -146,5 +146,5 @@ sf::Vector2f GraphViewer::ArrowHead::getLineConnection() const {
     Vector2f uvUnitVec = uvVec/sqrt(uvVec.x*uvVec.x + uvVec.y*uvVec.y); // unit vector from u to v
     
     float lineLengthFactor = min(lengthFactor-advanceFactor, lengthFactor);
-    return u + uvUnitVec*lineLengthFactor*getWidth();
+    return v - uvUnitVec*lineLengthFactor*getWidth();
 }

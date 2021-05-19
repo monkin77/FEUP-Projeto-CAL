@@ -4,8 +4,8 @@
 #include "Bakery.h"
 #include "graphviewer.h"
 
-using NodeGV = GraphViewer::Node;
-using EdgeGV = GraphViewer::Edge;
+using gvNode = GraphViewer::Node;
+using gvEdge = GraphViewer::Edge;
 
 using namespace std;
 

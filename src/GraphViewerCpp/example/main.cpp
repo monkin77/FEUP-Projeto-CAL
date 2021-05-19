@@ -136,6 +136,8 @@ GraphViewer* drawGraphFromFile(std::string name){
     }
     gv->setZipEdges(true);
 
+    gv->setCenter(sf::Vector2f(width/2.0f, height/2.0f));
+
     gv->createWindow(width, height);
 
     return gv;
