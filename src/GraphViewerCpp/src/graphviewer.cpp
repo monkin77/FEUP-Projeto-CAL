@@ -65,23 +65,10 @@ void GraphViewer::createWindow(unsigned int width, unsigned int height){
     this->width  = width;
     this->height = height;
 
-    // Create window
-    ContextSettings settings;
-    settings.antialiasingLevel = 8;
-    GraphViewer::createWindowMutex.lock();
-    window = new RenderWindow(VideoMode(this->width, this->height), "GraphViewer", Style::Default, settings);
-    GraphViewer::createWindowMutex.unlock();
-
-    // Create views
-    view = new View(window->getDefaultView());
-    debug_view = new View(window->getDefaultView());
-
-    // Recalculate view
-    recalculateView();
-
-    windowOpen = true;
-    window->setActive(false);
+    windowInitialization.lock();
     main_thread = new thread(&GraphViewer::run, this);
+    windowInitialization.lock();
+    windowInitialization.unlock();
 }
 
 void GraphViewer::closeWindow(){
@@ -241,11 +228,23 @@ void GraphViewer::updateZip(){
 }
 
 void GraphViewer::run(){
-    window->setActive(true);
+    ContextSettings settings;
+    settings.antialiasingLevel = 8;
+    GraphViewer::createWindowMutex.lock();
+    window = new RenderWindow(VideoMode(this->width, this->height), "GraphViewer", Style::Default, settings);
+    GraphViewer::createWindowMutex.unlock();
+
+    view = new View(window->getDefaultView());
+    debug_view = new View(window->getDefaultView());
 
     bool isLeftClickPressed = false;
     Vector2f centerInitial;
     Vector2f posMouseInitial;
+
+    recalculateView();
+    windowOpen = true;
+
+    windowInitialization.unlock();
 
     while (window->isOpen()){
         Event event;
@@ -354,10 +353,10 @@ void GraphViewer::draw() {
 
 void GraphViewer::drawDebug(){
     window->setView(*debug_view);
-    
+
     string debugInfo;
     debugInfo += "FPS: " + to_string(int(fps_monitor.getFPS())) + "\n";
-    
+
     if(debugInfo[debugInfo.size()-1] == '\n')
         debugInfo = debugInfo.substr(0, debugInfo.size()-1);
     debug_text.setString(debugInfo);

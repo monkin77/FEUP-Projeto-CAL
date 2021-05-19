@@ -725,6 +725,7 @@ private:
     sf::View *debug_view = nullptr;             ///< @brief Debug view, to draw debug information.
     std::thread *main_thread = nullptr;         ///< @brief Main thread.
     bool windowOpen = false;
+    std::mutex windowInitialization;            ///< @brief Mutex: createWindow only returns once window is created.
 
     bool enabledNodes     = true;               ///< @brief Node drawing enabled.
     bool enabledNodesText = true;               ///< @brief Node text drawing enabled.

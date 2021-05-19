@@ -3,11 +3,6 @@ project(FEUP_Projeto_CAL)
 
 set(CMAKE_CXX_STANDARD 14)
 
-if (WIN32)
-    include_directories("$ENV{SFML_PATH}/include")
-    link_directories("$ENV{SFML_PATH}/lib")
-endif()
-
 # Build GraphViewerCpp
 set(GRAPHVIEWERCPP_PATH GraphViewerCpp)
 add_subdirectory(${GRAPHVIEWERCPP_PATH})
