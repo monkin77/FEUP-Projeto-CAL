@@ -15,7 +15,7 @@ Bakery::Bakery(const string &graphFile, const vector<Van> &vans, Position start,
                int maxDelay, int maxTimeBefore, bool isDirected) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
 
     this->graph.setIsDirected(isDirected);
-    if (!readGraphFromFile(this->graph, graphFile)) {
+    if (!readGraphFromFile(this->graph, graphFile, false)) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
     }
@@ -35,24 +35,22 @@ Bakery::Bakery(string filePath) {
 
     string graphPathName, clientName;
 
-    int isDirected, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
+    int isDirected, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore, vertexID;
     char token;
-    double latitude, longitude;
 
-    fin >> isDirected >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
+    fin >> isDirected >> graphPathName >> vertexID >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
     this->maxTimeBefore = Time(maxTimeBefore);
     this->maxDelay = Time(maxDelay);
 
     this->graph.setIsDirected(isDirected == 1 ? true : false);
 
-    if (!readGraphFromFile(this->graph, graphPathName)) {
+    if (!readGraphFromFile(this->graph, graphPathName, false)) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
     }
 
-    Position bakeryPosition(latitude, longitude);
 
-    Vertex* bakeryVertex = this->graph.findVertex(bakeryPosition);
+    Vertex* bakeryVertex = this->graph.findVertex(vertexID);
     if( bakeryVertex == NULL)
         throw runtime_error("Invalid Bakery Position");
 
@@ -72,15 +70,22 @@ Bakery::Bakery(string filePath) {
     fin >> numClients;
 
     for (int i = 0; i < numClients; i++) {
-        fin >> clientName >> clientId >> token >> latitude >> token >> longitude >> token >> hours >> token >> minutes >> numBread;
+        fin >> clientName >> clientId >> vertexID >> hours >> token >> minutes >> numBread;
 
-        Position clientPosition(latitude, longitude);
-        addClient(clientId, clientName, clientPosition, Time(hours, minutes), numBread);
+        addClient(clientId, clientName, vertexID, Time(hours, minutes), numBread);
     }
 }
 
 void Bakery::addClient(int id, string name, Position pos, Time time, int breadNum) {
     Vertex* v = graph.findVertex(pos);
+    if (v == NULL) return; // Discard this Client
+    Client* client = new Client(id, name, v, time, breadNum);
+    v->setClient(client);
+    clients.push_back(client);
+}
+
+void Bakery::addClient(int id, string name, int vertexID, Time time, int breadNum) {
+    Vertex* v = graph.findVertex(vertexID);
     if (v == NULL) return; // Discard this Client
     Client* client = new Client(id, name, v, time, breadNum);
     v->setClient(client);

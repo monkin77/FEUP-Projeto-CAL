@@ -14,9 +14,15 @@ void defaultGraphBuilder(Graph &G){
     G.addVertex(2, Position(3, 3));
 }
 
-bool readGraphFromFile(Graph &G, string directoryName) {
-    string nodesFile = directoryName + "/nodes.txt";
-    string edgesFiles = directoryName + "/edges.txt";
+bool readGraphFromFile(Graph &G, string directoryName, bool isStrongComponent) {
+    string nodesFile, edgesFile;
+    if(!isStrongComponent) {
+        nodesFile = directoryName + "/nodes.txt";
+        edgesFile = directoryName + "/edges.txt";
+    } else {
+        nodesFile = directoryName + "/strongNodes.txt";
+        edgesFile = directoryName + "/strongEdges.txt";
+    }
 
     ifstream fin;
 
@@ -49,7 +55,7 @@ bool readGraphFromFile(Graph &G, string directoryName) {
 
     // READ EDGES
 
-    fin.open(edgesFiles);
+    fin.open(edgesFile);
 
     if(!fin.is_open())
         return false;
