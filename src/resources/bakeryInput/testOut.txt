@@ -1,0 +1,19 @@
+1
+resources/maps/PenafielMap
+9081
+50000 60 60
+3
+8 1
+15 1
+1 1
+10
+Pedro 0 10218 14:18 9
+Leonor 1 6644 18:5 2
+Matilde 2 9867 17:55 3
+Tiago 3 9752 15:24 3
+Domingos 4 6470 13:21 7
+Maria 5 8315 7:6 2
+Matilde 6 2783 16:47 10
+Mário 7 4286 19:51 3
+Joana 8 8462 17:21 2
+Helena 9 6000 9:44 3
