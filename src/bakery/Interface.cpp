@@ -45,7 +45,6 @@ void Interface::start() {
         bakery = new Bakery("resources/bakeryInput/" + file);
     }
     servicePlanner();
-    printResult();
 }
 
 void Interface::servicePlanner() {
@@ -69,9 +68,13 @@ void Interface::servicePlanner() {
     switch (selectedPhase) {
         case 1:
             bakery->solveFirstPhase();
+            printResult();
+            showResultGraphViewer();
             break;
         case 2:
             bakery->solveSecondPhase();
+            printResult();
+            showResultGraphViewer();
             break;
         case 3:
             bool useKnapsack, optimize;
@@ -108,9 +111,13 @@ void Interface::servicePlanner() {
             optimize = toupper(res) == 'Y';
 
             bakery->solveThirdPhase(useKnapsack, optimize);
+            printResult();
+            showResultGraphViewer();
             break;
         case 4:
             bakery->getGraph().displaySccTarjan();
+            printResult();
+            showResultGraphViewer();
             break;
         default:
             break;
@@ -290,22 +297,6 @@ void Interface::showResultGraphViewer() {
     Vertex* startingVertex = this->bakery->getStartingVertex();
     sf::Vector2f centerPos(startingVertex->getPosition().getLongitude(), startingVertex->getPosition().getLongitude());
     gv.setCenter(centerPos);
-
-    /*
-    gvNode &node0 = gv.addNode(0, sf::Vector2f(200, 300)); // Create node
-    node0.setColor(GraphViewer::BLUE); // Change color
-
-    // Create a blue vertex with ID 1 at (400, 300)
-    gvNode &node1 = gv.addNode(1, sf::Vector2f(400, 300)); // Create node
-    node1.setColor(GraphViewer::BLUE); // Change color
-
-    // Create a black edge between the two previously created vertices
-    gvEdge &edge1 = gv.addEdge(0, node0, node1, gvEdge::UNDIRECTED);
-
-    // Make the “background.png” image the background
-    // gv.setBackground("./resources/background.png");
-    */
-
 
     vector<Van> vans = bakery->getVans();
     for(int i = 0; i < this->bakery->getGraph().getNumVertex(); i++) {
