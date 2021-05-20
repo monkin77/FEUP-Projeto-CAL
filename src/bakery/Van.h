@@ -48,6 +48,8 @@ public:
     void makeDelivery(Time travelTime, Time delay, int breadNum);
 
     Client* removeFarthestClientInRange(int maxBreadRange);
+
+    int getAvailableBread();
 };
 
 

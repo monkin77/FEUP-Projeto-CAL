@@ -299,7 +299,7 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
         for (int i = vans.size() - 1; i >= 0; --i)
             if (!vans[i].getClients().empty()) {
                 for (int j = i - 1; j >= 0; --j) {
-                    Client *client = vans[j].removeFarthestClientInRange(vans[i].getReservedBread());
+                    Client *client = vans[j].removeFarthestClientInRange(vans[i].getAvailableBread());
                     if (client != NULL) vans[i].addClient(client);
                 }
                 break;
