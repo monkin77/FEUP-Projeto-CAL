@@ -287,8 +287,11 @@ void Interface::printResult() {
 
 void Interface::showResultGraphViewer() {
     // Set coordinates of window center
-    gv.setCenter(sf::Vector2f(300, 300));
+    Vertex* startingVertex = this->bakery->getStartingVertex();
+    sf::Vector2f centerPos(startingVertex->getPosition().getLongitude(), startingVertex->getPosition().getLongitude());
+    gv.setCenter(centerPos);
 
+    /*
     gvNode &node0 = gv.addNode(0, sf::Vector2f(200, 300)); // Create node
     node0.setColor(GraphViewer::BLUE); // Change color
 
@@ -301,7 +304,33 @@ void Interface::showResultGraphViewer() {
 
     // Make the “background.png” image the background
     // gv.setBackground("./resources/background.png");
+    */
 
+
+    vector<Van> vans = bakery->getVans();
+    for(int i = 0; i < this->bakery->getGraph().getNumVertex(); i++) {
+        Vertex* currVertex = this->bakery->getGraph().getVertexSet()[i];
+        sf::Vector2f pos(currVertex->getPosition().getLatitude(), currVertex->getPosition().getLongitude());
+        gv.addNode(currVertex->getId(), pos); // Create node
+    }
+
+
+
+    /*
+    for (int i = 0; i < vans.size(); ++i) {
+        Van &van = vans[i];
+        vector<Client *> clients = van.getClients();
+        vector<Edge> edges = van.getEdges();
+
+        if (clients.empty()) {
+            continue;
+        }
+
+        for (int i = 0; i < edges.size(); ++i) {
+
+        }
+    }
+    */
     // Create window
     gv.createWindow(600, 600);
 
