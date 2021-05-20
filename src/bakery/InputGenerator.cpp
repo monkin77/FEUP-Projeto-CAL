@@ -5,8 +5,10 @@
 
 #include <iostream>
 #include <fstream>
-#include "math.h"
 #include <vector>
+#include <stdlib.h>
+#include <iomanip>
+
 #include "graphviewer.h"
 #include "../bakery/Client.h"
 #include "../utils/GraphBuilder.h"
@@ -19,77 +21,82 @@ Graph InputGenerator::getGraph() {
 
 
 void InputGenerator::generateBakeryInput() {
-    vector<string> aux{"Ana", "Maria", "João", "Pedro", "Tiago", "Joana", "Leonor", "Matilde", "Helena", "Rui", "Mário", "Bruno", "Domingos", "Henrique"};
-    cout << "Insert the map you want: ";
-    int numClients, maxDelay, maxTimeBefore, radius, numVans, vanCapacity, deliveryTime;
-
+    vector<string> namesList{"Ana", "Maria", "João", "Pedro", "Tiago", "Joana", "Leonor", "Matilde", "Helena", "Rui", "Mário", "Bruno", "Domingos", "Henrique"};
+    int numClients, maxDelay, maxTimeBefore, radius, numVans, maxVanCapacity, deliveryDelay, maxClientsBread;
     string path;
+
+    cout << "Insert the map you want: " << endl;
     cin >> path;
 
-    ofstream fin;
-    fin.open(path);
-
-    cout << "Insert number of Vans: ";
+    cout << "Insert number of Vans: " << endl;
     cin >> numVans;
-    cout << endl;
 
-    cout << "Insert number of Clients: ";
+    cout << "Insert number of Clients: " << endl;
     cin >> numClients;
-    cout << endl;
 
-    cout << "Insert radius: ";
-    cin >> radius;
-    cout << endl;
+    string outputFileName;
+    cout << "Insert the name of the output file" << endl;
+    cin >> outputFileName;
+    outputFileName += ".txt";
 
-    cout << "Insert maxTimeBefore: ";
-    cin >> maxTimeBefore;
-    cout << endl;
-
-    cout << "Insert maximum delay: ";
-    cin >> maxDelay;
-    cout << endl;
-
-    cout << "Insert van's capacity: ";
-    cin >> vanCapacity;
-    cout << endl;
-
-    cout << "Insert delivery time: ";
-    cin >> deliveryTime;
-    cout << endl;
-
-    vector<Client> clients;
+    ofstream fout;
+    fout.open("resources/bakeryInput/" + outputFileName);
+    if(!fout.is_open()) {
+        cout << "Error opening output file" << endl;
+        return;
+    }
 
     string pathPrefix = "resources/maps/";
-
     path = pathPrefix+path;
+    readGraphFromFile(G, path, true);
 
-    readGraphFromFile(G, path);
+    radius = 50000;
+    maxTimeBefore = 60;
+    maxDelay = 60;
+    maxVanCapacity = 20;
+    deliveryDelay = 1;
+    maxClientsBread = 10;
 
-    vector<Vertex*> longlat = G.getVertexSet();
-    int index = rand() % G.getNumVertex();
-    Vertex *V = longlat.at(index);
-    G.removeVertex(V->getId());
+    // Start generating output
+    vector<Vertex*> vSet = G.getVertexSet();
+    int stringRandomIdx, vertexRandomIdx;
+    int vertexID;
 
-    fin << 1;
-    fin << path;
-    fin << V->getPosition().getLatitude() << V->getPosition().getLongitude();
-    fin << radius << maxDelay << maxTimeBefore;
-    fin << numVans;
-    fin << vanCapacity << deliveryTime;
-    fin << numClients;
+    vertexRandomIdx = rand() % G.getNumVertex();
+    Vertex *currV = vSet.at(vertexRandomIdx);
+    vertexID = currV->getId();
+    G.removeVertex(currV->getId());
 
+    fout << 1 << endl;
+    fout << path << endl;
+    fout << vertexID << endl;
+    fout << radius << " " << maxDelay << " " << maxTimeBefore << endl;
+    fout << numVans << endl;
 
-    for(int i = 0; i < numClients; i++){
-        const string name = aux.at(rand() % aux.size());
-        int hour = 7 + (rand() % 13);
-        int minutes = (rand() & 61);
-        Time *t = new Time(hour, minutes);
-        int numBread = 1 + (rand() % 10);
-        int indexGraph = rand() % G.getNumVertex();
-        vector<Vertex*> vSet = G.getVertexSet();
-        Vertex *V = vSet.at(indexGraph);
-        G.removeVertex(V->getId());
-        fin << name << i << "(" << V->getPosition().getLatitude() << "," << V->getPosition().getLongitude() << ")" << hour << ":" << minutes << numBread;
+    for(int i = 0; i < numVans; i++) {
+        int vanCapacity = 1 + rand() % maxVanCapacity;
+        fout << vanCapacity << " " << deliveryDelay << endl;
     }
+
+    fout << numClients << endl;
+
+    for(int i = 0; i < numClients; i++) {
+        stringRandomIdx = rand() % namesList.size();
+        string name = namesList.at(stringRandomIdx);
+
+        int hour = 7 + (rand() % 13);   // Hour between 7:00 and 19:00
+        int minutes = (rand() % 60);    // Minutes between 0 and 59
+
+        int numBread = 1 + (rand() % maxClientsBread);
+
+        vertexRandomIdx = rand() % G.getNumVertex();
+        Vertex *currV = vSet.at(vertexRandomIdx);
+        vertexID = currV->getId();
+        G.removeVertex(currV->getId());
+
+        fout << name << " " << i << " " << vertexID << " " << hour << ":" << minutes << " " << numBread << endl;
+    }
+
+    fout.close();
 }
 

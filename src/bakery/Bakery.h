@@ -23,6 +23,8 @@ public:
 
 
     void addClient(int id, string name, Position pos, Time time, int breadNum);
+    void addClient(int id, string name, int vertexID, Time time, int breadNum);
+
     const vector<Van>& getVans() const;
 
     Graph getGraph();
