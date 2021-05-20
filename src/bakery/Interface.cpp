@@ -311,12 +311,14 @@ void Interface::showResultGraphViewer() {
     for(int i = 0; i < this->bakery->getGraph().getNumVertex(); i++) {
         Vertex* currVertex = this->bakery->getGraph().getVertexSet()[i];
         sf::Vector2f pos(currVertex->getPosition().getLatitude(), currVertex->getPosition().getLongitude());
-        gv.addNode(currVertex->getId(), pos); // Create node
+        gvNode &currNode = gv.addNode(currVertex->getId(), pos); // Create node
+        if(currVertex->getClient() != NULL) {
+            currNode.setColor(GraphViewer::GREEN);
+            // currNode.setIcon()
+            currNode.setSize(50);
+        }
     }
 
-
-
-    /*
     for (int i = 0; i < vans.size(); ++i) {
         Van &van = vans[i];
         vector<Client *> clients = van.getClients();
@@ -327,10 +329,16 @@ void Interface::showResultGraphViewer() {
         }
 
         for (int i = 0; i < edges.size(); ++i) {
-
+            Edge& e = edges[i];
+            gvNode& srcNode = gv.getNode(e.getOrig()->getId());
+            gvNode& destNode =  gv.getNode(e.getDest()->getId());
+            gv.addEdge(i, srcNode, destNode, gvEdge::DIRECTED);
         }
     }
-    */
+
+    // Make the “background.png” image the background
+    // gv.setBackground("resources/maps/PenafielMap/Penafiel_strong_component.png");
+
     // Create window
     gv.createWindow(600, 600);
 
