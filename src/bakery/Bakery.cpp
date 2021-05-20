@@ -223,6 +223,7 @@ int Bakery::knapsackAllocation(Van &v, const vector<int>& values) {
     return removed;
 }
 
+//TODO: Try different weights
 int Bakery::greedyAllocation(Van &v) {
     int count = 0;
     int capacity = v.getTotalBread();
@@ -232,18 +233,18 @@ int Bakery::greedyAllocation(Van &v) {
         Client *chosen = NULL;
 
         /*
-         * Value = 50000 + 10 * numBreads - 100 * Euclidean(start, pos)
-         * Summation(10 * abs(v.clients[i].time - time) - 100 * Euclidean(v.clients[i].pos, pos))
+         * Value = 5000 + numBreads - Euclidean(start, pos)
+         * Summation(abs(v.clients[i].time - time) - Euclidean(v.clients[i].pos, pos))
          */
         for (Client *client : clients) {
             if (client->isAllocated()) continue;
 
-            int value = 50000 + 10 * client->getBreadQuantity() - 100 *
+            int value = 5000 + client->getBreadQuantity() -
                     startingVertex->getPosition().distance(client->getVertex()->getPosition());
 
             for (Client *client2 : v.getClients())
-                value += abs((client2->getRealTime() - client->getRealTime()).toMinutes())
-                        - 100 * client2->getVertex()->getPosition().distance(client->getVertex()->getPosition());
+                value += abs((client2->getRealTime() - client->getRealTime()).toMinutes()) -
+                        client2->getVertex()->getPosition().distance(client->getVertex()->getPosition());
 
             if (value > highestValue && client->getBreadQuantity() <= capacity) {
                 highestValue = value;
@@ -267,7 +268,7 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
     int clientsAllocated = 0;
 
     if (useKnapsack) {
-        // Value = breadQuantity / 10 + 1 (the client itself has value)
+        // Value = breadQuantity + 10 (the client itself has value)
         vector<int> values;
         for (Van &v : vans) {
             if (clientsAllocated == clients.size()) break;
@@ -285,7 +286,7 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
         }
     }
 
-    // TODO: calculateSimulation function that checks if it gets better
+    // TODO: calculateSimulation function that checks if it gets better. Check if there are clients missing and space available
     if (optimize) {
         /* Since the last used van probably has space left,
          * it will try to take some clients from other vans
