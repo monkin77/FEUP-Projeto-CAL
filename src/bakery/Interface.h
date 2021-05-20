@@ -2,6 +2,7 @@
 #define FEUP_PROJETO_CAL_INTERFACE_H
 
 #include "Bakery.h"
+#include "InputGenerator.h"
 #include "graphviewer.h"
 
 using gvNode = GraphViewer::Node;
@@ -23,6 +24,7 @@ public:
     void servicePlanner();
     void printResult();
     void showResultGraphViewer();
+    void showSCCsGraphViewer();
     void writeResultInFile();
 };
 

@@ -9,9 +9,5 @@ int main() {
     interface.start();
     interface.showResultGraphViewer();
 
-    /*
-    InputGenerator gen;
-    gen.generateBakeryInput();
-    */
     return 0;
 }
