@@ -312,7 +312,11 @@ void Interface::showResultGraphViewer() {
         Vertex* currVertex = this->bakery->getGraph().getVertexSet()[i];
         sf::Vector2f pos(currVertex->getPosition().getLatitude(), currVertex->getPosition().getLongitude());
         gvNode &currNode = gv.addNode(currVertex->getId(), pos); // Create node
-        if(currVertex->getClient() != NULL) {
+        if(currVertex == startingVertex) {
+            currNode.setColor(GraphViewer::ORANGE);
+            currNode.setSize(50);
+        }
+        else if(currVertex->getClient() != NULL) {
             currNode.setColor(GraphViewer::GREEN);
             // currNode.setIcon()
             currNode.setSize(50);
@@ -330,11 +334,17 @@ void Interface::showResultGraphViewer() {
 
         for (int i = 0; i < edges.size(); ++i) {
             Edge& e = edges[i];
-            gvNode& srcNode = gv.getNode(e.getOrig()->getId());
-            gvNode& destNode =  gv.getNode(e.getDest()->getId());
-            gv.addEdge(i, srcNode, destNode, gvEdge::DIRECTED);
+            try {
+                gv.getEdge(e.getId());  // If edge does not exist, throws out_of_range
+            } catch (out_of_range err) {
+                gvNode& srcNode = gv.getNode(e.getOrig()->getId());
+                gvNode& destNode =  gv.getNode(e.getDest()->getId());
+                gv.addEdge(e.getId(), srcNode, destNode, gvEdge::DIRECTED);
+            }
         }
     }
+
+    // gv.setZipEdges(true);
 
     // Make the “background.png” image the background
     // gv.setBackground("resources/maps/PenafielMap/Penafiel_strong_component.png");
