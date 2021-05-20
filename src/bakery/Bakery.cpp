@@ -334,3 +334,7 @@ const vector<Van> &Bakery::getVans() const {
 Graph Bakery::getGraph() {
     return graph;
 }
+
+Vertex *Bakery::getStartingVertex() const {
+    return startingVertex;
+}
