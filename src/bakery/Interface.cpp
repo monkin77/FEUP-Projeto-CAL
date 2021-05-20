@@ -45,6 +45,7 @@ void Interface::start() {
         bakery = new Bakery("resources/bakeryInput/" + file);
     }
     servicePlanner();
+    printResult();
 }
 
 void Interface::servicePlanner() {
@@ -68,13 +69,9 @@ void Interface::servicePlanner() {
     switch (selectedPhase) {
         case 1:
             bakery->solveFirstPhase();
-            printResult();
-            showResultGraphViewer();
             break;
         case 2:
             bakery->solveSecondPhase();
-            printResult();
-            showResultGraphViewer();
             break;
         case 3:
             bool useKnapsack, optimize;
@@ -111,13 +108,9 @@ void Interface::servicePlanner() {
             optimize = toupper(res) == 'Y';
 
             bakery->solveThirdPhase(useKnapsack, optimize);
-            printResult();
-            showResultGraphViewer();
             break;
         case 4:
             bakery->getGraph().displaySccTarjan();
-            printResult();
-            showResultGraphViewer();
             break;
         default:
             break;
@@ -293,6 +286,7 @@ void Interface::printResult() {
 }
 
 void Interface::showResultGraphViewer() {
+    cout << "Loading GraphViewer..." << endl;
     // Set coordinates of window center
     Vertex* startingVertex = this->bakery->getStartingVertex();
     sf::Vector2f centerPos(startingVertex->getPosition().getLongitude(), startingVertex->getPosition().getLongitude());

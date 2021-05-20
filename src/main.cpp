@@ -7,6 +7,7 @@ int main() {
 
     Interface interface;
     interface.start();
+    interface.showResultGraphViewer();
 
     /*
     InputGenerator gen;

@@ -73,6 +73,12 @@ void Van::sortClientsByTime() {
     });
 }
 
+/**
+ * Returns the farthest client from the others in the Van, where the breads ordered are less than the Van capacity
+ * If none, returns NULL
+ * @param maxBreadRange
+ * @return Best Client Choice, NULL otherwise
+ */
 Client *Van::removeFarthestClientInRange(int maxBreadRange) {
     int chosen = -1;
     int maxDistance = 0;
@@ -98,4 +104,8 @@ Client *Van::removeFarthestClientInRange(int maxBreadRange) {
 
 int Van::getReservedBread() const {
     return reservedBread;
+}
+
+int Van::getAvailableBread() {
+    return totalBread - reservedBread;
 }
