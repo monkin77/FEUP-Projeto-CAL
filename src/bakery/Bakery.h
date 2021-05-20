@@ -27,6 +27,8 @@ public:
 
     Graph getGraph();
 
+    Vertex *getStartingVertex() const;
+
 private:
     vector<Client *> clients;
     vector<Van> vans;

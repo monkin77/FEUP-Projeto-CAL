@@ -298,7 +298,7 @@ void Graph::analyzeConnectivity(Vertex *start) {
 
 
 void Graph::removeUnreachableVertexes(Vertex* start, double radius) {
-    // filterByRadius(start, radius);
+    filterByRadius(start, radius);
     analyzeConnectivity(start);
     filterBySCC();
 }
