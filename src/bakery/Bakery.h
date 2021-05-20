@@ -30,9 +30,7 @@ public:
     Graph getGraph();
 
     Vertex *getStartingVertex() const;
-
     double getRadius() const;
-
 private:
     vector<Client *> clients;
     vector<Van> vans;

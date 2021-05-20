@@ -299,6 +299,7 @@ void Interface::showResultGraphViewer() {
 
     // Set coordinates of window center
     Vertex* startingVertex = this->bakery->getStartingVertex();
+<<<<<<< HEAD
     sf::Vector2f centerPos(startingVertex->getPosition().getLatitude(), startingVertex->getPosition().getLongitude());
     gv.setCenter(centerPos);
 
