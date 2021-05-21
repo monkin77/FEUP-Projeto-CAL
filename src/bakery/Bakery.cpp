@@ -312,7 +312,6 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
     if (optimize) optimizeVans();
 }
 
-
 void Bakery::optimizeVans() {
     // Check if there are unallocated clients and try to split their deliveries
     for (Client* client : clients)
@@ -320,11 +319,7 @@ void Bakery::optimizeVans() {
             splitDelivery(client);
         }
 
-
-    /* Since the last used van probably has space left,
-    * it will try to take some clients from other vans
-    */
-
+    // Since the last used van probably has space left, it will try to take some clients from other vans
     Van* van;
     int vanIdx;
     for (int i = vans.size() - 1; i >= 0; --i)
