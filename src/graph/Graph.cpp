@@ -224,6 +224,7 @@ const Edge* Graph::findSymmetricEdge(Edge &e) {
     return NULL;
 }
 
+// TODO: DOESN'T WORK ON DIRECTED GRAPHS
 /**
  * Bidirectional Dijkstra search.
  * @param s

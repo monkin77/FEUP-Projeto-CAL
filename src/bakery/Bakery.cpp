@@ -138,6 +138,7 @@ void Bakery::nearestNeighbour(Van& van) {
         this->graph.dijkstraShortestPath(v, this->startingVertex);
         returningTime = this->startingVertex->dist;
     }
+
     this->graph.addPathToEdgeList(van.getEdges(), v, this->startingVertex);
 
     van.addTime(Time(returningTime));
@@ -170,7 +171,7 @@ void Bakery::filterClients() {
 }
 
 // TODO: MAKE A WAY FOR BIDIRECTION DIJKSTRA TO STORE EDGES
-// TODO: STORE THE EDGES FROM LAST CLIENT TO BAKERY
+// TODO: STORE THE EDGES FROM LAST CLIENT TO BAKERY. USE NORMAL DIJKSTRA IF DIRECTED
 void Bakery::greedyWithDijkstra(Van& van) {
     van.sortClientsByTime();
 
@@ -247,7 +248,6 @@ int Bakery::knapsackAllocation(Van &v, const vector<int>& values) {
     return removed;
 }
 
-//TODO: Try different weights
 int Bakery::greedyAllocation(Van &v) {
     int count = 0;
     int capacity = v.getTotalBread();
@@ -309,21 +309,51 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
             clientsAllocated += greedyAllocation(v);
         }
     }
+    if (optimize) optimizeVans();
+}
 
-    // TODO: calculateSimulation function that checks if it gets better. Check if there are clients missing and space available
-    if (optimize) {
-        /* Since the last used van probably has space left,
-         * it will try to take some clients from other vans
-         */
-        for (int i = vans.size() - 1; i >= 0; --i)
-            if (!vans[i].getClients().empty()) {
-                for (int j = i - 1; j >= 0; --j) {
-                    Client *client = vans[j].removeFarthestClientInRange(vans[i].getAvailableBread());
-                    if (client != NULL) vans[i].addClient(client);
-                }
-                break;
-            }
+
+void Bakery::optimizeVans() {
+    // Check if there are unallocated clients and try to split their deliveries
+    for (Client* client : clients)
+        if (!client->isAllocated()) {
+            splitDelivery(client);
+        }
+
+
+    /* Since the last used van probably has space left,
+    * it will try to take some clients from other vans
+    */
+
+    Van* van;
+    int vanIdx;
+    for (int i = vans.size() - 1; i >= 0; --i)
+        if (!vans[i].getClients().empty()) {
+            van = &vans[i];
+            vanIdx = i;
+        }
+
+    for (int i = 0; i < vanIdx; ++i) {
+        int oldCost;
+        Client* client = vans[i].getWorstClientInRange(van->getTotalBread() - van->getReservedBread(), oldCost);
+        if (client == NULL) continue;
+
+        // Check if it's worth it to move client
+        int newCost = 0;
+        for (Client* client2 : van->getClients()) {
+            newCost += client->getVertex()->getPosition().distance(client2->getVertex()->getPosition());
+            newCost -= abs((client->getDeliveryTime() - client2->getDeliveryTime()).toMinutes());
+        }
+
+        if (newCost < oldCost) {
+            van->addClient(client);
+            vans[i].removeClient(client);
+        }
     }
+}
+
+void Bakery::splitDelivery(Client *client) {
+
 }
 
 void Bakery::solveFirstPhase() {
