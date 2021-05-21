@@ -353,7 +353,33 @@ void Bakery::optimizeVans() {
 }
 
 void Bakery::splitDelivery(Client *client) {
+    bool possible = false;
+    int totalCapacity = 0;
 
+    for (Van van : vans) {
+        totalCapacity += van.getTotalBread() - van.getReservedBread();
+        if (totalCapacity >= client->getBreadQuantity()) {
+            possible = true;
+            break;
+        }
+    }
+    if (!possible) return;
+
+    for (Van& van : vans) {
+        if (van.getTotalBread() - van.getReservedBread() >= client->getBreadQuantity()) {
+            van.addClient(client);
+            client->setAllocated(true);
+            break;
+        } else {
+            // WATCH OUT ID
+            Client *newClient = new Client(client->getId(), client->getName(), client->getVertex(),
+                                           client->getDeliveryTime(), van.getTotalBread() - van.getReservedBread());
+            clients.push_back(newClient);
+            van.addClient(newClient);
+            newClient->setAllocated(true);
+            client->setBreadQuantity(client->getBreadQuantity() - newClient->getBreadQuantity());
+        }
+    }
 }
 
 void Bakery::solveFirstPhase() {
