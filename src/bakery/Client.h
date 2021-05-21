@@ -33,6 +33,8 @@ public:
 
     void setRealTime(const Time &realTime);
 
+    void setBreadQuantity(int breadQuantity);
+
     bool isAllocated() const;
 
     void setAllocated(bool allocated);
