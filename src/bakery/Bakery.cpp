@@ -131,7 +131,6 @@ void Bakery::nearestNeighbour(Van& van) {
     }
 
     int returningTime = this->graph.bidirectionalDijkstra(v, this->startingVertex);
-    this->graph.addPathToEdgeList(van.getEdges(), v, this->startingVertex);
 
     van.addTime(Time(returningTime));
     van.setClients(clients);
