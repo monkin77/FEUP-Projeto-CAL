@@ -293,25 +293,6 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
     if (optimize) optimizeVans();
 }
 
-<<<<<<< HEAD
-    // TODO: calculateSimulation function that checks if it gets better. Check if there are clients missing and space available
-    if (optimize) {
-        /* Since the last used van probably has space left,
-         * it will try to take some clients from other vans
-         */
-        for (int i = vans.size() - 1; i >= 0; --i)
-            if (!vans[i].getClients().empty()) {
-                for (int j = i - 1; j >= 0; --j) {
-                    Client *client = vans[j].removeFarthestClientInRange(vans[i].getAvailableBread());
-                    if (client != NULL) vans[i].addClient(client);
-                }
-                break;
-            }
-=======
-// TODO: calculateSimulation function that checks if it gets better. Check if there are clients missing and space available
-// SEE IF THERE ARE STILL CLIENTS -> SPLIT THE DELIVERIES
-// TRY TO FILL THE LAST VAN WITH BAD CLIENTS FROM OTHERS
-// CHECK IF THE TRADE IS ACTUALLY BETTER
 void Bakery::optimizeVans() {
     // Check if there are unallocated clients and try to split their deliveries
     for (Client* client : clients)
@@ -319,11 +300,7 @@ void Bakery::optimizeVans() {
             splitDelivery(client);
         }
 
-
-    /* Since the last used van probably has space left,
-    * it will try to take some clients from other vans
-    */
-
+    // Since the last used van probably has space left, it will try to take some clients from other vans
     Van* van;
     int vanIdx;
     for (int i = vans.size() - 1; i >= 0; --i)
@@ -348,7 +325,6 @@ void Bakery::optimizeVans() {
             van->addClient(client);
             vans[i].removeClient(client);
         }
->>>>>>> 8bed6fb (Last van optimization)
     }
 }
 
