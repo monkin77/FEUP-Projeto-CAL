@@ -210,6 +210,7 @@ Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
     return NULL;
 }
 
+// TODO: DOESN'T WORK ON DIRECTED GRAPHS
 /**
  * Bidirectional Dijkstra search.
  * @param s

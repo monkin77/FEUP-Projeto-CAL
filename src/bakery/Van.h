@@ -44,12 +44,12 @@ public:
     void sortClientsByTime();
 
     void addClient(Client* c);
+    void removeClient(Client* c);
     void addEdge(Edge& e);
+
     void makeDelivery(Time travelTime, Time delay, int breadNum);
-
-    Client* removeFarthestClientInRange(int maxBreadRange);
-
     int getAvailableBread();
+    Client* getWorstClientInRange(int maxBreadRange, int &clientCost);
 };
 
 

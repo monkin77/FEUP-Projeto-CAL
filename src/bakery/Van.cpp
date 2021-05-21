@@ -74,32 +74,30 @@ void Van::sortClientsByTime() {
 }
 
 /**
- * Returns the farthest client from the others in the Van, where the breads ordered are less than the Van capacity
+ * Returns the client with the highest cost, where the breads ordered are less than the Van capacity
  * If none, returns NULL
  * @param maxBreadRange
  * @return Best Client Choice, NULL otherwise
  */
-Client *Van::removeFarthestClientInRange(int maxBreadRange) {
-    int chosen = -1;
-    int maxDistance = 0;
+Client *Van::getWorstClientInRange(int maxBreadRange, int &clientCost) {
+    Client* chosen = NULL;
+    int maxCost = 0;
     for (int i = 0; i < clients.size(); ++i) {
         Client* client = clients[i];
         if (client->getBreadQuantity() > maxBreadRange) continue;
-        int dist = 0;
+        int cost = 0;
         for (Client *client2 : clients) {
             if (client->getId() == client2->getId()) continue;
-            dist += client->getVertex()->getPosition().distance(client2->getVertex()->getPosition());
+            cost += client->getVertex()->getPosition().distance(client2->getVertex()->getPosition());
+            cost -= abs((client->getDeliveryTime() - client2->getDeliveryTime()).toMinutes());
         }
-        if (dist > maxDistance) {
-            maxDistance = dist;
-            chosen = i;
+        if (cost > maxCost) {
+            maxCost = cost;
+            chosen = client;
         }
     }
-    if (chosen == -1) return NULL;
-    Client* result = clients[chosen];
-    reservedBread -= result->getBreadQuantity();
-    clients.erase(clients.begin() + chosen);
-    return result;
+    clientCost = maxCost;
+    return chosen;
 }
 
 int Van::getReservedBread() const {
@@ -108,4 +106,13 @@ int Van::getReservedBread() const {
 
 int Van::getAvailableBread() {
     return totalBread - reservedBread;
+}
+
+void Van::removeClient(Client *c) {
+    for (vector<Client*>::iterator it = clients.begin(); it != clients.end(); ++it)
+        if ((*it)->getId() == c->getId()) {
+            clients.erase(it);
+            break;
+        }
+    reservedBread -= c->getBreadQuantity();
 }

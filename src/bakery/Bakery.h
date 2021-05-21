@@ -54,6 +54,8 @@ private:
     void allocateClientsToVans(bool useKnapsack, bool optimize);
     int knapsackAllocation(Van& v, const vector<int>& values);
     int greedyAllocation(Van& v);
+    void optimizeVans();
+    void splitDelivery(Client* client);
 };
 
 
