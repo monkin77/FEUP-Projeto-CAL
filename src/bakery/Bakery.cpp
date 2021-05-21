@@ -130,6 +130,7 @@ void Bakery::nearestNeighbour(Van& van) {
         van.makeDelivery(Time(v->dist), Time(0), closestClient->getBreadQuantity());
     }
 
+
     int returningTime;
 
     if(!this->graph.getIsDirected())
