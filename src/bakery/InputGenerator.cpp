@@ -21,7 +21,7 @@ Graph InputGenerator::getGraph() {
 
 
 void InputGenerator::generateBakeryInput() {
-    vector<string> namesList{"Ana", "Maria", "João", "Pedro", "Tiago", "Joana", "Leonor", "Matilde", "Helena", "Rui", "Mário", "Bruno", "Domingos", "Henrique"};
+    vector<string> namesList{"Ana", "Maria", "Joao", "Pedro", "Tiago", "Joana", "Leonor", "Matilde", "Helena", "Rui", "Mario", "Bruno", "Domingos", "Henrique"};
     int numClients, maxDelay, maxTimeBefore, radius, numVans, maxVanCapacity, deliveryDelay, maxClientsBread;
     string path;
 
