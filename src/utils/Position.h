@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_POSITION_H
 #define FEUP_PROJETO_CAL_POSITION_H
 
@@ -30,4 +26,4 @@ public:
 
 
 
-#endif //FEUP_PROJETO_CAL_POSITION_H
+#endif

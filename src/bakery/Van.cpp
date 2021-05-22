@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #include "Van.h"
 
 Van::Van(int totalBread, const Time &deliveryTime) : totalBread(totalBread), deliveryTime(deliveryTime) {

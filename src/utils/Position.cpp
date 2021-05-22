@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #include "Position.h"
 
 using namespace std;

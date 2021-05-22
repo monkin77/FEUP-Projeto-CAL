@@ -116,7 +116,6 @@ void Interface::servicePlanner() {
             bakery->solveThirdPhase(useKnapsack, optimize);
             break;
         case 4:
-            // bakery->getGraph().displaySccTarjan();
             bakery->filterBakerySCCComponent();
 
             this->showSCCGraphViewer();
@@ -323,11 +322,6 @@ void Interface::showResultGraphViewer() {
         }
     }
 
-    // Make the “background.png” image the background
-    // gv.setBackground("resources/maps/PenafielMap/Penafiel_strong_component.png");
-
-    // gv.setEnabledNodes(false); // Disable node drawing
-    // gv.setEnabledEdgesText(false); // Disable edge text drawing
     gv.setZipEdges(true);
 
     // Create window
@@ -366,9 +360,6 @@ void Interface::showSCCGraphViewer() {
         }
     }
 
-    // Make the “background.png” image the background
-    // gv.setBackground("resources/maps/PenafielMap/Penafiel_strong_component.png");
-
     gv.setEnabledNodes(false); // Disable node drawing
     gv.setEnabledEdgesText(false); // Disable edge text drawing
     gv.setZipEdges(true);
@@ -386,14 +377,13 @@ void Interface::addNodeToGV(Vertex* v) {
     } catch (out_of_range err) {
         sf::Vector2f pos(v->getPosition().getLatitude(), v->getPosition().getLongitude());
         gvNode &currNode = gv.addNode(v->getId(), pos); // Create node
-        // currNode.setLabel(to_string(v->getId()));
+
         if(v == this->bakery->getStartingVertex()) {
             currNode.setColor(GraphViewer::ORANGE);
             currNode.setSize(30);
         }
         else if(v->getClient() != NULL) {
             currNode.setColor(GraphViewer::GREEN);
-            // currNode.setIcon()
             currNode.setSize(30);
         }
     }
@@ -407,8 +397,5 @@ void Interface::addEdgeToGV(Edge &e, gvEdge::EdgeType edgeType) {
         gvNode& srcNode = gv.getNode(e.getOrig()->getId());
         gvNode& destNode =  gv.getNode(e.getDest()->getId());
         gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, edgeType);
-        // currEdge.setLabel(to_string(e.getId()));
-        // currEdge.setLabelColor(GraphViewer::RED);
-        // currEdge.setLabelSize(20);
     }
 }

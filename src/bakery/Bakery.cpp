@@ -1,7 +1,3 @@
-//
-// Created by Domingos Santos on 05/05/2021.
-//
-
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -9,7 +5,6 @@
 #include "../utils/GraphBuilder.h"
 
 using namespace std;
-
 
 Bakery::Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius,
                int maxDelay, int maxTimeBefore, bool isDirected) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
@@ -171,8 +166,6 @@ void Bakery::filterClients() {
     }
 }
 
-// TODO: MAKE A WAY FOR BIDIRECTION DIJKSTRA TO STORE EDGES
-// TODO: STORE THE EDGES FROM LAST CLIENT TO BAKERY. USE NORMAL DIJKSTRA IF DIRECTED
 void Bakery::greedyWithDijkstra(Van& van) {
     van.sortClientsByTime();
 
@@ -297,7 +290,6 @@ int Bakery::greedyAllocation(Van &v) {
     return count;
 }
 
-// TODO: Explore the idea of sorting clients by position, somehow
 void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
     sort(vans.begin(), vans.end(), [](const Van& v1, const Van& v2) -> bool {
         return v1.getTotalBread() > v2.getTotalBread();
@@ -380,7 +372,6 @@ void Bakery::splitDelivery(Client *client) {
             client->setAllocated(true);
             break;
         } else {
-            // WATCH OUT ID
             Client *newClient = new Client(client->getId(), client->getName(), client->getVertex(),
                                            client->getDeliveryTime(), van.getAvailableBread());
             clients.push_back(newClient);

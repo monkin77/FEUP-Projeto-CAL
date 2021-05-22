@@ -1,6 +1,3 @@
-//
-// Created by Domingos Santos on 20/05/2021.
-//
 #include "InputGenerator.h"
 
 #include <iostream>
@@ -9,10 +6,7 @@
 #include <stdlib.h>
 #include <iomanip>
 
-#include "graphviewer.h"
-#include "../bakery/Client.h"
 #include "../utils/GraphBuilder.h"
-#include "../graph/Graph.h"
 
 
 Graph InputGenerator::getGraph() {

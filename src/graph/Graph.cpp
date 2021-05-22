@@ -1,10 +1,5 @@
-//
-// Created by joaog on 4/28/2021.
-//
-
 #include <iostream>
 #include "Graph.h"
-#include "../utils/Position.h"
 
 using namespace std;
 
@@ -226,7 +221,6 @@ const Edge* Graph::findSymmetricEdge(Edge &e) {
     return NULL;
 }
 
-// TODO: DOESN'T WORK ON DIRECTED GRAPHS
 /**
  * Bidirectional Dijkstra search.
  * @param s

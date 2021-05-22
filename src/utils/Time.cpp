@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #include "Time.h"
 
 Time::Time() {
@@ -34,8 +30,7 @@ int Time::toMinutes() const {
 }
 
 /**
- * Calculate the difference between two times, in minutes
- * Note that this can return a negative time
+ * Note that this can and will return a negative time
  */
 Time Time::operator-(const Time &t2) const {
     return Time(this->toMinutes() - t2.toMinutes());

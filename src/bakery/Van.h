@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_VAN_H
 #define FEUP_PROJETO_CAL_VAN_H
 
@@ -21,7 +17,6 @@ private:
     Time totalTime;
     Time totalDelay;
 
-    // these containers might become HashMaps
     vector<Client *> clients;
     vector<Edge> edges;
 public:

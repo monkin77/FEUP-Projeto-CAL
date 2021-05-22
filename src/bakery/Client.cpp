@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #include "Client.h"
 
 Client::Client(int id, const string &name, Vertex* vertex, const Time &scheduledTime, int breadQuantity) {

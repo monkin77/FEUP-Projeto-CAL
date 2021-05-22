@@ -1,7 +1,3 @@
-//
-// Created by Domingos Santos on 05/05/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_BAKERY_H
 #define FEUP_PROJETO_CAL_BAKERY_H
 
@@ -58,4 +54,4 @@ private:
 
 
 
-#endif //FEUP_PROJETO_CAL_BAKERY_H
+#endif
