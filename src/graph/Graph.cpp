@@ -265,7 +265,7 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
                 d->dist = totalDistance;
                 // Set the path for the intersection vertex to be in the right direction
                 Vertex* oppositeStart = destV->path;
-                Edge& oppositeEdge = destV->pathEdge;
+                Edge oppositeEdge = destV->pathEdge;
                 destV->path = sV;
                 destV->pathEdge = e;
                 this->invertOppositeEdges(oppositeStart, oppositeEdge, destV, d);
