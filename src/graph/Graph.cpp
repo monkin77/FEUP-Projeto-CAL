@@ -121,6 +121,23 @@ bool Graph::relax(Vertex *v, Edge e) {
     return false;
 }
 
+/**
+ * Auxiliary function used by Dijkstra
+ * Analyzes the path from v to e.dest
+ */
+
+bool Graph::backwardsRelax(Vertex *v, Edge e) {
+    Vertex* w = e.dest;
+    if (v->dist + e.weight < w->dist) {
+        w->dist = v->dist + e.weight;
+        v->path = w;
+        const Edge& symmetricEdge = this->findSymmetricEdge(e);
+        v->pathEdge = symmetricEdge;
+        return true;
+    }
+    return false;
+}
+
 
 void Graph::dijkstraShortestPath(Vertex *s) {
     for (Vertex* v : vertexSet) {
@@ -209,6 +226,20 @@ Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
 
     return NULL;
 }
+/**
+ * Finds the Edge in the opposite direction of e (Only works on undirectional graphs)
+ * @param e
+ * @return Edge if exists, NULL otherwise
+ */
+const Edge& Graph::findSymmetricEdge(Edge &e) {
+    Vertex* src = e.getOrig();
+    Vertex* dest = e.getDest();
+
+    for(const Edge& oppositeEdge : dest->getAdj()) {
+        if(oppositeEdge.getDest() == src)
+            return oppositeEdge;
+    }
+}
 
 /**
  * Bidirectional Dijkstra search.
@@ -248,6 +279,9 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
             Vertex* destV = e.dest;
             if( destV->backwardsVisited == true){   // If it has already been visited in the other direction
                 int totalDistance = this->joinBidirectionalDistances(destV, sV, e.weight);
+                // Set the path for the intersection vertex
+                destV->path = sV;
+                destV->pathEdge = e;
                 return totalDistance;
             }
 
@@ -270,14 +304,20 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
             Vertex* destV = e.dest;
             if( destV->visited == true){   // If it has already been visited in the other direction
                 int totalDistance = this->joinBidirectionalDistances(destV, dV, e.weight);
+                // Set the path for the last vertex before intersection going backwards
+                dV->path = destV;
+                const Edge& symmetricEdge = this->findSymmetricEdge(e);
+                dV->pathEdge = symmetricEdge;
                 return totalDistance;
             }
 
             int oldDist = e.dest->dist;
-            if(relax(dV, e)) {
+            if(backwardsRelax(dV, e)) {
                 destV->backwardsVisited = true;
-                if(oldDist == INF) d_queue.insert(e.dest);
-                else d_queue.decreaseKey(e.dest);
+                if(oldDist == INF)
+                    d_queue.insert(e.dest);
+                else
+                    d_queue.decreaseKey(e.dest);
             }
         }
     }
