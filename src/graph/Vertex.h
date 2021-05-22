@@ -17,7 +17,6 @@ class Client;   // Forward declaration
 
 class Vertex {
     int id;
-    int vertexSetIdx;   // Represents the order of insertion
     Position info;						// content of the vertex (position)
     Client* client;
 
