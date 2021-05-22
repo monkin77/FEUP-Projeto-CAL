@@ -179,7 +179,9 @@ void Bakery::greedyWithDijkstra(Van& van) {
     for (int i = 0; i < van.getClients().size(); ++i) {
         Client* client = van.getClients()[i];
         v2 = client->getVertex();
-        graph.dijkstraShortestPath(v1, v2);
+
+        if(!this->graph.getIsDirected()) this->graph.bidirectionalDijkstra(v1, v2);
+        else this->graph.dijkstraShortestPath(v1, v2);
 
         Time travelTime(v2->dist);
         Time delay(0);
