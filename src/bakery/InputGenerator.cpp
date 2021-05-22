@@ -37,7 +37,6 @@ void InputGenerator::generateBakeryInput() {
     string outputFileName;
     cout << "Insert the name of the output file" << endl;
     cin >> outputFileName;
-    outputFileName += ".txt";
 
     ofstream fout;
     fout.open("resources/bakeryInput/" + outputFileName);

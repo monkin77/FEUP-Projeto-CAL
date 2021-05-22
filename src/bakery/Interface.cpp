@@ -59,7 +59,7 @@ void Interface::servicePlanner() {
     cout << "[1]: Single van visiting all clients without delivery times or capacity" << endl;
     cout << "[2]: Single van visiting all clients with delivery times but no capacity" << endl;
     cout << "[3]: Multiple vans with client allocation, capacity and delivery times" << endl;
-    cout << "[4]: Show SCC components of the graph" << endl;
+    cout << "[4]: Show SCC component of the Bakery" << endl;
 
     while (true) {
         cin >> selectedPhase;
@@ -116,8 +116,10 @@ void Interface::servicePlanner() {
             bakery->solveThirdPhase(useKnapsack, optimize);
             break;
         case 4:
-            bakery->getGraph().displaySccTarjan();
-            this->showSCCsGraphViewer();
+            // bakery->getGraph().displaySccTarjan();
+            bakery->filterBakerySCCComponent();
+
+            this->showSCCGraphViewer();
             exit(0);
         default:
             break;
@@ -295,30 +297,13 @@ void Interface::printResult() {
 void Interface::showResultGraphViewer() {
     cout << "Loading GraphViewer..." << endl;
 
-    auto edgeType = this->bakery->getGraph().getIsDirected() == true ? gvEdge::DIRECTED : gvEdge::UNDIRECTED;
-
     // Set coordinates of window center
     Vertex* startingVertex = this->bakery->getStartingVertex();
     sf::Vector2f centerPos(startingVertex->getPosition().getLatitude(), startingVertex->getPosition().getLongitude());
     gv.setCenter(centerPos);
 
     vector<Van> vans = bakery->getVans();
-    /*
-    for(int i = 0; i < this->bakery->getGraph().getNumVertex(); i++) {
-        Vertex* currVertex = this->bakery->getGraph().getVertexSet()[i];
-        sf::Vector2f pos(currVertex->getPosition().getLatitude(), currVertex->getPosition().getLongitude());
-        gvNode &currNode = gv.addNode(currVertex->getId(), pos); // Create node
-        if(currV == startingVertex) {
-                    currNode.setColor(GraphViewer::ORANGE);
-                    currNode.setSize(30);
-                }
-                else if(currV->getClient() != NULL) {
-                    currNode.setColor(GraphViewer::GREEN);
-                    // currNode.setIcon()
-                    currNode.setSize(30);
-                }
-    }
-    */
+
     for (int i = 0; i < vans.size(); ++i) {
         Van &van = vans[i];
         vector<Client *> clients = van.getClients();
@@ -331,46 +316,9 @@ void Interface::showResultGraphViewer() {
         Vertex* currV;
         for (int i = 0; i < edges.size(); ++i) {
             Edge& e = edges[i];
-            try {
-                currV = e.getOrig();
-                gv.getNode(currV->getId());
-            } catch (out_of_range err) {
-                sf::Vector2f pos(currV->getPosition().getLatitude(), currV->getPosition().getLongitude());
-                gvNode &currNode = gv.addNode(currV->getId(), pos); // Create node
-                if(currV == startingVertex) {
-                    currNode.setColor(GraphViewer::ORANGE);
-                    currNode.setSize(30);
-                }
-                else if(currV->getClient() != NULL) {
-                    currNode.setColor(GraphViewer::GREEN);
-                    // currNode.setIcon()
-                    currNode.setSize(30);
-                }
-            }
-            try {
-                currV = e.getDest();
-                gv.getNode(currV->getId());
-            } catch (out_of_range err) {
-                sf::Vector2f pos(currV->getPosition().getLatitude(), currV->getPosition().getLongitude());
-                gvNode &currNode = gv.addNode(currV->getId(), pos); // Create node
-                if(currV == startingVertex) {
-                    currNode.setColor(GraphViewer::ORANGE);
-                    currNode.setSize(30);
-                }
-                else if(currV->getClient() != NULL) {
-                    currNode.setColor(GraphViewer::GREEN);
-                    // currNode.setIcon()
-                    currNode.setSize(30);
-                }
-            }
-            try {
-                gv.getEdge(e.getId());
-            }
-            catch (out_of_range err) {
-                gvNode& srcNode = gv.getNode(e.getOrig()->getId());
-                gvNode& destNode =  gv.getNode(e.getDest()->getId());
-                gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, edgeType);
-            }
+            this->addNodeToGV(e.getOrig());
+            this->addNodeToGV(e.getDest());
+            this->addEdgeToGV(e, gvEdge::DIRECTED);
         }
     }
 
@@ -378,7 +326,7 @@ void Interface::showResultGraphViewer() {
     // gv.setBackground("resources/maps/PenafielMap/Penafiel_strong_component.png");
 
     // gv.setEnabledNodes(false); // Disable node drawing
-    gv.setEnabledEdgesText(false); // Disable edge text drawing
+    // gv.setEnabledEdgesText(false); // Disable edge text drawing
     gv.setZipEdges(true);
 
     // Create window
@@ -388,10 +336,10 @@ void Interface::showResultGraphViewer() {
     gv.join();
 }
 
-void Interface::showSCCsGraphViewer() {
+void Interface::showSCCGraphViewer() {
     cout << "Loading GraphViewer..." << endl;
 
-    auto edgeType = this->bakery->getGraph().getIsDirected() == true ? gvEdge::DIRECTED : gvEdge::UNDIRECTED;
+    gvEdge::EdgeType edgeType = this->bakery->getGraph().getIsDirected() == true ? gvEdge::DIRECTED : gvEdge::UNDIRECTED;
 
     // Set coordinates of window center
     Vertex* startingVertex = this->bakery->getStartingVertex();
@@ -413,7 +361,7 @@ void Interface::showSCCsGraphViewer() {
             gvNode& srcNode = gv.getNode(edge.getOrig()->getId());
             gvNode& destNode =  gv.getNode(edge.getDest()->getId());
             gvEdge &currEdge = gv.addEdge(edge.getId(), srcNode, destNode, edgeType);
-            currEdge.setColor(GraphViewer::CYAN);   // Set color according to the component
+            // currEdge.setColor(GraphViewer::CYAN);   // Set color according to the component
         }
     }
 
@@ -429,4 +377,37 @@ void Interface::showSCCsGraphViewer() {
 
     // Join viewer thread (blocks till window closed)
     gv.join();
+}
+
+void Interface::addNodeToGV(Vertex* v) {
+    try {
+        gv.getNode(v->getId());
+    } catch (out_of_range err) {
+        sf::Vector2f pos(v->getPosition().getLatitude(), v->getPosition().getLongitude());
+        gvNode &currNode = gv.addNode(v->getId(), pos); // Create node
+        // currNode.setLabel(to_string(v->getId()));
+        if(v == this->bakery->getStartingVertex()) {
+            currNode.setColor(GraphViewer::ORANGE);
+            currNode.setSize(30);
+        }
+        else if(v->getClient() != NULL) {
+            currNode.setColor(GraphViewer::GREEN);
+            // currNode.setIcon()
+            currNode.setSize(30);
+        }
+    }
+}
+
+void Interface::addEdgeToGV(Edge &e, gvEdge::EdgeType edgeType) {
+    try {
+        gv.getEdge(e.getId());
+    }
+    catch (out_of_range err) {
+        gvNode& srcNode = gv.getNode(e.getOrig()->getId());
+        gvNode& destNode =  gv.getNode(e.getDest()->getId());
+        gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, edgeType);
+        // currEdge.setLabel(to_string(e.getId()));
+        // currEdge.setLabelColor(GraphViewer::RED);
+        // currEdge.setLabelSize(20);
+    }
 }

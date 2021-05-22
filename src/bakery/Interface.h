@@ -24,7 +24,9 @@ public:
     void servicePlanner();
     void printResult();
     void showResultGraphViewer();
-    void showSCCsGraphViewer();
+    void showSCCGraphViewer();
+    void addNodeToGV(Vertex* v);
+    void addEdgeToGV(Edge& e, gvEdge::EdgeType edgeType);
     void writeResultInFile();
 };
 

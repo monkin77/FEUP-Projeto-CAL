@@ -51,8 +51,11 @@ public:
     void dijkstraShortestPath(Vertex *s, Vertex* d);
     Client* dijkstraClosestClient(Vertex *s, vector<Vertex*> dests);
 
+    // Bidirectional Dijkstra Methods
     int bidirectionalDijkstra(Vertex *s, Vertex *d);
     int joinBidirectionalDistances(Vertex* intersectionVertex, Vertex* oppDirectionVertex, int oppDirectionWeight);
+    const Edge* findSymmetricEdge(Edge& e);
+    void invertOppositeEdges(Vertex *oppositeStart, Edge& edge, Vertex* intersectionVertex, Vertex* lastVertex);
 
     void addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest);
 

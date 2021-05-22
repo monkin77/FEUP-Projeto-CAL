@@ -20,7 +20,7 @@ public:
     void solveFirstPhase();
     void solveSecondPhase();
     void solveThirdPhase(bool useKnapsack, bool optimize);
-
+    void filterBakerySCCComponent();
 
     void addClient(int id, string name, Position pos, Time time, int breadNum);
     void addClient(int id, string name, int vertexID, Time time, int breadNum);
@@ -30,6 +30,8 @@ public:
     Graph getGraph();
 
     Vertex *getStartingVertex() const;
+
+    double getRadius() const;
 
 private:
     vector<Client *> clients;
