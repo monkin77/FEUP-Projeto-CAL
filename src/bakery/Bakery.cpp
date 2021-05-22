@@ -15,7 +15,7 @@ Bakery::Bakery(const string &graphFile, const vector<Van> &vans, Position start,
                int maxDelay, int maxTimeBefore, bool isDirected) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
 
     this->graph.setIsDirected(isDirected);
-    if (!readGraphFromFile(this->graph, graphFile)) {
+    if (!readGraphFromFile(this->graph, graphFile, false)) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
     }
@@ -35,24 +35,22 @@ Bakery::Bakery(string filePath) {
 
     string graphPathName, clientName;
 
-    int isDirected, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore;
+    int isDirected, numVans, vanCapacity, deliveryTime, maxDelay, maxTimeBefore, vertexID;
     char token;
-    double latitude, longitude;
 
-    fin >> isDirected >> graphPathName >> token >> latitude >> token >> longitude >> token >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
+    fin >> isDirected >> graphPathName >> vertexID >> this->radius >> maxDelay >> maxTimeBefore >> numVans;
     this->maxTimeBefore = Time(maxTimeBefore);
     this->maxDelay = Time(maxDelay);
 
     this->graph.setIsDirected(isDirected == 1 ? true : false);
 
-    if (!readGraphFromFile(this->graph, graphPathName)) {
+    if (!readGraphFromFile(this->graph, graphPathName, false)) {
         cout << "Error reading graph from file" << endl;
         throw runtime_error("File not found (Graph)");
     }
 
-    Position bakeryPosition(latitude, longitude);
 
-    Vertex* bakeryVertex = this->graph.findVertex(bakeryPosition);
+    Vertex* bakeryVertex = this->graph.findVertex(vertexID);
     if( bakeryVertex == NULL)
         throw runtime_error("Invalid Bakery Position");
 
@@ -72,15 +70,22 @@ Bakery::Bakery(string filePath) {
     fin >> numClients;
 
     for (int i = 0; i < numClients; i++) {
-        fin >> clientName >> clientId >> token >> latitude >> token >> longitude >> token >> hours >> token >> minutes >> numBread;
+        fin >> clientName >> clientId >> vertexID >> hours >> token >> minutes >> numBread;
 
-        Position clientPosition(latitude, longitude);
-        addClient(clientId, clientName, clientPosition, Time(hours, minutes), numBread);
+        addClient(clientId, clientName, vertexID, Time(hours, minutes), numBread);
     }
 }
 
 void Bakery::addClient(int id, string name, Position pos, Time time, int breadNum) {
     Vertex* v = graph.findVertex(pos);
+    if (v == NULL) return; // Discard this Client
+    Client* client = new Client(id, name, v, time, breadNum);
+    v->setClient(client);
+    clients.push_back(client);
+}
+
+void Bakery::addClient(int id, string name, int vertexID, Time time, int breadNum) {
+    Vertex* v = graph.findVertex(vertexID);
     if (v == NULL) return; // Discard this Client
     Client* client = new Client(id, name, v, time, breadNum);
     v->setClient(client);
@@ -157,13 +162,26 @@ void Bakery::filterClients() {
 }
 
 // TODO: MAKE A WAY FOR BIDIRECTION DIJKSTRA TO STORE EDGES
-// TODO: STORE THE EDGES FROM LAST CLIENT TO BAKERY
+// TODO: STORE THE EDGES FROM LAST CLIENT TO BAKERY. USE NORMAL DIJKSTRA IF DIRECTED
 void Bakery::greedyWithDijkstra(Van& van) {
     van.sortClientsByTime();
 
     Vertex *v1 = startingVertex, *v2;
     Time start(7, 0);
+
     for (int i = 0; i < van.getClients().size(); ++i) {
+        // If the client after the current one is much closer and already waiting for the delivery, swap them
+        if (i < van.getClients().size() - 1) {
+            Client* nextClient = van.getClients()[i + 1];
+            if (nextClient->getDeliveryTime() < start + van.getTotalTime()) {
+                int d1 = v1->getPosition().distance(van.getClients()[i]->getVertex()->getPosition());
+                int d2 = v1->getPosition().distance(nextClient->getVertex()->getPosition());
+
+                if (d1 > 10 * d2)
+                    iter_swap(van.getClients().begin() + i, van.getClients().begin() + i + 1);
+            }
+        }
+
         Client* client = van.getClients()[i];
         v2 = client->getVertex();
         graph.dijkstraShortestPath(v1, v2);
@@ -223,7 +241,6 @@ int Bakery::knapsackAllocation(Van &v, const vector<int>& values) {
     return removed;
 }
 
-//TODO: Try different weights
 int Bakery::greedyAllocation(Van &v) {
     int count = 0;
     int capacity = v.getTotalBread();
@@ -285,20 +302,71 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
             clientsAllocated += greedyAllocation(v);
         }
     }
+    if (optimize) optimizeVans();
+}
 
-    // TODO: calculateSimulation function that checks if it gets better. Check if there are clients missing and space available
-    if (optimize) {
-        /* Since the last used van probably has space left,
-         * it will try to take some clients from other vans
-         */
-        for (int i = vans.size() - 1; i >= 0; --i)
-            if (!vans[i].getClients().empty()) {
-                for (int j = i - 1; j >= 0; --j) {
-                    Client *client = vans[j].removeFarthestClientInRange(vans[i].getReservedBread());
-                    if (client != NULL) vans[i].addClient(client);
-                }
-                break;
-            }
+void Bakery::optimizeVans() {
+    // Check if there are unallocated clients and try to split their deliveries
+    for (Client* client : clients)
+        if (!client->isAllocated()) {
+            splitDelivery(client);
+        }
+
+    // Since the last used van probably has space left, it will try to take some clients from other vans
+    Van* van;
+    int vanIdx;
+    for (int i = vans.size() - 1; i >= 0; --i)
+        if (!vans[i].getClients().empty()) {
+            van = &vans[i];
+            vanIdx = i;
+        }
+
+    for (int i = 0; i < vanIdx; ++i) {
+        int oldCost;
+        Client* client = vans[i].getWorstClientInRange(van->getAvailableBread(), oldCost);
+        if (client == NULL) continue;
+
+        // Check if it's worth it to move client
+        int newCost = 0;
+        for (Client* client2 : van->getClients()) {
+            newCost += client->getVertex()->getPosition().distance(client2->getVertex()->getPosition());
+            newCost -= abs((client->getDeliveryTime() - client2->getDeliveryTime()).toMinutes());
+        }
+
+        if (newCost < oldCost) {
+            van->addClient(client);
+            vans[i].removeClient(client);
+        }
+    }
+}
+
+void Bakery::splitDelivery(Client *client) {
+    bool possible = false;
+    int totalCapacity = 0;
+
+    for (Van van : vans) {
+        totalCapacity += van.getAvailableBread();
+        if (totalCapacity >= client->getBreadQuantity()) {
+            possible = true;
+            break;
+        }
+    }
+    if (!possible) return;
+
+    for (Van& van : vans) {
+        if (van.getAvailableBread() >= client->getBreadQuantity()) {
+            van.addClient(client);
+            client->setAllocated(true);
+            break;
+        } else {
+            // WATCH OUT ID
+            Client *newClient = new Client(client->getId(), client->getName(), client->getVertex(),
+                                           client->getDeliveryTime(), van.getAvailableBread());
+            clients.push_back(newClient);
+            van.addClient(newClient);
+            newClient->setAllocated(true);
+            client->setBreadQuantity(client->getBreadQuantity() - newClient->getBreadQuantity());
+        }
     }
 }
 
@@ -334,4 +402,8 @@ const vector<Van> &Bakery::getVans() const {
 
 Graph Bakery::getGraph() {
     return graph;
+}
+
+Vertex *Bakery::getStartingVertex() const {
+    return startingVertex;
 }

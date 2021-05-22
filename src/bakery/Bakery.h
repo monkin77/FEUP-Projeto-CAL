@@ -23,9 +23,13 @@ public:
 
 
     void addClient(int id, string name, Position pos, Time time, int breadNum);
+    void addClient(int id, string name, int vertexID, Time time, int breadNum);
+
     const vector<Van>& getVans() const;
 
     Graph getGraph();
+
+    Vertex *getStartingVertex() const;
 
 private:
     vector<Client *> clients;
@@ -50,6 +54,8 @@ private:
     void allocateClientsToVans(bool useKnapsack, bool optimize);
     int knapsackAllocation(Van& v, const vector<int>& values);
     int greedyAllocation(Van& v);
+    void optimizeVans();
+    void splitDelivery(Client* client);
 };
 
 

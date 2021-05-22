@@ -50,3 +50,7 @@ bool Client::isAllocated() const {
 void Client::setAllocated(bool allocated) {
     Client::allocated = allocated;
 }
+
+void Client::setBreadQuantity(int breadQuantity) {
+    Client::breadQuantity = breadQuantity;
+}

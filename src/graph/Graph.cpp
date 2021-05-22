@@ -86,6 +86,7 @@ bool Graph::addEdge(int idNodeOrig, int idNodeDest, int weight) {
 }
 
 void Graph::removeVertex(int id) {
+    Vertex* removableVertex = vertexMap.at(id);
     vertexMap.erase(id);
     for (int i = 0; i < vertexSet.size(); ++i) {
         Vertex* v = vertexSet.at(i);
@@ -101,6 +102,7 @@ void Graph::removeVertex(int id) {
             }
         }
     }
+    delete removableVertex;
 }
 
 /**
@@ -208,6 +210,7 @@ Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
     return NULL;
 }
 
+// TODO: DOESN'T WORK ON DIRECTED GRAPHS
 /**
  * Bidirectional Dijkstra search.
  * @param s

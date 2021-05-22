@@ -33,7 +33,7 @@ public:
     const Time &getDeliveryTime() const;
     const Time &getTotalTime() const;
     const Time &getTotalDelay() const;
-    const vector<Client *> &getClients() const;
+    vector<Client *> &getClients();
     vector<Edge> &getEdges();
 
     int getReservedBread() const;
@@ -44,10 +44,12 @@ public:
     void sortClientsByTime();
 
     void addClient(Client* c);
+    void removeClient(Client* c);
     void addEdge(Edge& e);
-    void makeDelivery(Time travelTime, Time delay, int breadNum);
 
-    Client* removeFarthestClientInRange(int maxBreadRange);
+    void makeDelivery(Time travelTime, Time delay, int breadNum);
+    int getAvailableBread();
+    Client* getWorstClientInRange(int maxBreadRange, int &clientCost);
 };
 
 
