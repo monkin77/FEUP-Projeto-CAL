@@ -1,0 +1,26 @@
+1
+resources/maps/EspinhoMap
+13357
+50000 60 60
+5
+8 1
+15 1
+1 1
+10 1
+5 1
+15
+Domingos 0 8036 11:22 5
+Joana 1 279 18:27 2
+Henrique 2 6927 15:27 7
+Joao 3 16648 9:33 3
+Joana 4 12274 16:38 6
+Domingos 5 16898 10:18 10
+Joana 6 9120 7:55 5
+Bruno 7 11813 12:33 4
+Matilde 8 7116 9:53 9
+Helena 9 8066 13:57 8
+Maria 10 3248 11:49 9
+Bruno 11 5530 19:42 9
+Mario 12 3820 18:4 9
+Joana 13 9666 11:9 1
+Domingos 14 12272 12:33 9
