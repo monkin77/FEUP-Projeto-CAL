@@ -331,7 +331,7 @@ void Bakery::optimizeVans() {
 
     for (int i = 0; i < vanIdx; ++i) {
         int oldCost;
-        Client* client = vans[i].getWorstClientInRange(van->getTotalBread() - van->getReservedBread(), oldCost);
+        Client* client = vans[i].getWorstClientInRange(van->getAvailableBread(), oldCost);
         if (client == NULL) continue;
 
         // Check if it's worth it to move client
@@ -353,7 +353,7 @@ void Bakery::splitDelivery(Client *client) {
     int totalCapacity = 0;
 
     for (Van van : vans) {
-        totalCapacity += van.getTotalBread() - van.getReservedBread();
+        totalCapacity += van.getAvailableBread();
         if (totalCapacity >= client->getBreadQuantity()) {
             possible = true;
             break;
@@ -362,14 +362,14 @@ void Bakery::splitDelivery(Client *client) {
     if (!possible) return;
 
     for (Van& van : vans) {
-        if (van.getTotalBread() - van.getReservedBread() >= client->getBreadQuantity()) {
+        if (van.getAvailableBread() >= client->getBreadQuantity()) {
             van.addClient(client);
             client->setAllocated(true);
             break;
         } else {
             // WATCH OUT ID
             Client *newClient = new Client(client->getId(), client->getName(), client->getVertex(),
-                                           client->getDeliveryTime(), van.getTotalBread() - van.getReservedBread());
+                                           client->getDeliveryTime(), van.getAvailableBread());
             clients.push_back(newClient);
             van.addClient(newClient);
             newClient->setAllocated(true);
