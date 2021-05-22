@@ -35,6 +35,8 @@ public:
 
     void setBreadQuantity(int breadQuantity);
 
+    void setVertex(Vertex *vertex);
+
     bool isAllocated() const;
 
     void setAllocated(bool allocated);

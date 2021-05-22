@@ -1,0 +1,8 @@
+1
+resources/maps/PortugalMaps/Maia
+26122996
+50000 5 5
+1
+8 1
+1
+Leonor 0 130212550 13:29 5

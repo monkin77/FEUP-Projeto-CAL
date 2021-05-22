@@ -163,7 +163,7 @@ void Bakery::filterClients() {
     vector<Client *>::iterator it;
     for (it = clients.begin(); it != clients.end(); ++it) {
         Client* c = *it;
-        if (graph.findVertex(c->getVertex()->getId()) == NULL) {
+        if (c->getVertex() == NULL || graph.findVertex(c->getVertex()->getId()) == NULL) {
             it = clients.erase(it);
             --it;
             delete c;

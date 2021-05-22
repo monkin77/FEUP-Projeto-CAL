@@ -14,6 +14,7 @@
 #include "Vertex.h"
 #include "../utils/Position.h"
 #include "../utils/Time.h"
+#include "../bakery/Client.h"
 
 using namespace std;
 

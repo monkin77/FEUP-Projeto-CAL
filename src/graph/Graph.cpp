@@ -102,6 +102,8 @@ void Graph::removeVertex(int id) {
             }
         }
     }
+    if (removableVertex->client != NULL)
+        removableVertex->client->setVertex(NULL);
     delete removableVertex;
 }
 

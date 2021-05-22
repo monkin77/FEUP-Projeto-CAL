@@ -21,6 +21,7 @@ Graph InputGenerator::getGraph() {
 
 
 void InputGenerator::generateBakeryInput() {
+    srand(time(NULL));
     vector<string> namesList{"Ana", "Maria", "Joao", "Pedro", "Tiago", "Joana", "Leonor", "Matilde", "Helena", "Rui", "Mario", "Bruno", "Domingos", "Henrique"};
     int numClients, maxDelay, maxTimeBefore, radius, numVans, maxVanCapacity, deliveryDelay, maxClientsBread;
     string path;
@@ -50,8 +51,8 @@ void InputGenerator::generateBakeryInput() {
     readGraphFromFile(G, path, true);
 
     radius = 50000;
-    maxTimeBefore = 60;
-    maxDelay = 60;
+    maxTimeBefore = 5;
+    maxDelay = 5;
     maxVanCapacity = 20;
     deliveryDelay = 1;
     maxClientsBread = 10;
@@ -92,6 +93,7 @@ void InputGenerator::generateBakeryInput() {
         Vertex *currV = vSet.at(vertexRandomIdx);
         vertexID = currV->getId();
         G.removeVertex(currV->getId());
+        vSet = G.getVertexSet();
 
         fout << name << " " << i << " " << vertexID << " " << hour << ":" << minutes << " " << numBread << endl;
     }

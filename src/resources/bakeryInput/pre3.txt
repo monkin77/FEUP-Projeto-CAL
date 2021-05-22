@@ -1,0 +1,8 @@
+1
+resources/maps/PortugalMaps/Braga
+1226136662
+50000 5 5
+1
+8 1
+1
+Leonor 0 275979165 13:29 5

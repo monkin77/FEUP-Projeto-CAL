@@ -54,3 +54,7 @@ void Client::setAllocated(bool allocated) {
 void Client::setBreadQuantity(int breadQuantity) {
     Client::breadQuantity = breadQuantity;
 }
+
+void Client::setVertex(Vertex *vertex) {
+    Client::vertex = vertex;
+}

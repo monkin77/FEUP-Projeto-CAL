@@ -1,0 +1,57 @@
+1
+resources/maps/EspinhoMap
+2030
+50000 5 5
+1
+9 1
+50
+Bruno 0 221 19:14 8
+Leonor 1 1515 15:31 5
+Helena 2 849 16:39 9
+Tiago 3 10634 13:21 1
+Matilde 4 5105 13:59 9
+Joao 5 7903 12:24 2
+Helena 6 14218 7:31 5
+Mario 7 13020 8:12 4
+Leonor 8 15115 13:12 3
+Henrique 9 16922 17:13 9
+Helena 10 10143 11:47 3
+Bruno 11 7385 7:33 5
+Domingos 12 1212 15:43 9
+Joao 13 3526 7:34 5
+Mario 14 9971 9:24 4
+Henrique 15 8144 13:28 5
+Mario 16 4430 13:3 3
+Matilde 17 6301 17:17 9
+Pedro 18 1926 7:58 1
+Joana 19 1996 10:51 6
+Ana 20 14414 11:32 8
+Matilde 21 9054 13:59 1
+Leonor 22 16917 8:22 1
+Bruno 23 11344 16:39 3
+Henrique 24 11748 11:35 7
+Joana 25 17120 7:9 8
+Maria 26 2421 7:41 6
+Maria 27 644 7:6 1
+Maria 28 3945 13:48 6
+Mario 29 12349 14:55 8
+Mario 30 5501 10:25 10
+Tiago 31 2298 13:39 1
+Leonor 32 6533 8:20 3
+Rui 33 17456 18:9 3
+Rui 34 1315 11:26 9
+Tiago 35 1622 15:27 9
+Leonor 36 4428 7:22 8
+Henrique 37 8455 12:53 3
+Leonor 38 1490 9:20 1
+Domingos 39 12153 10:8 5
+Maria 40 9380 13:21 10
+Maria 41 10860 11:9 8
+Henrique 42 6442 12:36 7
+Domingos 43 1522 16:19 7
+Joana 44 6327 18:3 1
+Helena 45 10201 7:54 9
+Ana 46 15355 14:43 7
+Leonor 47 10657 11:43 4
+Henrique 48 2328 9:53 3
+Henrique 49 1302 18:5 9

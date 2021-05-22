@@ -1,0 +1,17 @@
+1
+resources/maps/EspinhoMap
+13357
+50000 5 5
+1
+8 1
+10
+Leonor 0 7197 13:29 5
+Ana 1 13121 7:44 6
+Henrique 2 1833 12:1 2
+Ana 3 9181 11:36 2
+Mario 4 6466 17:52 3
+Domingos 5 13591 17:35 8
+Maria 6 16075 14:9 3
+Matilde 7 6045 12:54 4
+Tiago 8 13924 11:33 5
+Bruno 9 12828 11:28 8
