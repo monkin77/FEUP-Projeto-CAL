@@ -385,7 +385,7 @@ void Interface::addNodeToGV(Vertex* v) {
     } catch (out_of_range err) {
         sf::Vector2f pos(v->getPosition().getLatitude(), v->getPosition().getLongitude());
         gvNode &currNode = gv.addNode(v->getId(), pos); // Create node
-        currNode.setLabel(to_string(v->getId()));
+        // currNode.setLabel(to_string(v->getId()));
         if(v == this->bakery->getStartingVertex()) {
             currNode.setColor(GraphViewer::ORANGE);
             currNode.setSize(30);
@@ -406,8 +406,8 @@ void Interface::addEdgeToGV(Edge &e, gvEdge::EdgeType edgeType) {
         gvNode& srcNode = gv.getNode(e.getOrig()->getId());
         gvNode& destNode =  gv.getNode(e.getDest()->getId());
         gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, edgeType);
-        currEdge.setLabel(to_string(e.getId()));
-        currEdge.setLabelColor(GraphViewer::RED);
-        currEdge.setLabelSize(20);
+        // currEdge.setLabel(to_string(e.getId()));
+        // currEdge.setLabelColor(GraphViewer::RED);
+        // currEdge.setLabelSize(20);
     }
 }
