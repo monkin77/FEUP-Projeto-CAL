@@ -295,8 +295,6 @@ void Interface::printResult() {
 void Interface::showResultGraphViewer() {
     cout << "Loading GraphViewer..." << endl;
 
-    auto edgeType = this->bakery->getGraph().getIsDirected() == true ? gvEdge::DIRECTED : gvEdge::UNDIRECTED;
-
     // Set coordinates of window center
     Vertex* startingVertex = this->bakery->getStartingVertex();
     sf::Vector2f centerPos(startingVertex->getPosition().getLatitude(), startingVertex->getPosition().getLongitude());
@@ -337,6 +335,7 @@ void Interface::showResultGraphViewer() {
             } catch (out_of_range err) {
                 sf::Vector2f pos(currV->getPosition().getLatitude(), currV->getPosition().getLongitude());
                 gvNode &currNode = gv.addNode(currV->getId(), pos); // Create node
+                currNode.setLabel(to_string(currV->getId()));
                 if(currV == startingVertex) {
                     currNode.setColor(GraphViewer::ORANGE);
                     currNode.setSize(30);
@@ -353,6 +352,7 @@ void Interface::showResultGraphViewer() {
             } catch (out_of_range err) {
                 sf::Vector2f pos(currV->getPosition().getLatitude(), currV->getPosition().getLongitude());
                 gvNode &currNode = gv.addNode(currV->getId(), pos); // Create node
+                currNode.setLabel(to_string(currV->getId()));
                 if(currV == startingVertex) {
                     currNode.setColor(GraphViewer::ORANGE);
                     currNode.setSize(30);
@@ -369,7 +369,10 @@ void Interface::showResultGraphViewer() {
             catch (out_of_range err) {
                 gvNode& srcNode = gv.getNode(e.getOrig()->getId());
                 gvNode& destNode =  gv.getNode(e.getDest()->getId());
-                gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, edgeType);
+                gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, gvEdge::DIRECTED);
+                currEdge.setLabel(to_string(e.getId()));
+                currEdge.setLabelColor(GraphViewer::RED);
+                currEdge.setLabelSize(20);
             }
         }
     }
@@ -378,7 +381,7 @@ void Interface::showResultGraphViewer() {
     // gv.setBackground("resources/maps/PenafielMap/Penafiel_strong_component.png");
 
     // gv.setEnabledNodes(false); // Disable node drawing
-    gv.setEnabledEdgesText(false); // Disable edge text drawing
+    // gv.setEnabledEdgesText(false); // Disable edge text drawing
     gv.setZipEdges(true);
 
     // Create window
@@ -390,8 +393,6 @@ void Interface::showResultGraphViewer() {
 
 void Interface::showSCCsGraphViewer() {
     cout << "Loading GraphViewer..." << endl;
-
-    auto edgeType = this->bakery->getGraph().getIsDirected() == true ? gvEdge::DIRECTED : gvEdge::UNDIRECTED;
 
     // Set coordinates of window center
     Vertex* startingVertex = this->bakery->getStartingVertex();
@@ -412,7 +413,7 @@ void Interface::showSCCsGraphViewer() {
         for(const Edge& edge : vert->getAdj()) {
             gvNode& srcNode = gv.getNode(edge.getOrig()->getId());
             gvNode& destNode =  gv.getNode(edge.getDest()->getId());
-            gvEdge &currEdge = gv.addEdge(edge.getId(), srcNode, destNode, edgeType);
+            gvEdge &currEdge = gv.addEdge(edge.getId(), srcNode, destNode, gvEdge::DIRECTED);
             currEdge.setColor(GraphViewer::CYAN);   // Set color according to the component
         }
     }

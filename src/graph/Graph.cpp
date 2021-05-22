@@ -121,24 +121,6 @@ bool Graph::relax(Vertex *v, Edge e) {
     return false;
 }
 
-/**
- * Auxiliary function used by Dijkstra
- * Analyzes the path from v to e.dest
- */
-
-bool Graph::backwardsRelax(Vertex *v, Edge e) {
-    Vertex* w = e.dest;
-    if (v->dist + e.weight < w->dist) {
-        w->dist = v->dist + e.weight;
-        v->path = w;
-        const Edge& symmetricEdge = this->findSymmetricEdge(e);
-        v->pathEdge = symmetricEdge;
-        return true;
-    }
-    return false;
-}
-
-
 void Graph::dijkstraShortestPath(Vertex *s) {
     for (Vertex* v : vertexSet) {
         v->dist = INF;
@@ -231,14 +213,15 @@ Client* Graph::dijkstraClosestClient(Vertex *s, vector<Vertex *> dests) {
  * @param e
  * @return Edge if exists, NULL otherwise
  */
-const Edge& Graph::findSymmetricEdge(Edge &e) {
+const Edge* Graph::findSymmetricEdge(Edge &e) {
     Vertex* src = e.getOrig();
     Vertex* dest = e.getDest();
 
     for(const Edge& oppositeEdge : dest->getAdj()) {
         if(oppositeEdge.getDest() == src)
-            return oppositeEdge;
+            return &oppositeEdge;
     }
+    return NULL;
 }
 
 /**
@@ -279,9 +262,13 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
             Vertex* destV = e.dest;
             if( destV->backwardsVisited == true){   // If it has already been visited in the other direction
                 int totalDistance = this->joinBidirectionalDistances(destV, sV, e.weight);
-                // Set the path for the intersection vertex
+                d->dist = totalDistance;
+                // Set the path for the intersection vertex to be in the right direction
+                Vertex* oppositeStart = destV->path;
+                Edge& oppositeEdge = destV->pathEdge;
                 destV->path = sV;
                 destV->pathEdge = e;
+                this->invertOppositeEdges(oppositeStart, oppositeEdge, destV, d);
                 return totalDistance;
             }
 
@@ -302,17 +289,15 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
 
         for(Edge& e : orderedEdges) {
             Vertex* destV = e.dest;
-            if( destV->visited == true){   // If it has already been visited in the other direction
+            if( destV->visited == true) {   // If it has already been visited in the other direction
                 int totalDistance = this->joinBidirectionalDistances(destV, dV, e.weight);
-                // Set the path for the last vertex before intersection going backwards
-                dV->path = destV;
-                const Edge& symmetricEdge = this->findSymmetricEdge(e);
-                dV->pathEdge = symmetricEdge;
+                d->dist = totalDistance;
+                this->invertOppositeEdges(dV, e, destV, d);
                 return totalDistance;
             }
 
             int oldDist = e.dest->dist;
-            if(backwardsRelax(dV, e)) {
+            if(relax(dV, e)) {
                 destV->backwardsVisited = true;
                 if(oldDist == INF)
                     d_queue.insert(e.dest);
@@ -326,6 +311,40 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
 
 int Graph::joinBidirectionalDistances(Vertex *intersectionVertex, Vertex *oppDirectionVertex, int oppDirectionWeight) {
     return intersectionVertex->dist + oppDirectionVertex->dist + oppDirectionWeight;
+}
+
+/**
+ * Auxiliary function that fixes the path / pathEdge of vertices that travelled in the oppposite direction
+ * @param oppositeStart
+ * @param edge
+ * @param intersectionVertex
+ * @param lastVertex
+ */
+void Graph::invertOppositeEdges(Vertex *oppositeStart, Edge &edge, Vertex *intersectionVertex, Vertex* lastVertex) {
+    Vertex* currVertex = oppositeStart;
+    Vertex* nextVertex = currVertex->path;
+    Vertex* vertexBefore = intersectionVertex;
+
+    Edge savedPathEdge;
+
+    currVertex->path = vertexBefore;
+    const Edge& symmetricEdge = *this->findSymmetricEdge(edge);
+    savedPathEdge = currVertex->pathEdge;
+    currVertex->pathEdge = symmetricEdge;
+
+    while(true) {
+        vertexBefore = currVertex;
+        currVertex = nextVertex;
+        if(currVertex == nullptr) break;
+        nextVertex = currVertex->path;
+
+        currVertex->path = vertexBefore;
+        const Edge& symmetricEdge = *this->findSymmetricEdge(savedPathEdge);
+        savedPathEdge = currVertex->pathEdge;
+        currVertex->pathEdge = symmetricEdge;
+
+        if(currVertex == lastVertex) break;
+    }
 }
 
 /**

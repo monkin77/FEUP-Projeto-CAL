@@ -123,14 +123,22 @@ void Bakery::nearestNeighbour(Van& van) {
 
         Client *closestClient = this->graph.dijkstraClosestClient(v, clientVertices);
         this->graph.addPathToEdgeList(van.getEdges(), v, closestClient->getVertex());
-        closestClient->setRealTime(start + van.getTotalTime() + v->dist);
+        closestClient->setRealTime(start + van.getTotalTime() + closestClient->getVertex()->getDist());
 
         v = closestClient->getVertex();
 
         van.makeDelivery(Time(v->dist), Time(0), closestClient->getBreadQuantity());
     }
 
-    int returningTime = this->graph.bidirectionalDijkstra(v, this->startingVertex);
+    int returningTime;
+
+    if(!this->graph.getIsDirected())
+        returningTime = this->graph.bidirectionalDijkstra(v, this->startingVertex);
+    else {
+        this->graph.dijkstraShortestPath(v, this->startingVertex);
+        returningTime = this->startingVertex->dist;
+    }
+    this->graph.addPathToEdgeList(van.getEdges(), v, this->startingVertex);
 
     van.addTime(Time(returningTime));
     van.setClients(clients);
@@ -193,7 +201,16 @@ void Bakery::greedyWithDijkstra(Van& van) {
         v1 = v2;
     }
 
-    van.addTime(Time(graph.bidirectionalDijkstra(v1, startingVertex)));
+    int returningTime;
+    if(!this->graph.getIsDirected())
+        returningTime = this->graph.bidirectionalDijkstra(v1, this->startingVertex);
+    else {
+        this->graph.dijkstraShortestPath(v1, this->startingVertex);
+        returningTime = this->startingVertex->dist;
+    }
+
+    van.addTime(Time(returningTime));
+    this->graph.addPathToEdgeList(van.getEdges(), v1, this->startingVertex);
 }
 
 int Bakery::knapsackAllocation(Van &v, const vector<int>& values) {

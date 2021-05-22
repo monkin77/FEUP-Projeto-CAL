@@ -54,8 +54,8 @@ public:
     // Bidirectional Dijkstra Methods
     int bidirectionalDijkstra(Vertex *s, Vertex *d);
     int joinBidirectionalDistances(Vertex* intersectionVertex, Vertex* oppDirectionVertex, int oppDirectionWeight);
-    bool backwardsRelax(Vertex *v, Edge e);
-    const Edge& findSymmetricEdge(Edge& e);
+    const Edge* findSymmetricEdge(Edge& e);
+    void invertOppositeEdges(Vertex *oppositeStart, Edge& edge, Vertex* intersectionVertex, Vertex* lastVertex);
 
     void addPathToEdgeList(vector<Edge> &edges, Vertex* source, Vertex* dest);
 
