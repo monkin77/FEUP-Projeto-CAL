@@ -47,7 +47,7 @@ const Time &Van::getTotalDelay() const {
     return totalDelay;
 }
 
-const vector <Client *> &Van::getClients() const {
+vector <Client *> &Van::getClients() {
     return clients;
 }
 
