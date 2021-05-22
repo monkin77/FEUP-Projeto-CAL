@@ -1,0 +1,63 @@
+1,1
+10,15
+50,46
+100,78
+500,381
+1000,798
+2000,1639
+3000,2862
+4000,4338
+5000,4732
+6000,5308
+7000,5908
+
+
+// SCRIPT
+#include <iostream>
+#include <chrono>
+#include <vector>
+#include <string>
+#include <fstream>
+
+#include "bakery/Interface.h"
+using namespace std;
+
+int main() {
+    InputGenerator inputGenerator;
+    //inputGenerator.generateBakeryInput();
+
+    vector<pair<string, int>> files = {
+            make_pair("al1.txt", 1),
+            //make_pair("al2.txt", 10),
+            //make_pair("al3.txt", 50),
+            //make_pair("al5.txt", 100),
+            //make_pair("al6.txt", 500),
+            //make_pair("al7.txt", 1000),
+            //make_pair("al8.txt", 2000),
+            //make_pair("al9.txt", 3000),
+            //make_pair("al10.txt", 4000),
+            //make_pair("al4.txt", 5000),
+            //make_pair("al11.txt", 6000),
+            //make_pair("al12.txt", 7000)
+    };
+
+    ofstream fout;
+    fout.open("T2_results.txt");
+
+    for (auto test : files) {
+        Bakery bakery("resources/bakeryInput/" + test.first);
+        bakery.preprocess();
+
+        auto start = std::chrono::high_resolution_clock::now();
+
+        bakery.solveThirdPhase(true, true);
+
+        auto finish = std::chrono::high_resolution_clock::now();
+        auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
+
+        fout << test.second << "," << mili << endl;
+    }
+
+
+    return 0;
+}

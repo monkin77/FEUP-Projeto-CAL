@@ -1,8 +1,8 @@
 1
 resources/maps/EspinhoMap
-13357
+9285
 50000 5 5
 1
-8 1
+2000 1
 1
-Leonor 0 7197 13:29 5
+Henrique 0 4848 18:58 1

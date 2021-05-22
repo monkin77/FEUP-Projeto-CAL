@@ -250,7 +250,7 @@ int Bakery::knapsackAllocation(Van &v, const vector<int>& values) {
 
 
     int w = v.getTotalBread(), i = clients.size(), removed = 0;
-    while (i > 0) {
+    while (i > 0 && w > 0) {
         if (table[i][w] - table[i - 1][w - clients[i - 1]->getBreadQuantity()] == values[i - 1]) {
             // Element i should be allocated
             v.addClient(clients[i - 1]);

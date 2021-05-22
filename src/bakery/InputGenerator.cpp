@@ -53,9 +53,9 @@ void InputGenerator::generateBakeryInput() {
     radius = 50000;
     maxTimeBefore = 5;
     maxDelay = 5;
-    maxVanCapacity = 20;
+    maxVanCapacity = 70;
     deliveryDelay = 1;
-    maxClientsBread = 10;
+    maxClientsBread = 15;
 
     // Start generating output
     vector<Vertex*> vSet = G.getVertexSet();
