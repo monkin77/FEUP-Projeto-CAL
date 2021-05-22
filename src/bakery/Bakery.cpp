@@ -351,6 +351,10 @@ void Bakery::solveThirdPhase(bool useKnapsack, bool optimize) {
             greedyWithDijkstra(van);
 }
 
+void Bakery::filterBakerySCCComponent() {
+    graph.removeUnreachableVertexes(startingVertex, radius);
+}
+
 const vector<Van> &Bakery::getVans() const {
     return vans;
 }
@@ -361,4 +365,8 @@ Graph Bakery::getGraph() {
 
 Vertex *Bakery::getStartingVertex() const {
     return startingVertex;
+}
+
+double Bakery::getRadius() const {
+    return radius;
 }

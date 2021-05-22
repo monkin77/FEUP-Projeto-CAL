@@ -59,7 +59,7 @@ void Interface::servicePlanner() {
     cout << "[1]: Single van visiting all clients without delivery times or capacity" << endl;
     cout << "[2]: Single van visiting all clients with delivery times but no capacity" << endl;
     cout << "[3]: Multiple vans with client allocation, capacity and delivery times" << endl;
-    cout << "[4]: Show SCC components of the graph" << endl;
+    cout << "[4]: Show SCC component of the Bakery" << endl;
 
     while (true) {
         cin >> selectedPhase;
@@ -116,7 +116,9 @@ void Interface::servicePlanner() {
             bakery->solveThirdPhase(useKnapsack, optimize);
             break;
         case 4:
-            bakery->getGraph().displaySccTarjan();
+            // bakery->getGraph().displaySccTarjan();
+            bakery->filterBakerySCCComponent();
+
             this->showSCCGraphViewer();
             exit(0);
         default:
@@ -359,7 +361,7 @@ void Interface::showSCCGraphViewer() {
             gvNode& srcNode = gv.getNode(edge.getOrig()->getId());
             gvNode& destNode =  gv.getNode(edge.getDest()->getId());
             gvEdge &currEdge = gv.addEdge(edge.getId(), srcNode, destNode, edgeType);
-            currEdge.setColor(GraphViewer::CYAN);   // Set color according to the component
+            // currEdge.setColor(GraphViewer::CYAN);   // Set color according to the component
         }
     }
 
