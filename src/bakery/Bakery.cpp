@@ -178,7 +178,6 @@ void Bakery::greedyWithDijkstra(Van& van) {
 
     Vertex *v1 = startingVertex, *v2;
     Time start(7, 0);
-    //vector<Client*> clients = van.getClients();
 
     for (int i = 0; i < van.getClients().size(); ++i) {
         // If the client after the current one is much closer and already waiting for the delivery, swap them
