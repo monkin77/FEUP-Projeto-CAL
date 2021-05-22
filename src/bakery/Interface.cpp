@@ -52,6 +52,7 @@ void Interface::start() {
     }
     servicePlanner();
     printResult();
+    showResultGraphViewer();
 }
 
 void Interface::servicePlanner() {
