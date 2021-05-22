@@ -168,7 +168,21 @@ void Bakery::greedyWithDijkstra(Van& van) {
 
     Vertex *v1 = startingVertex, *v2;
     Time start(7, 0);
+    //vector<Client*> clients = van.getClients();
+
     for (int i = 0; i < van.getClients().size(); ++i) {
+        // If the client after the current one is much closer and already waiting for the delivery, swap them
+        if (i < van.getClients().size() - 1) {
+            Client* nextClient = van.getClients()[i + 1];
+            if (nextClient->getDeliveryTime() < start + van.getTotalTime()) {
+                int d1 = v1->getPosition().distance(van.getClients()[i]->getVertex()->getPosition());
+                int d2 = v1->getPosition().distance(nextClient->getVertex()->getPosition());
+
+                if (d1 > 10 * d2)
+                    iter_swap(van.getClients().begin() + i, van.getClients().begin() + i + 1);
+            }
+        }
+
         Client* client = van.getClients()[i];
         v2 = client->getVertex();
         graph.dijkstraShortestPath(v1, v2);
