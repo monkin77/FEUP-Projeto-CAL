@@ -304,6 +304,7 @@ void Interface::showResultGraphViewer() {
 
     sf::Vector2f centerPos(startingVertex->getPosition().getLatitude(), startingVertex->getPosition().getLongitude());
     gv.setCenter(centerPos);
+    gv.setScale(10);   // Sets the window scale (works like a zoom)
 
     vector<Van> vans = bakery->getVans();
 
@@ -325,6 +326,15 @@ void Interface::showResultGraphViewer() {
         }
     }
 
+    // Make the “background.png” image the background
+    graphCities city = this->bakery->getGraph().getCity();
+    if (city == graphCities::Penafiel)
+        gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+    else if (city == graphCities::Espinho)
+        gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+
+    // gv.setEnabledNodes(false); // Disable node drawing
+    // gv.setEnabledEdgesText(false); // Disable edge text drawing
     gv.setZipEdges(true);
 
     // Create window
@@ -343,6 +353,7 @@ void Interface::showSCCGraphViewer() {
     Vertex* startingVertex = this->bakery->getStartingVertex();
     sf::Vector2f centerPos(startingVertex->getPosition().getLatitude(), startingVertex->getPosition().getLongitude());
     gv.setCenter(centerPos);
+    gv.setScale(10);   // Sets the window scale (works like a zoom)
 
     vector<Van> vans = bakery->getVans();
     for(int i = 0; i < this->bakery->getGraph().getNumVertex(); i++) {
@@ -359,9 +370,16 @@ void Interface::showSCCGraphViewer() {
             gvNode& srcNode = gv.getNode(edge.getOrig()->getId());
             gvNode& destNode =  gv.getNode(edge.getDest()->getId());
             gvEdge &currEdge = gv.addEdge(edge.getId(), srcNode, destNode, edgeType);
-            // currEdge.setColor(GraphViewer::CYAN);   // Set color according to the component
+            currEdge.setColor(GraphViewer::WHITE);   // Set color according to the component
         }
     }
+
+    // Make the “background.png” image the background
+    graphCities city = this->bakery->getGraph().getCity();
+    if (city == graphCities::Penafiel)
+        gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+    else if (city == graphCities::Espinho)
+        gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
 
     gv.setEnabledNodes(false); // Disable node drawing
     gv.setEnabledEdgesText(false); // Disable edge text drawing
