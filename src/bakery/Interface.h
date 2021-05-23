@@ -22,7 +22,7 @@ public:
     void start();
     void loadByInput();
     void servicePlanner();
-    void printResult();
+    void printResult(ostream& os);
     void showResultGraphViewer();
     void showSCCGraphViewer();
     void addNodeToGV(Vertex* v);

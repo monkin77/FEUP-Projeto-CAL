@@ -1,6 +1,7 @@
 #include "Interface.h"
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace std;
 
@@ -51,8 +52,9 @@ void Interface::start() {
         bakery = new Bakery("resources/bakeryInput/" + file);
     }
     servicePlanner();
-    printResult();
+    printResult(cout);
     showResultGraphViewer();
+    writeResultInFile();
 }
 
 void Interface::servicePlanner() {
@@ -252,45 +254,45 @@ void Interface::loadByInput() {
 }
 
 
-void Interface::printResult() {
+void Interface::printResult(ostream& os) {
     vector<Van> vans = bakery->getVans();
     for (int i = 0; i < vans.size(); ++i) {
         Van &van = vans[i];
         vector<Client *> clients = van.getClients();
         vector<Edge> edges = van.getEdges();
 
-        cout << "Delivery results for van number " << i + 1 << ":" << endl;
+        os << "Delivery results for van number " << i + 1 << ":" << endl;
         if (clients.empty()) {
-            cout << "No deliveries made. The van stayed at the bakery" << endl << endl;
+            os << "No deliveries made. The van stayed at the bakery" << endl << endl;
             continue;
         }
 
-        cout << "Delivered breads: " << van.getDeliveredBread() << endl;
+        os << "Delivered breads: " << van.getDeliveredBread() << endl;
 
         if (selectedPhase == 3)
-            cout << "Breads left: " << van.getLeftovers() << endl;
+            os << "Breads left: " << van.getLeftovers() << endl;
 
-        cout << "Total delivery time: " << van.getTotalTime() << endl;
+        os << "Total delivery time: " << van.getTotalTime() << endl;
         if (selectedPhase != 1)
-            cout << "Total delay time: " << van.getTotalDelay() << endl;
+            os << "Total delay time: " << van.getTotalDelay() << endl;
 
-        cout << endl << "Client information (by order of delivery):" << endl;
+        os << endl << "Client information (by order of delivery):" << endl;
 
         for (Client *client : clients) {
-            cout << client->getName() << " " << client->getVertex()->getPosition() << ":" << endl;
+            os << client->getName() << " " << client->getVertex()->getPosition() << ":" << endl;
 
             if (selectedPhase != 1) {
-                cout << "Scheduled time: " << client->getDeliveryTime() << endl;
+                os << "Scheduled time: " << client->getDeliveryTime() << endl;
             }
-            cout << "Real time: " << client->getRealTime() << endl << endl;
+            os << "Real time: " << client->getRealTime() << endl << endl;
         }
 
-        cout << "Van's path (by Edge ID):" << endl;
+        os << "Van's path (by Edge ID):" << endl;
         for (int i = 0; i < edges.size(); ++i) {
-            if (i != 0) cout << "-";
-            cout << edges[i].getId();
+            if (i != 0) os << "-";
+            os << edges[i].getId();
         }
-        cout << endl << endl;
+        os << endl << endl;
     }
 }
 
@@ -399,4 +401,37 @@ void Interface::addEdgeToGV(Edge &e, gvEdge::EdgeType edgeType) {
         gvNode& destNode =  gv.getNode(e.getDest()->getId());
         gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, edgeType);
     }
+}
+
+void Interface::writeResultInFile() {
+    cout << "Do you wish do write the result in a text file? (Y/N)" << endl;
+
+    char res;
+    while (true) {
+        cin >> res;
+        if (cin.fail() || cin.eof() || (toupper(res) != 'Y' && toupper(res) != 'N' && toupper(res) != 'L')) {
+            cin.clear();
+            cin.ignore(100, '\n');
+            cout << "That's not a valid answer. Please answer with 'Y' or 'N'" << endl;
+            continue;
+        }
+        break;
+    }
+    if (toupper(res) == 'N') return;
+
+    string fileName;
+    cout << "Insert the name of the file: ";
+    cin >> fileName;
+    ofstream fout;
+    fout.open("resources/results/" + fileName);
+
+    while (cin.fail() || cin.eof() || !fout.is_open()) {
+        cin.clear();
+        cin.ignore(100, '\n');
+        cout << "Invalid file name!";
+        cin >> fileName;
+        fout.open("resources/results/" + fileName);
+    }
+    printResult(fout);
+    cout << "Your result is stored at resources/results" << endl;
 }
