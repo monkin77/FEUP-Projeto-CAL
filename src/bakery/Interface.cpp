@@ -331,7 +331,9 @@ void Interface::showResultGraphViewer() {
     if (city == graphCities::Penafiel)
         gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
     else if (city == graphCities::Espinho)
-        gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+        gv.setBackground("resources/maps/EspinhoMap/espinhoReal2.png", sf::Vector2f(-7500, -3000), sf::Vector2f(5, 5));
+    else if (city == graphCities::Porto)
+        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
 
     // gv.setEnabledNodes(false); // Disable node drawing
     // gv.setEnabledEdgesText(false); // Disable edge text drawing
@@ -379,7 +381,9 @@ void Interface::showSCCGraphViewer() {
     if (city == graphCities::Penafiel)
         gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
     else if (city == graphCities::Espinho)
-        gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+        gv.setBackground("resources/maps/EspinhoMap/espinhoReal2.png", sf::Vector2f(-8350, 700), sf::Vector2f(6, 6));
+    else if (city == graphCities::Porto)
+        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
 
     gv.setEnabledNodes(false); // Disable node drawing
     gv.setEnabledEdgesText(false); // Disable edge text drawing
