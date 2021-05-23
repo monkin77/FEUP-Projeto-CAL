@@ -22,3 +22,8 @@ Ao carregar a informação proveniente de um ficheiro, o programa requer que o f
 Obviamente, já possuímos exemplos de ficheiros de input para diferentes cidades neste diretório, sendo apenas necessário referi-los quando a interface o pedir, não esquecendo a extensão do ficheiro, caso se aplique.
 
 Caso pretenda inserir os dados manualmente, o mapa escolhido deverá localizar-se dentro do diretório 'resources/maps' e conter pelo menos os dois ficheiros: 'nodes.txt' e 'edges.txt'.
+
+
+## Tecnologias Utilizadas:
+- C++
+- [GraphViewerCPP](https://github.com/dmfrodrigues/GraphViewerCpp)
