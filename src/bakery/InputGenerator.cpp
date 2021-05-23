@@ -1,6 +1,3 @@
-//
-// Created by Domingos Santos on 20/05/2021.
-//
 #include "InputGenerator.h"
 
 #include <iostream>
@@ -9,10 +6,7 @@
 #include <stdlib.h>
 #include <iomanip>
 
-#include "graphviewer.h"
-#include "../bakery/Client.h"
 #include "../utils/GraphBuilder.h"
-#include "../graph/Graph.h"
 
 
 Graph InputGenerator::getGraph() {
@@ -21,6 +15,7 @@ Graph InputGenerator::getGraph() {
 
 
 void InputGenerator::generateBakeryInput() {
+    srand(time(NULL));
     vector<string> namesList{"Ana", "Maria", "Joao", "Pedro", "Tiago", "Joana", "Leonor", "Matilde", "Helena", "Rui", "Mario", "Bruno", "Domingos", "Henrique"};
     int numClients, maxDelay, maxTimeBefore, radius, numVans, maxVanCapacity, deliveryDelay, maxClientsBread;
     string path;
@@ -50,11 +45,11 @@ void InputGenerator::generateBakeryInput() {
     readGraphFromFile(G, path, true);
 
     radius = 50000;
-    maxTimeBefore = 60;
-    maxDelay = 60;
-    maxVanCapacity = 20;
+    maxTimeBefore = 5;
+    maxDelay = 5;
+    maxVanCapacity = 70;
     deliveryDelay = 1;
-    maxClientsBread = 10;
+    maxClientsBread = 15;
 
     // Start generating output
     vector<Vertex*> vSet = G.getVertexSet();
@@ -92,6 +87,7 @@ void InputGenerator::generateBakeryInput() {
         Vertex *currV = vSet.at(vertexRandomIdx);
         vertexID = currV->getId();
         G.removeVertex(currV->getId());
+        vSet = G.getVertexSet();
 
         fout << name << " " << i << " " << vertexID << " " << hour << ":" << minutes << " " << numBread << endl;
     }

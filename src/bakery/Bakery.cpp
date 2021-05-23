@@ -1,7 +1,3 @@
-//
-// Created by Domingos Santos on 05/05/2021.
-//
-
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -9,7 +5,6 @@
 #include "../utils/GraphBuilder.h"
 
 using namespace std;
-
 
 Bakery::Bakery(const string &graphFile, const vector<Van> &vans, Position start, double radius,
                int maxDelay, int maxTimeBefore, bool isDirected) : vans(vans), radius(radius), maxDelay(maxDelay), maxTimeBefore(maxTimeBefore) {
@@ -130,6 +125,7 @@ void Bakery::nearestNeighbour(Van& van) {
         van.makeDelivery(Time(v->dist), Time(0), closestClient->getBreadQuantity());
     }
 
+
     int returningTime;
 
     if(!this->graph.getIsDirected())
@@ -138,6 +134,7 @@ void Bakery::nearestNeighbour(Van& van) {
         this->graph.dijkstraShortestPath(v, this->startingVertex);
         returningTime = this->startingVertex->dist;
     }
+
     this->graph.addPathToEdgeList(van.getEdges(), v, this->startingVertex);
 
     van.addTime(Time(returningTime));
@@ -161,7 +158,7 @@ void Bakery::filterClients() {
     vector<Client *>::iterator it;
     for (it = clients.begin(); it != clients.end(); ++it) {
         Client* c = *it;
-        if (graph.findVertex(c->getVertex()->getId()) == NULL) {
+        if (c->getVertex() == NULL || graph.findVertex(c->getVertex()->getId()) == NULL) {
             it = clients.erase(it);
             --it;
             delete c;
@@ -169,14 +166,25 @@ void Bakery::filterClients() {
     }
 }
 
-// TODO: MAKE A WAY FOR BIDIRECTION DIJKSTRA TO STORE EDGES
-// TODO: STORE THE EDGES FROM LAST CLIENT TO BAKERY
 void Bakery::greedyWithDijkstra(Van& van) {
     van.sortClientsByTime();
 
     Vertex *v1 = startingVertex, *v2;
     Time start(7, 0);
+
     for (int i = 0; i < van.getClients().size(); ++i) {
+        // If the client after the current one is much closer and already waiting for the delivery, swap them
+        if (i < van.getClients().size() - 1) {
+            Client* nextClient = van.getClients()[i + 1];
+            if (nextClient->getDeliveryTime() < start + van.getTotalTime()) {
+                int d1 = v1->getPosition().distance(van.getClients()[i]->getVertex()->getPosition());
+                int d2 = v1->getPosition().distance(nextClient->getVertex()->getPosition());
+
+                if (d1 > 10 * d2)
+                    iter_swap(van.getClients().begin() + i, van.getClients().begin() + i + 1);
+            }
+        }
+
         Client* client = van.getClients()[i];
         v2 = client->getVertex();
 
@@ -235,7 +243,7 @@ int Bakery::knapsackAllocation(Van &v, const vector<int>& values) {
 
 
     int w = v.getTotalBread(), i = clients.size(), removed = 0;
-    while (i > 0) {
+    while (i > 0 && w > 0) {
         if (table[i][w] - table[i - 1][w - clients[i - 1]->getBreadQuantity()] == values[i - 1]) {
             // Element i should be allocated
             v.addClient(clients[i - 1]);
@@ -256,18 +264,18 @@ int Bakery::greedyAllocation(Van &v) {
         Client *chosen = NULL;
 
         /*
-         * Value = 50000 + 10 * numBreads - 100 * Euclidean(start, pos)
-         * Summation(10 * abs(v.clients[i].time - time) - 100 * Euclidean(v.clients[i].pos, pos))
+         * Value = 5000 + numBreads - Euclidean(start, pos)
+         * Summation(abs(v.clients[i].time - time) - Euclidean(v.clients[i].pos, pos))
          */
         for (Client *client : clients) {
             if (client->isAllocated()) continue;
 
-            int value = 50000 + 10 * client->getBreadQuantity() - 100 *
+            int value = 5000 + client->getBreadQuantity() -
                     startingVertex->getPosition().distance(client->getVertex()->getPosition());
 
             for (Client *client2 : v.getClients())
-                value += abs((client2->getRealTime() - client->getRealTime()).toMinutes())
-                        - 100 * client2->getVertex()->getPosition().distance(client->getVertex()->getPosition());
+                value += abs((client2->getRealTime() - client->getRealTime()).toMinutes()) -
+                        client2->getVertex()->getPosition().distance(client->getVertex()->getPosition());
 
             if (value > highestValue && client->getBreadQuantity() <= capacity) {
                 highestValue = value;
@@ -282,7 +290,6 @@ int Bakery::greedyAllocation(Van &v) {
     return count;
 }
 
-// TODO: Explore the idea of sorting clients by position, somehow
 void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
     sort(vans.begin(), vans.end(), [](const Van& v1, const Van& v2) -> bool {
         return v1.getTotalBread() > v2.getTotalBread();
@@ -291,7 +298,7 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
     int clientsAllocated = 0;
 
     if (useKnapsack) {
-        // Value = breadQuantity / 10 + 1 (the client itself has value)
+        // Value = breadQuantity + 10 (the client itself has value)
         vector<int> values;
         for (Van &v : vans) {
             if (clientsAllocated == clients.size()) break;
@@ -308,20 +315,70 @@ void Bakery::allocateClientsToVans(bool useKnapsack, bool optimize) {
             clientsAllocated += greedyAllocation(v);
         }
     }
+    if (optimize) optimizeVans();
+}
 
-    // TODO: calculateSimulation function that checks if it gets better
-    if (optimize) {
-        /* Since the last used van probably has space left,
-         * it will try to take some clients from other vans
-         */
-        for (int i = vans.size() - 1; i >= 0; --i)
-            if (!vans[i].getClients().empty()) {
-                for (int j = i - 1; j >= 0; --j) {
-                    Client *client = vans[j].removeFarthestClientInRange(vans[i].getAvailableBread());
-                    if (client != NULL) vans[i].addClient(client);
-                }
-                break;
-            }
+void Bakery::optimizeVans() {
+    // Check if there are unallocated clients and try to split their deliveries
+    for (Client* client : clients)
+        if (!client->isAllocated()) {
+            splitDelivery(client);
+        }
+
+    // Since the last used van probably has space left, it will try to take some clients from other vans
+    Van* van;
+    int vanIdx;
+    for (int i = vans.size() - 1; i >= 0; --i)
+        if (!vans[i].getClients().empty()) {
+            van = &vans[i];
+            vanIdx = i;
+        }
+
+    for (int i = 0; i < vanIdx; ++i) {
+        int oldCost;
+        Client* client = vans[i].getWorstClientInRange(van->getAvailableBread(), oldCost);
+        if (client == NULL) continue;
+
+        // Check if it's worth it to move client
+        int newCost = 0;
+        for (Client* client2 : van->getClients()) {
+            newCost += client->getVertex()->getPosition().distance(client2->getVertex()->getPosition());
+            newCost -= abs((client->getDeliveryTime() - client2->getDeliveryTime()).toMinutes());
+        }
+
+        if (newCost < oldCost) {
+            van->addClient(client);
+            vans[i].removeClient(client);
+        }
+    }
+}
+
+void Bakery::splitDelivery(Client *client) {
+    bool possible = false;
+    int totalCapacity = 0;
+
+    for (Van van : vans) {
+        totalCapacity += van.getAvailableBread();
+        if (totalCapacity >= client->getBreadQuantity()) {
+            possible = true;
+            break;
+        }
+    }
+    if (!possible) return;
+
+    for (Van& van : vans) {
+        if (van.getAvailableBread() >= client->getBreadQuantity()) {
+            van.addClient(client);
+            client->setAllocated(true);
+            break;
+        } else {
+            Client *newClient = new Client(client->getId(), client->getName(), client->getVertex(),
+                                           client->getDeliveryTime(), van.getAvailableBread());
+            clients.push_back(newClient);
+            van.addClient(newClient);
+            newClient->setAllocated(true);
+            client->setBreadQuantity(client->getBreadQuantity() - newClient->getBreadQuantity());
+        }
     }
 }
 

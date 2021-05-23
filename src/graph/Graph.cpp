@@ -1,10 +1,5 @@
-//
-// Created by joaog on 4/28/2021.
-//
-
 #include <iostream>
 #include "Graph.h"
-#include "../utils/Position.h"
 
 using namespace std;
 
@@ -102,6 +97,8 @@ void Graph::removeVertex(int id) {
             }
         }
     }
+    if (removableVertex->client != NULL)
+        removableVertex->client->setVertex(NULL);
     delete removableVertex;
 }
 

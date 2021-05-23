@@ -1,0 +1,61 @@
+53600,201439
+80,2
+2300,164
+3000,3000
+3200,3228
+6100,4293
+7300,4182
+8500,4404
+10100,11452
+10300,11812
+17700,17234
+20000,18303
+21200,25394
+53600,201439
+
+// SCRIPT
+
+#include <iostream>
+#include <chrono>
+#include <vector>
+#include <string>
+#include <fstream>
+
+#include "bakery/Interface.h"
+using namespace std;
+
+vector<pair<string, int>> files = {make_pair("bakery.txt", 80),
+                                   make_pair("pre6.txt", 2300),
+                                   make_pair("pre5.txt", 3000),
+                                   make_pair("pre2.txt", 3200),
+                                   make_pair("pre11.txt", 6100),
+                                   make_pair("pre7.txt", 7300),
+                                   make_pair("pre9.txt", 8500),
+                                   make_pair("pre10.txt", 10100),
+                                   make_pair("pre1.txt", 10300),
+                                   make_pair("pre8.txt", 17700),
+                                   make_pair("pre12.txt", 53600)
+                                };
+
+int main() {
+    InputGenerator inputGenerator;
+    //inputGenerator.generateBakeryInput();
+
+    ofstream fout;
+    fout.open("preprocess_results.txt");
+
+    for (auto test : files) {
+        auto start = std::chrono::high_resolution_clock::now();
+
+        Bakery bakery("resources/bakeryInput/" + test.first);
+        bakery.testPreprocess();
+
+        auto finish = std::chrono::high_resolution_clock::now();
+        auto mili = chrono::duration_cast<chrono::milliseconds>(finish - start).count();
+
+        fout << test.second << "," << mili << endl;
+    }
+
+
+    return 0;
+}

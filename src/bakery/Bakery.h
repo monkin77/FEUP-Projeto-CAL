@@ -1,7 +1,3 @@
-//
-// Created by Domingos Santos on 05/05/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_BAKERY_H
 #define FEUP_PROJETO_CAL_BAKERY_H
 
@@ -26,13 +22,9 @@ public:
     void addClient(int id, string name, int vertexID, Time time, int breadNum);
 
     const vector<Van>& getVans() const;
-
     Graph getGraph();
-
     Vertex *getStartingVertex() const;
-
     double getRadius() const;
-
 private:
     vector<Client *> clients;
     vector<Van> vans;
@@ -56,8 +48,10 @@ private:
     void allocateClientsToVans(bool useKnapsack, bool optimize);
     int knapsackAllocation(Van& v, const vector<int>& values);
     int greedyAllocation(Van& v);
+    void optimizeVans();
+    void splitDelivery(Client* client);
 };
 
 
 
-#endif //FEUP_PROJETO_CAL_BAKERY_H
+#endif

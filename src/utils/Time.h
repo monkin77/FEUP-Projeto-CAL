@@ -1,10 +1,5 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_TIME_H
 #define FEUP_PROJETO_CAL_TIME_H
-
 
 #include <ostream>
 
@@ -31,4 +26,4 @@ public:
 };
 
 
-#endif //FEUP_PROJETO_CAL_TIME_H
+#endif

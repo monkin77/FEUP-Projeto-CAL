@@ -1,7 +1,3 @@
-//
-// Created by joaog on 4/28/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_GRAPH_H
 #define FEUP_PROJETO_CAL_GRAPH_H
 
@@ -14,6 +10,7 @@
 #include "Vertex.h"
 #include "../utils/Position.h"
 #include "../utils/Time.h"
+#include "../bakery/Client.h"
 
 using namespace std;
 

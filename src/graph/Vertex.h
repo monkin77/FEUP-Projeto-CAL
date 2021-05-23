@@ -1,7 +1,3 @@
-//
-// Created by joaog on 4/28/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_VERTEX_H
 #define FEUP_PROJETO_CAL_VERTEX_H
 
@@ -17,7 +13,7 @@ class Client;   // Forward declaration
 
 class Vertex {
     int id;
-    Position info;						// content of the vertex (position)
+    Position info;  // content of the vertex (position)
     Client* client;
 
     std::vector<Edge > adj;		// outgoing edges

@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_CLIENT_H
 #define FEUP_PROJETO_CAL_CLIENT_H
 
@@ -33,10 +29,14 @@ public:
 
     void setRealTime(const Time &realTime);
 
+    void setBreadQuantity(int breadQuantity);
+
+    void setVertex(Vertex *vertex);
+
     bool isAllocated() const;
 
     void setAllocated(bool allocated);
 };
 
 
-#endif //FEUP_PROJETO_CAL_CLIENT_H
+#endif

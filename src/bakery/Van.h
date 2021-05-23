@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #ifndef FEUP_PROJETO_CAL_VAN_H
 #define FEUP_PROJETO_CAL_VAN_H
 
@@ -21,7 +17,6 @@ private:
     Time totalTime;
     Time totalDelay;
 
-    // these containers might become HashMaps
     vector<Client *> clients;
     vector<Edge> edges;
 public:
@@ -33,7 +28,7 @@ public:
     const Time &getDeliveryTime() const;
     const Time &getTotalTime() const;
     const Time &getTotalDelay() const;
-    const vector<Client *> &getClients() const;
+    vector<Client *> &getClients();
     vector<Edge> &getEdges();
 
     int getReservedBread() const;
@@ -44,12 +39,12 @@ public:
     void sortClientsByTime();
 
     void addClient(Client* c);
+    void removeClient(Client* c);
     void addEdge(Edge& e);
+
     void makeDelivery(Time travelTime, Time delay, int breadNum);
-
-    Client* removeFarthestClientInRange(int maxBreadRange);
-
     int getAvailableBread();
+    Client* getWorstClientInRange(int maxBreadRange, int &clientCost);
 };
 
 

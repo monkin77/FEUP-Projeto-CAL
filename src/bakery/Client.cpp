@@ -1,7 +1,3 @@
-//
-// Created by bruno on 01/05/2021.
-//
-
 #include "Client.h"
 
 Client::Client(int id, const string &name, Vertex* vertex, const Time &scheduledTime, int breadQuantity) {
@@ -49,4 +45,12 @@ bool Client::isAllocated() const {
 
 void Client::setAllocated(bool allocated) {
     Client::allocated = allocated;
+}
+
+void Client::setBreadQuantity(int breadQuantity) {
+    Client::breadQuantity = breadQuantity;
+}
+
+void Client::setVertex(Vertex *vertex) {
+    Client::vertex = vertex;
 }

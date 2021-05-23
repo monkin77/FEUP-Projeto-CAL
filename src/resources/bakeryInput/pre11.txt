@@ -1,0 +1,8 @@
+1
+resources/maps/PortugalMaps/Viseu
+603942925
+50000 5 5
+1
+8 1
+1
+Leonor 0 264357256 13:29 5

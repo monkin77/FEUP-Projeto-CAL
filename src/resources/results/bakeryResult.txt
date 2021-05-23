@@ -1,0 +1,43 @@
+Delivery results for van number 1:
+Delivered breads: 10
+Breads left: 0
+Total delivery time: 5h39m
+Total delay time: 0h0m
+
+Client information (by order of delivery):
+Alfredo (0, 0):
+Scheduled time: 9h30m
+Real time: 9h0m
+
+Laurinda (0, 150):
+Scheduled time: 10h30m
+Real time: 10h0m
+
+Caramelo (150, 0):
+Scheduled time: 11h0m
+Real time: 10h30m
+
+Spoderman (450, 150):
+Scheduled time: 12h0m
+Real time: 11h30m
+
+Pingu (300, 300):
+Scheduled time: 13h0m
+Real time: 12h30m
+
+Van's path (by Edge ID):
+45-11-5-1-0-4-5-1-2-36-70-104-138-172-204-208-181-178-182-155-121-115-111-79
+
+Delivery results for van number 2:
+Delivered breads: 10
+Breads left: 0
+Total delivery time: 5h38m
+Total delay time: 0h0m
+
+Client information (by order of delivery):
+Pingu (300, 300):
+Scheduled time: 13h0m
+Real time: 12h30m
+
+Van's path (by Edge ID):
+78-110-114-120-121-115-111-79

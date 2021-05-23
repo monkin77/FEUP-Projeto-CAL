@@ -9,4 +9,4 @@ void defaultGraphBuilder(Graph &G);
 
 bool readGraphFromFile(Graph &G, string directoryName, bool isStrongComponent);
 
-#endif //FEUP_PROJETO_CAL_GRAPHBUILDER_H
+#endif

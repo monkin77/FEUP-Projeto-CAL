@@ -2,9 +2,6 @@
 #include <bits/stdc++.h>
 
 #include "GraphBuilder.h"
-#include "Position.h"
-#include "Time.h"
-#include "../bakery/Client.h"
 
 using namespace std;
 
