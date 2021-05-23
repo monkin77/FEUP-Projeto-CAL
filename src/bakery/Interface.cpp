@@ -299,12 +299,13 @@ void Interface::printResult(ostream& os) {
 void Interface::showResultGraphViewer() {
     cout << "Loading GraphViewer..." << endl;
 
+    double nodeScale = 0.1;
+
     // Set coordinates of window center
     Vertex* startingVertex = this->bakery->getStartingVertex();
-
-    sf::Vector2f centerPos(startingVertex->getPosition().getLatitude(), startingVertex->getPosition().getLongitude());
+    sf::Vector2f centerPos(nodeScale * startingVertex->getPosition().getLatitude(),nodeScale *  startingVertex->getPosition().getLongitude());
     gv.setCenter(centerPos);
-    gv.setScale(10);   // Sets the window scale (works like a zoom)
+    gv.setScale(5 * nodeScale);   // Sets the window scale (works like a zoom)
 
     vector<Van> vans = bakery->getVans();
 
@@ -320,20 +321,20 @@ void Interface::showResultGraphViewer() {
         Vertex* currV;
         for (int i = 0; i < edges.size(); ++i) {
             Edge& e = edges[i];
-            this->addNodeToGV(e.getOrig());
-            this->addNodeToGV(e.getDest());
-            this->addEdgeToGV(e, gvEdge::DIRECTED);
+            this->addNodeToGV(e.getOrig(), nodeScale);
+            this->addNodeToGV(e.getDest(), nodeScale);
+            this->addEdgeToGV(e, gvEdge::DIRECTED, nodeScale);
         }
     }
 
     // Make the “background.png” image the background
     graphCities city = this->bakery->getGraph().getCity();
     if (city == graphCities::Penafiel)
-        gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+        gv.setBackground("resources/maps/PenafielMap/penafielReal3.png", sf::Vector2f(-480, -400), sf::Vector2f(1.1, 1));
     else if (city == graphCities::Espinho)
-        gv.setBackground("resources/maps/EspinhoMap/espinhoReal2.png", sf::Vector2f(-7500, -3000), sf::Vector2f(5, 5));
+        gv.setBackground("resources/maps/EspinhoMap/espinhoReal2.png", sf::Vector2f(-835, 70), sf::Vector2f(1, 1));
     else if (city == graphCities::Porto)
-        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-500, -300), sf::Vector2f(1, 1));
 
     // gv.setEnabledNodes(false); // Disable node drawing
     // gv.setEnabledEdgesText(false); // Disable edge text drawing
@@ -351,20 +352,25 @@ void Interface::showSCCGraphViewer() {
 
     gvEdge::EdgeType edgeType = this->bakery->getGraph().getIsDirected() == true ? gvEdge::DIRECTED : gvEdge::UNDIRECTED;
 
+    double nodeScale = 0.1;
+
     // Set coordinates of window center
     Vertex* startingVertex = this->bakery->getStartingVertex();
-    sf::Vector2f centerPos(startingVertex->getPosition().getLatitude(), startingVertex->getPosition().getLongitude());
+    sf::Vector2f centerPos(nodeScale * startingVertex->getPosition().getLatitude(),nodeScale *  startingVertex->getPosition().getLongitude());
     gv.setCenter(centerPos);
-    gv.setScale(10);   // Sets the window scale (works like a zoom)
+    gv.setScale(5 * nodeScale);   // Sets the window scale (works like a zoom)
 
     vector<Van> vans = bakery->getVans();
     for(int i = 0; i < this->bakery->getGraph().getNumVertex(); i++) {
         Vertex* currVertex = this->bakery->getGraph().getVertexSet()[i];
-        sf::Vector2f pos(currVertex->getPosition().getLatitude(), currVertex->getPosition().getLongitude());
+        sf::Vector2f pos(nodeScale * currVertex->getPosition().getLatitude(), nodeScale *  currVertex->getPosition().getLongitude());
         gvNode &currNode = gv.addNode(currVertex->getId(), pos); // Create node
+        // currNode.setLabel(to_string(currVertex->getId()));
+        currNode.setSize(10 * nodeScale);
+        currNode.setOutlineThickness(1 * nodeScale);
         if(currVertex == startingVertex) {
             currNode.setColor(GraphViewer::ORANGE);
-            currNode.setSize(30);
+            currNode.setSize(30 * nodeScale);
         }
     }
     for(Vertex* vert : this->bakery->getGraph().getVertexSet()) {
@@ -372,20 +378,21 @@ void Interface::showSCCGraphViewer() {
             gvNode& srcNode = gv.getNode(edge.getOrig()->getId());
             gvNode& destNode =  gv.getNode(edge.getDest()->getId());
             gvEdge &currEdge = gv.addEdge(edge.getId(), srcNode, destNode, edgeType);
-            currEdge.setColor(GraphViewer::WHITE);   // Set color according to the component
+            currEdge.setColor(GraphViewer::BLACK);   // Set color according to the component
+            currEdge.setThickness(5 * nodeScale);
         }
     }
 
     // Make the “background.png” image the background
     graphCities city = this->bakery->getGraph().getCity();
     if (city == graphCities::Penafiel)
-        gv.setBackground("resources/maps/PenafielMap/penafielReal2.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+        gv.setBackground("resources/maps/PenafielMap/penafielReal3.png", sf::Vector2f(-400, -400), sf::Vector2f(1, 1));
     else if (city == graphCities::Espinho)
-        gv.setBackground("resources/maps/EspinhoMap/espinhoReal2.png", sf::Vector2f(-8350, 700), sf::Vector2f(6, 6));
+        gv.setBackground("resources/maps/EspinhoMap/espinhoReal2.png", sf::Vector2f(-835, 70), sf::Vector2f(0.6, 0.6));
     else if (city == graphCities::Porto)
-        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-5000, -3000), sf::Vector2f(15, 15));
+        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-500, -300), sf::Vector2f(1, 1));
 
-    gv.setEnabledNodes(false); // Disable node drawing
+    // gv.setEnabledNodes(false); // Disable node drawing
     gv.setEnabledEdgesText(false); // Disable edge text drawing
     gv.setZipEdges(true);
 
@@ -396,25 +403,28 @@ void Interface::showSCCGraphViewer() {
     gv.join();
 }
 
-void Interface::addNodeToGV(Vertex* v) {
+void Interface::addNodeToGV(Vertex* v, double nodeScale = 1) {
     try {
         gv.getNode(v->getId());
     } catch (out_of_range err) {
-        sf::Vector2f pos(v->getPosition().getLatitude(), v->getPosition().getLongitude());
+        sf::Vector2f pos(nodeScale * v->getPosition().getLatitude(),nodeScale *  v->getPosition().getLongitude());
         gvNode &currNode = gv.addNode(v->getId(), pos); // Create node
-
+        // currNode.setLabel(to_string(v->getId()));
+        currNode.setSize(10 * nodeScale);
+        currNode.setOutlineThickness(1 * nodeScale);
         if(v == this->bakery->getStartingVertex()) {
             currNode.setColor(GraphViewer::ORANGE);
-            currNode.setSize(30);
+            currNode.setSize(nodeScale * 30);
         }
         else if(v->getClient() != NULL) {
             currNode.setColor(GraphViewer::GREEN);
-            currNode.setSize(30);
+            // currNode.setIcon()
+            currNode.setSize(nodeScale * 30);
         }
     }
 }
 
-void Interface::addEdgeToGV(Edge &e, gvEdge::EdgeType edgeType) {
+void Interface::addEdgeToGV(Edge &e, gvEdge::EdgeType edgeType, double nodeScale = 1) {
     try {
         gv.getEdge(e.getId());
     }
@@ -422,6 +432,10 @@ void Interface::addEdgeToGV(Edge &e, gvEdge::EdgeType edgeType) {
         gvNode& srcNode = gv.getNode(e.getOrig()->getId());
         gvNode& destNode =  gv.getNode(e.getDest()->getId());
         gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, edgeType);
+        currEdge.setThickness(nodeScale * 5);
+        // currEdge.setLabel(to_string(e.getId()));
+        // currEdge.setLabelColor(GraphViewer::RED);
+        // currEdge.setLabelSize(20);
     }
 }
 

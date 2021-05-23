@@ -25,8 +25,8 @@ public:
     void printResult(ostream& os);
     void showResultGraphViewer();
     void showSCCGraphViewer();
-    void addNodeToGV(Vertex* v);
-    void addEdgeToGV(Edge& e, gvEdge::EdgeType edgeType);
+    void addNodeToGV(Vertex* v, double nodeScale);
+    void addEdgeToGV(Edge& e, gvEdge::EdgeType edgeType, double nodeScale);
     void writeResultInFile();
 };
 
