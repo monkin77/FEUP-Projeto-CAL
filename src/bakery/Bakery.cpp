@@ -73,7 +73,7 @@ Bakery::Bakery(string filePath) {
 
 void Bakery::addClient(int id, string name, Position pos, Time time, int breadNum) {
     Vertex* v = graph.findVertex(pos);
-    if (v == NULL) return; // Discard this Client
+    if (v == NULL || v == this->startingVertex) return; // Discard this Client
     Client* client = new Client(id, name, v, time, breadNum);
     v->setClient(client);
     clients.push_back(client);
@@ -81,7 +81,7 @@ void Bakery::addClient(int id, string name, Position pos, Time time, int breadNu
 
 void Bakery::addClient(int id, string name, int vertexID, Time time, int breadNum) {
     Vertex* v = graph.findVertex(vertexID);
-    if (v == NULL) return; // Discard this Client
+    if (v == NULL || v == this->startingVertex) return; // Discard this Client
     Client* client = new Client(id, name, v, time, breadNum);
     v->setClient(client);
     clients.push_back(client);
