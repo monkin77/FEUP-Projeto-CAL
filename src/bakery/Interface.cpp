@@ -388,6 +388,8 @@ void Interface::showSCCGraphViewer() {
         gv.setBackground("resources/maps/EspinhoMap/espinhoReal.png", sf::Vector2f(-875, -155), sf::Vector2f(0.8, 0.8));
     else if (city == graphCities::Porto)
         gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-235, -310), sf::Vector2f(0.7, 0.6));
+    else
+        gv.setBackgroundColor(GraphViewer::BLACK);
 
     gv.setEnabledNodes(false); // Disable node drawing
     gv.setEnabledEdgesText(false); // Disable edge text drawing

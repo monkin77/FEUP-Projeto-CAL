@@ -16,7 +16,7 @@ using namespace std;
 
 constexpr auto INF = std::numeric_limits<int>::max();
 
-enum graphCities {Penafiel, Porto, Espinho};
+enum graphCities {Unknown, Penafiel, Porto, Espinho};
 
 class Graph {
     unordered_map<int, Vertex*> vertexMap;
