@@ -330,11 +330,11 @@ void Interface::showResultGraphViewer() {
     // Make the “background.png” image the background
     graphCities city = this->bakery->getGraph().getCity();
     if (city == graphCities::Penafiel)
-        gv.setBackground("resources/maps/PenafielMap/penafielReal3.png", sf::Vector2f(-480, -400), sf::Vector2f(1.1, 1));
+        gv.setBackground("resources/maps/PenafielMap/penafielReal.png", sf::Vector2f(-400, -400), sf::Vector2f(1, 1));
     else if (city == graphCities::Espinho)
-        gv.setBackground("resources/maps/EspinhoMap/espinhoReal2.png", sf::Vector2f(-835, 70), sf::Vector2f(1, 1));
+        gv.setBackground("resources/maps/EspinhoMap/espinhoReal.png", sf::Vector2f(-875, -155), sf::Vector2f(0.8, 0.8));
     else if (city == graphCities::Porto)
-        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-500, -300), sf::Vector2f(1, 1));
+        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-235, -310), sf::Vector2f(0.7, 0.6));
 
     // gv.setEnabledNodes(false); // Disable node drawing
     // gv.setEnabledEdgesText(false); // Disable edge text drawing
@@ -378,7 +378,7 @@ void Interface::showSCCGraphViewer() {
             gvNode& srcNode = gv.getNode(edge.getOrig()->getId());
             gvNode& destNode =  gv.getNode(edge.getDest()->getId());
             gvEdge &currEdge = gv.addEdge(edge.getId(), srcNode, destNode, edgeType);
-            currEdge.setColor(GraphViewer::BLACK);   // Set color according to the component
+            currEdge.setColor(GraphViewer::RED);   // Set color according to the component
             currEdge.setThickness(5 * nodeScale);
         }
     }
@@ -386,13 +386,13 @@ void Interface::showSCCGraphViewer() {
     // Make the “background.png” image the background
     graphCities city = this->bakery->getGraph().getCity();
     if (city == graphCities::Penafiel)
-        gv.setBackground("resources/maps/PenafielMap/penafielReal3.png", sf::Vector2f(-400, -400), sf::Vector2f(1, 1));
+        gv.setBackground("resources/maps/PenafielMap/penafielReal.png", sf::Vector2f(-400, -400), sf::Vector2f(1, 1));
     else if (city == graphCities::Espinho)
-        gv.setBackground("resources/maps/EspinhoMap/espinhoReal2.png", sf::Vector2f(-835, 70), sf::Vector2f(0.6, 0.6));
+        gv.setBackground("resources/maps/EspinhoMap/espinhoReal.png", sf::Vector2f(-875, -155), sf::Vector2f(0.8, 0.8));
     else if (city == graphCities::Porto)
-        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-500, -300), sf::Vector2f(1, 1));
+        gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-235, -310), sf::Vector2f(0.7, 0.6));
 
-    // gv.setEnabledNodes(false); // Disable node drawing
+    gv.setEnabledNodes(false); // Disable node drawing
     gv.setEnabledEdgesText(false); // Disable edge text drawing
     gv.setZipEdges(true);
 
@@ -412,14 +412,15 @@ void Interface::addNodeToGV(Vertex* v, double nodeScale = 1) {
         // currNode.setLabel(to_string(v->getId()));
         currNode.setSize(10 * nodeScale);
         currNode.setOutlineThickness(1 * nodeScale);
+        currNode.setColor(GraphViewer::RED);
         if(v == this->bakery->getStartingVertex()) {
             currNode.setColor(GraphViewer::ORANGE);
-            currNode.setSize(nodeScale * 30);
+            currNode.setSize(nodeScale * 50);
         }
         else if(v->getClient() != NULL) {
             currNode.setColor(GraphViewer::GREEN);
             // currNode.setIcon()
-            currNode.setSize(nodeScale * 30);
+            currNode.setSize(nodeScale * 50);
         }
     }
 }
@@ -433,6 +434,7 @@ void Interface::addEdgeToGV(Edge &e, gvEdge::EdgeType edgeType, double nodeScale
         gvNode& destNode =  gv.getNode(e.getDest()->getId());
         gvEdge &currEdge = gv.addEdge(e.getId(), srcNode, destNode, edgeType);
         currEdge.setThickness(nodeScale * 5);
+        currEdge.setColor(GraphViewer::WHITE);
         // currEdge.setLabel(to_string(e.getId()));
         // currEdge.setLabelColor(GraphViewer::RED);
         // currEdge.setLabelSize(20);
