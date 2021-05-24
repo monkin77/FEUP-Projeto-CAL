@@ -44,12 +44,12 @@ void InputGenerator::generateBakeryInput() {
     path = pathPrefix+path;
     readGraphFromFile(G, path, true);
 
-    radius = 50000;
-    maxTimeBefore = 5;
-    maxDelay = 5;
-    maxVanCapacity = 70;
+    radius = 1500;
+    maxTimeBefore = 60;
+    maxDelay = 60;
+    maxVanCapacity = 20;
     deliveryDelay = 1;
-    maxClientsBread = 15;
+    maxClientsBread = 40;
 
     // Start generating output
     vector<Vertex*> vSet = G.getVertexSet();
@@ -59,7 +59,9 @@ void InputGenerator::generateBakeryInput() {
     vertexRandomIdx = rand() % G.getNumVertex();
     Vertex *currV = vSet.at(vertexRandomIdx);
     vertexID = currV->getId();
+    Position startPos = currV->getPosition();
     G.removeVertex(currV->getId());
+    vSet = G.getVertexSet();
 
     fout << 1 << endl;
     fout << path << endl;
@@ -83,11 +85,15 @@ void InputGenerator::generateBakeryInput() {
 
         int numBread = 1 + (rand() % maxClientsBread);
 
-        vertexRandomIdx = rand() % G.getNumVertex();
-        Vertex *currV = vSet.at(vertexRandomIdx);
-        vertexID = currV->getId();
-        G.removeVertex(currV->getId());
-        vSet = G.getVertexSet();
+        while(1) {
+            vertexRandomIdx = rand() % G.getNumVertex();
+            Vertex *currV = vSet.at(vertexRandomIdx);
+            vertexID = currV->getId();
+            int dist = currV->getPosition().distance(startPos);
+            G.removeVertex(currV->getId());
+            vSet = G.getVertexSet();
+            if(dist < radius) break;
+        }
 
         fout << name << " " << i << " " << vertexID << " " << hour << ":" << minutes << " " << numBread << endl;
     }

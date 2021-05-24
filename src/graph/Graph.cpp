@@ -247,6 +247,14 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
     d->backwardsVisited = true;
     d_queue.insert(d);
 
+    for(Edge& e : s->adj) {
+        if(e.dest == d) {
+            d->dist = INF;
+            if(relax(s, e)) e.dest->visited = true;
+            return e.dest->dist;
+        }
+    }
+
     while(!s_queue.empty() && !d_queue.empty()) {
         Vertex* sV = s_queue.extractMin();
 
@@ -257,6 +265,7 @@ int Graph::bidirectionalDijkstra(Vertex *s, Vertex *d) {
         });
         for(Edge& e : orderedEdges) {
             Vertex* destV = e.dest;
+
             if( destV->backwardsVisited == true){   // If it has already been visited in the other direction
                 int totalDistance = this->joinBidirectionalDistances(destV, sV, e.weight);
                 d->dist = totalDistance;
