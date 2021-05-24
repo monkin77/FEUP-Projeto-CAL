@@ -326,17 +326,16 @@ void Interface::showResultGraphViewer() {
         }
     }
 
-    // Make the “background.png” image the background
     graphCities city = this->bakery->getGraph().getCity();
     if (city == graphCities::Penafiel)
-        gv.setBackground("resources/maps/PenafielMap/penafielReal.png", sf::Vector2f(-400, -400), sf::Vector2f(1, 1));
+        gv.setBackground("resources/maps/PenafielMap/penafielReal.png", sf::Vector2f(-465, -385), sf::Vector2f(1.1, 1));
     else if (city == graphCities::Espinho)
         gv.setBackground("resources/maps/EspinhoMap/espinhoReal.png", sf::Vector2f(-875, -155), sf::Vector2f(0.8, 0.8));
     else if (city == graphCities::Porto)
         gv.setBackground("resources/maps/PortoMap/portoReal.png", sf::Vector2f(-235, -310), sf::Vector2f(0.7, 0.6));
+    else
+        gv.setBackgroundColor(GraphViewer::BLACK);
 
-    // gv.setEnabledNodes(false); // Disable node drawing
-    // gv.setEnabledEdgesText(false); // Disable edge text drawing
     gv.setZipEdges(true);
 
     // Create window
@@ -383,7 +382,7 @@ void Interface::showSCCGraphViewer() {
 
     graphCities city = this->bakery->getGraph().getCity();
     if (city == graphCities::Penafiel)
-        gv.setBackground("resources/maps/PenafielMap/penafielReal.png", sf::Vector2f(-400, -400), sf::Vector2f(1, 1));
+        gv.setBackground("resources/maps/PenafielMap/penafielReal.png", sf::Vector2f(-465, -385), sf::Vector2f(1.1, 1));
     else if (city == graphCities::Espinho)
         gv.setBackground("resources/maps/EspinhoMap/espinhoReal.png", sf::Vector2f(-875, -155), sf::Vector2f(0.8, 0.8));
     else if (city == graphCities::Porto)
