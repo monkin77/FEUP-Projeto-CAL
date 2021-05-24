@@ -12,6 +12,10 @@ void defaultGraphBuilder(Graph &G){
 }
 
 bool readGraphFromFile(Graph &G, string directoryName, bool isStrongComponent) {
+    if(directoryName == "resources/maps/PenafielMap") G.setCity(graphCities::Penafiel);
+    else if (directoryName == "resources/maps/EspinhoMap") G.setCity(graphCities::Espinho);
+    else if (directoryName == "resources/maps/PortoMap") G.setCity(graphCities::Porto);
+
     string nodesFile, edgesFile;
     if(!isStrongComponent) {
         nodesFile = directoryName + "/nodes.txt";

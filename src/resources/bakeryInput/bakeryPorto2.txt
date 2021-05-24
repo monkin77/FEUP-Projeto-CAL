@@ -1,0 +1,21 @@
+1
+resources/maps/PortoMap
+62
+50000 60 60
+5
+8 1
+15 1
+1 1
+10 1
+5 1
+10
+Joana 0 27258 18:27 2
+Henrique 1 33218 15:27 7
+Joao 2 12710 9:33 3
+Joana 3 5580 16:38 6
+Domingos 4 20516 10:18 10
+Joana 5 29454 7:55 5
+Bruno 6 4744 12:33 4
+Matilde 7 53042 9:53 9
+Helena 8 13210 13:57 8
+Maria 9 39511 11:49 9

@@ -16,6 +16,8 @@ using namespace std;
 
 constexpr auto INF = std::numeric_limits<int>::max();
 
+enum graphCities {Unknown, Penafiel, Porto, Espinho};
+
 class Graph {
     unordered_map<int, Vertex*> vertexMap;
     vector<Vertex*> vertexSet;
@@ -27,6 +29,8 @@ class Graph {
 
     void DFSVisit(Vertex* v);
     bool relax(Vertex* v, Edge e);
+
+    graphCities city;
 public:
     Vertex* findVertex(const Position &inf) const;
     Vertex* findVertex(int idNode) const;
@@ -63,6 +67,10 @@ public:
     bool getIsDirected() const;
 
     void setIsDirected(bool isDirected);
+
+    graphCities getCity() const;
+
+    void setCity(graphCities city);
 };
 
 

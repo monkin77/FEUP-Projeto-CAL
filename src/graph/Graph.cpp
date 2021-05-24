@@ -514,3 +514,11 @@ bool Graph::getIsDirected() const {
 void Graph::setIsDirected(bool isDirected) {
     Graph::isDirected = isDirected;
 }
+
+graphCities Graph::getCity() const {
+    return city;
+}
+
+void Graph::setCity(graphCities city) {
+    Graph::city = city;
+}
