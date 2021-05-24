@@ -370,7 +370,7 @@ void Interface::showSCCGraphViewer() {
         currNode.setOutlineThickness(1 * nodeScale);
         if(currVertex == startingVertex) {
             currNode.setColor(GraphViewer::ORANGE);
-            currNode.setSize(30 * nodeScale);
+            currNode.setSize(50 * nodeScale);
         }
     }
     for(Vertex* vert : this->bakery->getGraph().getVertexSet()) {
